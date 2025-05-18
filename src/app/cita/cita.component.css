@@ -1,0 +1,167 @@
+/*Titulo*/
+@font-face{
+    font-family: 'Letra';
+    src: url('/letraC.ttf');
+  }
+  .banner {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  overflow: hidden;
+  margin-top: 64px; /* Ajusta este valor según la altura de tu navbar */
+}
+
+.banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mensaje {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  z-index: 10;
+}
+.tt{
+    font-family: 'Letra';
+    font-size: 4.5rem;
+    color:#9c3f99;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  .experiencia{
+   margin-top: 30px;
+    background-color: #666;
+    border: 1px solid white;
+    border-radius: 10px;
+    font-size: 1.6rem;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .sub{
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+  }
+  .texto{
+    font-size: 1.8rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    padding: 30px;
+  }
+  /*Contacto*/
+  .contact-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 20px; 
+    text-align: center;
+    padding: 20px; 
+  }
+  
+  .tarjeta {
+    border:5px solid #c5c3c3;
+    border-radius: 15px;
+    background-color: #efccef;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .contact-icon {
+    font-size: 1.5em; 
+    color: #f08080; 
+    margin-bottom: 10px;
+  }
+  
+  .contact-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 1.6rem;
+  }
+  
+  .contact-detail {
+    color: #555; 
+    font-size: 1.5rem;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    
+  }
+  .icono{
+    
+    margin-left: 20px;
+  }
+  i{
+    font-size: 50px;
+    margin: 15px;
+  }
+  /*Formulario*/
+  .formulario-cita {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: #f1eeee;
+      border-radius: 12px;
+      box-shadow:  3px 3px 8px rgba(0, 0, 0, 0.2);
+      margin-bottom: 35px;
+    }
+    
+    .titulo {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2.2rem;
+      color: #7e167b;
+      font-family: fantasy;
+    }
+    
+    .campo {
+      margin-bottom: 1.5rem;
+      width: 100%;
+      font-size: 1.2rem;
+    }
+  
+    mat-form-field {
+      width: 100%; 
+      font-size: 1.2rem;
+     
+    }
+   
+    mat-radio-button mat-radio-label-content {
+      font-size: 1.5em;
+    }
+    
+    .label-genero {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .text-error {
+      padding-left: 8px;
+      color: firebrick;
+      font-size: 14px;
+      animation-name: fadeIn;
+      animation-duration: .3s;
+    }
+   
+    .boton-contenedor {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    
+    .btn-activo {
+      border: 3px solid #e1dcdc;
+      border-radius: 6px;
+      background-color: #e67ccf;
+      color: white;
+      height: 50px;
+      width: 150px;
+    }
+    
+    .btn-inactivo {
+      border: 3px solid #e1dcdc;
+      border-radius: 6px;
+      background-color: #beb3b3 ;
+      color: #666;
+      height: 50px;
+      width: 150px;
+    }
+    

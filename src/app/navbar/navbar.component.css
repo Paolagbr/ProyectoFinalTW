@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'Titulo';
+    src: url('/letra/Elegante-Regular.ttf');
+}
+.titulo{
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 4rem;
+}
+.letra{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 1rem;
+    font-weight: bold;
+    color:black;
+
+}
+.letra a:hover{
+    color: blueviolet;
+}
+
+.inicioSe{
+    text-align: end;
+    margin-right: 50px;
+}

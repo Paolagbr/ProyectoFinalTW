@@ -1,0 +1,37 @@
+<form [formGroup]="IngresarSesion" (ngSubmit)="onSubmit()" class="login-form">
+  <h2 class="form-title">Iniciar Sesión</h2>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Username</mat-label>
+    <input matInput formControlName="username" required />
+
+    @if (IngresarSesion.get('username')?.hasError('required') &&
+    (IngresarSesion.get('username')?.dirty ||
+     IngresarSesion.get('username')?.touched)) {
+    <mat-error>El username o nombre es requerido.</mat-error>
+    }
+   
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Contraseña</mat-label>
+    <input matInput [type]="hide() ? 'password' : 'text'" formControlName="password" required />
+
+    <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide()">
+      <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+
+    @if (IngresarSesion.get('password')?.hasError('required') &&
+    (IngresarSesion.get('password')?.dirty || IngresarSesion.get('password')?.touched)) {
+    <mat-error>La contraseña es requerida.</mat-error>
+    }
+   
+  </mat-form-field>
+  @if (credencialesIncorrectas()) {
+    <mat-error class="general-error">Nombre o contraseña incorrecta.</mat-error>
+  }
+  <button mat-raised-button color="primary" type="submit" [disabled]="IngresarSesion.invalid" class="submit-button">
+    Ingresar
+  </button>
+</form>

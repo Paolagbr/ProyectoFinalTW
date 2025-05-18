@@ -1,0 +1,53 @@
+<div class="card">
+    <div class="card-body">
+        <form (ngSubmit)="guardarDatos()" [formGroup]="formulario">
+            <div class="mb-2">
+                <!-- ---------------Nombre----------------------- -->
+            <label class="form-label">Nombre</label>
+            <input type="text" formControlName="name" class="form-control" placeholder="Ingresa tu nombre">
+    
+            @if (!formulario.get('name')?.valid && !formulario.get('name')?.pristine) {
+                <div class="alert alert-danger mt-2">
+                El nombre es obligatorio
+                </div>
+            }
+            </div>
+            
+            <!-- ---------------Email----------------------- -->
+            <div class="mb-2">
+            <label class="form-label">Email</label>
+            <input type="email" formControlName="email" class="form-control" placeholder="Ingresa tu email">
+            <div *ngIf="!formulario.get('email')?.valid && !formulario.get('email')?.pristine" class="alert alert-danger mt-2">
+                <span *ngIf="formulario.get('email')?.errors?.['required']">El email es obligatorio</span>
+                <span *ngIf="formulario.get('email')?.errors?.['email']">El email debe ser válido</span>
+            </div>
+            </div>
+
+            <!-- ---------------Telefono----------------------- -->
+            <div class="mb-2">
+                <label class="form-label">Telefono</label>
+                <input type="text" formControlName="number" class="form-control" placeholder="Ingresa tu numero">
+
+                @if (!formulario.get('number')?.valid && !formulario.get('number')?.pristine) {
+                    <div class="alert alert-danger mt-2">
+                    El telefono es obligatorio
+                    </div>
+                }
+            </div>
+    
+            <!-- ---------------Contraseña----------------------- -->
+            <div class="mb-2">
+                <label class="form-label">Contraseña</label>
+                <input type="text" formControlName="password" class="form-control" placeholder="Ingresa tu contraseña">
+
+                @if (!formulario.get('password')?.valid && !formulario.get('password')?.pristine) {
+                    <div class="alert alert-danger mt-2">
+                    La contraseña es obligatoria
+                    </div>
+                }
+            </div>
+            <button class="btn btn-primary" type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+  

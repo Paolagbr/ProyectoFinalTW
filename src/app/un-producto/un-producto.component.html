@@ -1,0 +1,46 @@
+
+<div style="margin-bottom: 50px;">
+
+
+    <h1 class="animate__animated animate__bounce text-center">
+      {{ producto.nombre }}
+    </h1>
+    <hr>
+  
+    <div class="row animate__animated animate__fadeIn fast">
+      <div class="col-md-4 text-center">
+        <img width="400px" [src]="producto.img" alt="" class="img-fluid">
+        <br><br>
+        <a [routerLink]="['/Tienda']" class="btn btn-outline-danger btn-block">Regresar</a>
+      </div>
+  
+      <div class="col-md-8 ">
+        <h3 class="text-center" style="margin-top: 10px;">Ingredientes Claves: </h3>
+        <p style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+       font-size: 2rem; text-align: justify; margin:35px;">{{ producto.ingredientes}}</p>
+        <h3 class="text-center">Descricpcion</h3>
+        <p style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+       font-size: 2rem; text-align: justify; margin:35px;">{{producto.beneficios}}</p>
+        <p style="font-family:Georgia, 'Times New Roman', Times, serif; font-size: 3rem;" class="text-center">
+          {{producto.precio}}</p>
+  
+      </div>
+    </div>
+    <div class="d-flex align-items-center" style="margin-left: 58%;">
+      <div class="input-group input-group-sm me-2" style="width: 150px; height: 35px; margin-right: 25px;">
+        <button class="btn btn-outline-secondary" type="button" (click)="decrementar()" style="font-size: 1.5rem;">-</button>
+        <input type="number" 
+        class="form-control text-center" 
+        [value]="cantidad" 
+        (change)="actualizarCantidad(cantidadInput)" 
+        aria-label="Cantidad" 
+        style="width: 40px; height: 45px; font-size: 1.5rem;"      #cantidadInput>
+        <button class="btn btn-outline-secondary" type="button" (click)="incrementar()" style="font-size: 1.5rem;">+</button>
+      </div>
+      <button type="button" class="btn  btn-sm" style="background-color: rgb(199, 149, 243); width: 160px; height: 55px; 
+            margin-left: 15px; font-weight: bold;">
+        <i class="fa-solid fa-cart-shopping me-1"></i> Agregar al carrito
+      </button>
+    </div>
+  
+  </div>

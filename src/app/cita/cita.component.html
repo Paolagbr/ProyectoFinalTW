@@ -1,0 +1,155 @@
+<div class="banner">
+  <img src="/contacto.png" alt="Contacto" />
+  <div class="mensaje">
+    <h1 class="tt">MAGNOLIA SPA</h1>
+    <div class="experiencia">
+      Vive la experiencia Magnolia SPA.
+    </div>
+  </div>
+</div>
+
+<!--Telefono-->
+<div class="contact-info-grid">
+    <div class="tarjeta">
+        <div class="icono"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="contact-title">Dirección</div>
+        <div class="contact-detail">
+            Calle Francisco I Madero 540 Ex Ejido<br>
+            San Ignacio Aguascalientes Ags, C.P.<br>
+            20326
+        </div>
+    </div>
+
+    <div class="tarjeta">
+        <div class="icono"> <i class="far fa-envelope"></i></div>
+        <div class="contact-title">Correo Electrónico</div>
+        <div class="contact-detail">
+            <p> magnolia&#64;spa.com</p>
+        </div>
+    </div>
+
+    <div class="tarjeta">
+        <div class="icono"><i class="fas fa-phone"></i></div>
+        <div class="contact-title">Teléfono</div>
+        <div class="contact-detail">449 918 56 75</div>
+    </div>
+</div>
+<!--Tarjeta-->
+<div style="margin: 10px;  ">
+    <mat-card appearance="outlined" style="background-color: rgb(235, 235, 213);">
+        <mat-card-content style="margin-top: 45px;">
+            <h1 class="sub">CONTACTA A MAGNOLIA SPA</h1>
+            <p class="texto">A través de nuestras diversas vías de contacto o redes sociales, puedes consultar la
+                disponibilidad de nuestros tratamientos y agendar tu experiencia en Magnolia SPA.
+                Igualmente, si buscas un espacio para un evento especial que incluya bienestar, contáctanos para
+                explorar opciones personalizadas.
+                En Magnolia SPA, te ofrecemos una amplia gama de servicios diseñados para tu relajación y
+                revitalización.
+            </p>
+            <p class="texto tex-center" style="font-size: 2.5rem; text-align: center;"> ¡Contáctanos y agenda tu momento
+                de bienestar!</p>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<form class="formulario-cita" [ngFormOptions]="{ updateOn: 'blur' }" #form="ngForm">
+    <h2 class="titulo">AGENDAR CITA</h2>
+
+    <!-- Nombre -->
+    <div class="campo">
+        <label class="label-genero">Nombre:</label>
+        <mat-form-field appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input matInput type="text" placeholder="Ingresa tu nombre" [(ngModel)]="userINFO.name" name="nombre"
+                #nameControl="ngModel" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$" required minlength="1">
+        </mat-form-field>
+        @if(nameControl.touched && nameControl.hasError('required')){
+        <div class="text-error">El campo es requerido</div>
+        }
+        @if(nameControl.hasError('pattern')){
+        <div class="text-error">No se permiten números y simbolos</div>
+        }
+        <!--Validacion con un minimo de letras, o un maximo de letras aceptadas por el campo-->
+        <!-- @if(nameControl.touched && nameControl.hasError('minlength')){
+          @let minlengthError=nameControl.getError('minlength');
+          <div class="text-error">The required lenght for this field is <strong> {{minlengthError.required}}</strong>
+          </div>
+          } -->
+    </div>
+
+    <!-- Servicio -->
+    <div class="campo">
+        <label class="label-genero">Servicio:</label>
+        <mat-form-field appearance="fill">
+
+            <mat-label>Servicio</mat-label>
+            <mat-select [(ngModel)]="userINFO.grupo" name="grupo" required #grupoSelect="ngModel"
+                (selectionChange)="guardarServicio($event)">
+                <mat-option value="">-- Elige un servicio --</mat-option>
+                @for (grupo of grupos; track grupo) {
+                <mat-option [value]="grupo.nomServicio"> {{grupo.nomServicio}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        @if(grupoSelect.touched && grupoSelect.hasError('required')){
+        <div class="text-error">El campo es requerido</div>
+        }
+
+    </div>
+
+    <!-- Sexo -->
+    <div class="campo cam">
+        <label class="label-genero">Sexo:</label>
+        <mat-radio-group [(ngModel)]="userINFO.sexo" name="genero" #genero="ngModel" required>
+            <mat-radio-button value="Femenino">Femenino</mat-radio-button>
+            <mat-radio-button value="Masculino">Masculino</mat-radio-button>
+        </mat-radio-group>
+        @if(genero.touched && genero.hasError('required')){
+        <div class="text-error">El campo es requerido</div>
+        }
+    </div>
+
+    <!-- Fecha -->
+    <div class="campo">
+        <label class="label-genero">Fecha:</label>
+        <mat-form-field appearance="fill">
+            <mat-label>Fecha de la cita: </mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="userINFO.fechaCita" name="fecha" required
+                [matDatepickerFilter]="myFilter" (dateChange)="guardarFecha($event)" #fecha="ngModel">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        @if(fecha.touched && fecha.hasError('required')){
+        <div class="text-error">El campo es requerido</div>
+        }
+    </div>
+
+    <!-- Hora -->
+    <div class="campo">
+        <label class="label-genero">Hora:</label>
+        <mat-form-field appearance="fill">
+            <mat-label>Hora</mat-label>
+            <mat-select [(ngModel)]="userINFO.hora" name="hora" required #hora="ngModel"
+                (selectionChange)="guardarHora($event)">
+                @for (hora of horas; track hora) {
+                <mat-option [value]="hora.horaC" [disabled]="horasOcupadas.includes(hora.horaC)"> {{hora.horaC}}
+                </mat-option>
+                @if (horasOcupadas.includes(hora.horaC)) {
+                <span> - No disponible</span>
+                }
+                }
+            </mat-select>
+        </mat-form-field>
+        @if(hora.touched && hora.hasError('required')){
+        <div class="text-error">El campo es requerido</div>
+        }
+    </div>
+
+    <!-- Botón -->
+    <div class="boton-contenedor">
+        <button mat-raised-button color="primary" (click)="nuevoUsuario()" [disabled]="!form.valid"
+            [ngClass]="form.valid ? 'btn-activo' : 'btn-inactivo'">
+            Agendar
+        </button>
+    </div>
+</form>

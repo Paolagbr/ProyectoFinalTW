@@ -1,0 +1,31 @@
+<!--Barra de Navegacion-->
+
+<app-busqueda [producto]="TiendaProductos" (filteredProd)="actualizarProducto($event)"
+  style="margin-top: 175px;"></app-busqueda>
+
+@if (ProductosFiltrados.length === 0) {
+<div style="height: 600px; ">
+  <p class="text-center">No hay resultados de la búsqueda.</p>
+</div>
+} @else {
+
+<!--Productos-->
+<div class="card-group row row-cols-1 row-cols-lg-4 g-4" style="margin:20px;">
+  @for (h of ProductosFiltrados; track h; let i = $index) {
+  <div class="col">
+    <div class="card h-100"
+      style="border:3px solid black; border-radius: 10px;  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); ">
+      <img src="{{ h.img }}" class="card-img-top w-full h-110 object-cover imagen-animada" alt="...">
+      <div class="card-body">
+        <h5 class="card-title text-center ">{{ h.nombre }}</h5>
+        <p class="card-text parrafo text-center">{{ h.precio }}</p>
+      </div>
+      <a [routerLink]="['/Tienda', i]" class="mb-3 btn btn-danger btn-block" style="font-weight: bold;">
+        Ver Producto
+      </a>
+    </div>
+  </div>
+  }
+</div>
+
+}

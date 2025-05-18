@@ -1,0 +1,69 @@
+<div class="contenedor-video-texto">
+  <div class="video-box">
+    <iframe
+      width="460"
+      height="515"
+      [src]="video | domseguro:'https://www.youtube.com/embed/'"
+      frameborder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+  <div class="texto-box">
+    <h2>Relájate con Nuestros Servicios</h2>
+    <p>
+      Disfruta de una experiencia única en nuestro spa, donde combinamos 
+      técnicas tradicionales y modernas para brindarte el máximo bienestar.
+    </p>
+    <!-- <ul>
+      <li>Masajes terapéuticos</li>
+      <li>Tratamientos faciales</li>
+      <li>Aromaterapia</li>
+      <li>Rituales de relajación</li>
+    </ul> -->
+  </div>
+</div>
+<!--Tarjetas de servicio-->
+<h1>Busca tus servicios</h1>
+<input 
+  type="text" 
+  placeholder="Buscar servicio..." 
+  [(ngModel)]="terminoBusqueda" 
+  (input)="filtrarServicios()" 
+  class="barra-busqueda" 
+/>
+
+@if (!cargando && !error) {
+  <div class="contenedor-grid">
+    @if (inf.length > 0) {
+      @for (dato of serviciosFiltrados; track dato.id) {
+        <div class="tarjeta">
+          <div class="imagen-contenedor">
+            <img [src]="dato.image" alt="{{ dato.name }}" />
+          </div>
+          <div class="info-producto">
+            <h2>{{ dato.name }}</h2>
+            <br>
+            <p class="descripcion">{{ dato.description }}</p>
+            
+            @if (dato.expandido) {
+              <div class="contenido-extra">
+                <p class="descripcion"><strong>Beneficios:</strong> {{dato.beneficio}}</p>
+                <p class="descripcion"><strong>Duración:</strong> {{dato.duracion}}</p>
+              </div>
+            }
+            
+            <div class="detalles">
+              <p class="precio">Precio: ${{ dato.price }}</p>
+              <button class="boton-ver-mas" (click)="toggleDetalles(dato)">
+                {{ dato.expandido ? 'Ver menos' : 'Ver detalles' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <div>No hay productos disponibles.</div>
+    }
+  </div>
+}

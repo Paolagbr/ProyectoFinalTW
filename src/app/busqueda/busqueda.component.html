@@ -1,0 +1,13 @@
+<div class="d-flex justify-content-center mb-4" style="margin-top: 35px;">
+    <button class="btn  btn-lg" style="border: 5px solid transparent"   type="button" disabled>
+        <i class="fas fa-search"></i>
+    </button>
+    <div class="col-md-6" style="margin-top: 10px; border: 5px solid rgb(216, 195, 195); border-radius: 5px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);  ">
+        <input type="text"
+         [(ngModel)]="searchTerm" 
+         (input)="filterProd()" 
+         placeholder="Buscar Producto"
+            class="form-control form-control-lg shadow-md focus-ring" />
+    </div>
+
+</div>

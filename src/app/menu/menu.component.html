@@ -1,0 +1,233 @@
+<!-- File: src/app/menu/menu.component.html -->
+
+<mat-radio-group
+  [(ngModel)]="selectedOption"
+  aria-label="Selecciona una opción"
+  class="menu-radio flex flex-col gap-2 mb-6"
+>
+  @for (opt of options; track opt.value) {
+    <mat-radio-button [value]="opt.value">
+      {{ opt.label }}
+    </mat-radio-button>
+  }
+</mat-radio-group>
+
+@if (selectedOption === '1') {
+  <form class="formulario-cita" [ngFormOptions]="{ updateOn: 'blur' }" #form="ngForm">
+    <h2 class="titulo">AGENDAR CITA</h2>
+
+    <!-- Nombre -->
+    <div class="campo mb-3">
+      <label class="label-genero">Nombre:</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Nombre</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Ingresa tu nombre"
+          [(ngModel)]="userINFO.name"
+          name="nombre"
+          #nameControl="ngModel"
+          pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
+          required
+          minlength="1"
+        />
+      </mat-form-field>
+      @if (nameControl.touched && nameControl.hasError('required')) {
+        <div class="text-error">El campo es requerido</div>
+      }
+      @if (nameControl.hasError('pattern')) {
+        <div class="text-error">No se permiten números ni símbolos</div>
+      }
+    </div>
+
+    <!-- Servicio -->
+    <div class="campo mb-3">
+      <label class="label-genero">Servicio:</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Servicio</mat-label>
+        <mat-select
+          [(ngModel)]="userINFO.grupo"
+          name="grupo"
+          required
+          #grupoSelect="ngModel"
+          (selectionChange)="guardarServicio($event)"
+        >
+          <mat-option value="">-- Elige un servicio --</mat-option>
+          @for (g of grupos; track g.id) {
+            <mat-option [value]="g.id">
+              {{ g.nomServicio }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      @if (grupoSelect.touched && grupoSelect.hasError('required')) {
+        <div class="text-error">El campo es requerido</div>
+      }
+    </div>
+
+    <!-- Sexo -->
+    <div class="campo mb-3">
+      <label class="label-genero">Sexo:</label>
+      <mat-radio-group
+        [(ngModel)]="userINFO.sexo"
+        name="sexo"
+        required
+        #sexoControl="ngModel"
+      >
+        @for (s of genero; track s.id) {
+          <mat-radio-button [value]="s.genero">
+            {{ s.genero }}
+          </mat-radio-button>
+        }
+      </mat-radio-group>
+      @if (sexoControl.touched && sexoControl.hasError('required')) {
+        <div class="text-error">El campo es requerido</div>
+      }
+    </div>
+
+    <!-- Fecha -->
+    <div class="campo mb-3">
+      <label class="label-genero">Fecha:</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Fecha de la cita</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          [(ngModel)]="userINFO.fechaCita"
+          name="fecha"
+          required
+          [matDatepickerFilter]="myFilter"
+          (dateChange)="guardarFecha($event)"
+          #fechaControl="ngModel"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      @if (fechaControl.touched && fechaControl.hasError('required')) {
+        <div class="text-error">El campo es requerido</div>
+      }
+    </div>
+
+    <!-- Hora -->
+    <div class="campo mb-4">
+      <label class="label-genero">Hora:</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Hora</mat-label>
+        <mat-select
+          [(ngModel)]="userINFO.hora"
+          name="hora"
+          required
+          #horaControl="ngModel"
+          (selectionChange)="guardarHora($event)"
+        >
+          @for (h of horas; track h.id) {
+            <mat-option
+              [value]="h.horaC"
+              [disabled]="horasOcupadas.includes(h.horaC)"
+            >
+              {{ h.horaC }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      @if (horaControl.touched && horaControl.hasError('required')) {
+        <div class="text-error">El campo es requerido</div>
+      }
+    </div>
+
+    <!-- Botón -->
+    <div class="boton-contenedor">
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="actualizarUsuario()"
+        [disabled]="!form.valid"
+      >
+        Guardar cambios
+      </button>
+    </div>
+  </form>
+
+  <!-- LISTADO DE CITAS -->
+  <div id="container2" class="mt-6">
+    <h2>Listado de Citas</h2>
+    <table class="table table-striped w-full">
+      <thead>
+        <tr>
+          <th>Nombre</th><th>Servicio</th><th>Sexo</th><th>Fecha</th><th>Hora</th><th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of listaCitas; track u.name) {
+          <tr>
+            <td>{{ u.name }}</td>
+            <td>{{ getNomServicio(u.grupo) }}</td>
+            <td>{{ u.sexo }}</td>
+            <td>{{ u.fechaCita }}</td>
+            <td>{{ u.hora }}</td>
+            <td class="flex gap-2">
+              <button mat-button color="primary" (click)="editarUsuario(u)">Editar</button>
+              <button mat-button color="warn" (click)="eliminarUsuario(u)">Borrar</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="text-center">No hay citas por el momento</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <!-- PARTE DOS -->
+} @else if (selectedOption === '2') {
+  
+<app-cuestionario [comentarioParaEditar]="comentarioSeleccionado"></app-cuestionario>
+
+  <!-- <h2 class="text-2xl font-semibold text-purple-700 mb-4">Comentarios</h2> -->
+
+ <h2 class="titulo">Comentarios</h2>
+
+<div class="contenedor-comentarios">
+  @for (com of comentarios; track com.id) {
+    <div class="comentario-card">
+      <p><strong>Nombre:</strong> {{ com.nombre }}</p>
+      <p><strong>Email:</strong> {{ com.email }}</p>
+
+      <p class="seccion">Te gustó de la página:</p>
+      <ul>
+        @if (com.feedback?.facilidadNavegar) {
+          <li>Facilidad de navegar</li>
+        }
+        @if (com.feedback?.buenaPresentacion) {
+          <li>Buena presentación</li>
+        }
+        @if (com.feedback?.facilEntender) {
+          <li>Fácil de entender los servicios</li>
+        }
+        @if (com.feedback?.estructuraUtilizada) {
+          <li>La estructura que se utilizó</li>
+        }
+      </ul>
+
+      <p><strong>Servicio que más te gustó:</strong> {{ com.servicio }}</p>
+      <p><strong>Mensaje:</strong> {{ com.mensaje }}</p>
+      <p><strong>Fecha:</strong> {{ com.fechaCita | date }}</p>
+
+      <div class="botones-comentario">
+        <button mat-raised-button color="primary" class="boton-chido editar" (click)="editarComentario(com)">
+           Editar
+        </button>
+        <button mat-raised-button color="warn" class="boton-chido eliminar" (click)="eliminarComentario(com)">
+           Eliminar
+        </button>
+      </div>
+
+    </div>
+  } @empty {
+    <div class="sin-comentarios">No hay comentarios disponibles</div>
+  }
+</div>
+
+
+}

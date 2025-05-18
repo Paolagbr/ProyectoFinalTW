@@ -1,0 +1,115 @@
+<div class="card">
+  <h1 class="title">Quejas y Sugerencias</h1>
+  <div class="card-body">
+    <form (ngSubmit)="enviarComentario()" [formGroup]="formulario">
+
+      <!-- Nombre -->
+      <div class="mb-2">
+        <label class="form-label">Nombre</label>
+        <input type="text" formControlName="nombre" class="form-control" placeholder="Ingresa tu nombre" />
+        @if (!formulario.get('nombre')?.valid && !formulario.get('nombre')?.pristine) {
+          <div class="alert alert-danger mt-2">El nombre es obligatorio</div>
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="mb-2">
+        <label class="form-label">Email</label>
+        <input type="email" formControlName="email" class="form-control" placeholder="Ingresa tu email" />
+        @if (!formulario.get('email')?.valid && !formulario.get('email')?.pristine) {
+          <div class="alert alert-danger mt-2">
+            @if (formulario.get('email')?.errors?.['required']) {
+              <span>El email es obligatorio</span>
+            }
+            @if (formulario.get('email')?.errors?.['email']) {
+              <span>El email debe ser válido</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Feedback -->
+      <label class="form-label">¿Qué fue lo que más te gustó de la página?</label>
+      <div formGroupName="feedback" class="mb-3">
+        <label><input type="checkbox" formControlName="facilidadNavegar" /> Facilidad de navegar</label><br />
+        <label><input type="checkbox" formControlName="buenaPresentacion" /> Buena presentación</label><br />
+        <label><input type="checkbox" formControlName="facilEntender" /> Fácil de entender los servicios</label><br />
+        <label><input type="checkbox" formControlName="estructuraUtilizada" /> La estructura que se utilizó</label>
+      </div>
+
+      <!-- Servicio -->
+      <label for="servicio">Servicio que más te gustó</label><br />
+      <select formControlName="servicio" id="servicio" class="form-select mb-3">
+        <option value="" disabled selected>Selecciona una opción</option>
+        <option value="Masaje Corporal">Masaje corporal</option>
+        <option value="Facial">Facial</option>
+        <option value="Sauna">Sauna</option>
+        <option value="Aromaterapia">Aromaterapia</option>
+        <option value="Masaje para Pies y Manos">Masaje en pies y manos</option>
+        <option value="Sala de Relajación">Sala de relajación</option>
+        <option value="Atencion al cliente">Atención al cliente</option>
+      </select>
+
+      <!-- Mensaje -->
+      <div class="mb-2">
+        <label class="form-label">Mensaje de queja o sugerencia</label>
+        <textarea formControlName="mensaje" class="form-control"
+                  placeholder="Escribe tu queja o sugerencia aquí" rows="5"></textarea>
+        @if (!formulario.get('mensaje')?.valid && !formulario.get('mensaje')?.pristine) {
+          <div class="alert alert-danger mt-2">
+            El mensaje es obligatorio y debe tener al menos 10 caracteres
+          </div>
+        }
+      </div>
+
+      <!-- Fecha -->
+      <div class="campo mb-3">
+        <label class="label-genero">¿En qué fecha volverías a venir?</label><br />
+        <mat-form-field appearance="fill">
+          <mat-label>Fecha de la cita</mat-label>
+          <input matInput [matDatepicker]="picker"
+                 formControlName="fechaCita" required
+                 [matDatepickerFilter]="myFilter" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        @if (formulario.get('fechaCita')?.touched && formulario.get('fechaCita')?.hasError('required')) {
+          <div class="text-error">El campo es requerido</div>
+        }
+      </div>
+
+      <button class="btn btn-primary" type="submit">Enviar comentario</button>
+    </form>
+
+    <!-- Lista de comentarios guardados -->
+    <!-- @for  (comentario of comentarios; track comentario.nombre) {
+      <div class="card mt-3 p-3 shadow-sm border rounded">
+        <p><strong>Nombre:</strong> {{ comentario.nombre }}</p>
+        <p><strong>Email:</strong> {{ comentario.email }}</p>
+        <p><strong>Te gustó de la página:</strong></p>
+        <ul>
+          @if (comentario.feedback?.facilidadNavegar) {
+            <li>Facilidad de navegar</li>
+          }
+          @if (comentario.feedback?.buenaPresentacion) {
+            <li>Buena presentación</li>
+          }
+          @if (comentario.feedback?.facilEntender) {
+            <li>Fácil de entender los servicios</li>
+          }
+          @if (comentario.feedback?.estructuraUtilizada) {
+            <li>La estructura que se utilizó</li>
+          }
+        </ul>
+        <p><strong>Servicio que más te gustó:</strong> {{ comentario.servicio }}</p>
+        <p><strong>Mensaje:</strong> {{ comentario.mensaje }}</p>
+        <p><strong>Fecha:</strong> {{ comentario.fechaCita | date:'shortDate' }}</p>
+        <button class="btn btn-outline-primary me-2" (click)="editarComentario($index)">Editar</button>
+        <button class="btn btn-outline-danger" (click)="eliminarComentario($index)">Eliminar</button>
+
+      </div>
+    } @empty {
+       No hay comentarios guardados
+    } -->
+  </div>
+</div>
