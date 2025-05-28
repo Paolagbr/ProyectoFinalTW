@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { hora, lista, sexo, userInfo } from '../datos';
 import { Genero, GRUPOS, HORA } from '../grupo';
+import { addDoc, collection, Firestore } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,15 @@ export class UsuariosService {
   genero: sexo[]= Genero;
   horas: hora[]=HORA;
 
-  constructor() { 
+  constructor(private firestore:Firestore) { 
     this.userINFO=JSON.parse(localStorage.getItem("data")|| '[]');
   }
+  //Configuracion de BD
+  addPlace(place: userInfo){
+    const placeRef=collection(this.firestore, 'citas')
+    return addDoc(placeRef, place);
+  }
+  //localStorage
   getHora(){
     return this.horas;
   }
