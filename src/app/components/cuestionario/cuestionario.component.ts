@@ -30,12 +30,12 @@ import { ComentarioService } from '../../servicios/comentario.service';
   styleUrls: ['./cuestionario.component.css']
 })
 export class CuestionarioComponent implements OnInit, OnChanges  {
-   @Input() comentarioParaEditar: any; // <-- esto permite recibir datos desde el padre
+   @Input() comentarioParaEditar: any; 
   formulario: FormGroup;
   comentarios: any[] = [];
   modoEdicion = false;
   indiceEdicion: number | null = null;
-
+  
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -55,7 +55,9 @@ export class CuestionarioComponent implements OnInit, OnChanges  {
       }),
       id: [''] // <-- AÑADIDO AQUÍ
     });
+   
   }
+
 
   ngOnInit(): void {
   // Cargar comentarios desde localStorage
@@ -96,6 +98,8 @@ ngOnChanges(changes: SimpleChanges): void {
       comentario.id = Date.now(); // genera nuevo ID
       this.comentarios.push(comentario);
     }
+    //GuardarBase de datos
+    this.comentarioService.addPlace(this.formulario.value);
 
     // Guardar en localStorage
     localStorage.setItem('comentariosUsuario', JSON.stringify(this.comentarios));

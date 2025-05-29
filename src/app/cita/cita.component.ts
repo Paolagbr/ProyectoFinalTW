@@ -15,6 +15,13 @@ import { HORA } from '../grupo';
 import { MatCardModule } from '@angular/material/card';
 import { UsuariosService } from '../servicios/usuarios.service';
 
+export interface Place {
+  name: string;
+  grupo: number;
+  sexo: string;
+  fechaCita: string;
+  hora: string;
+}
 
 @Component({
   selector: 'app-formulario',
@@ -99,6 +106,19 @@ export class CitaComponent {
     hora: this.userINFO.hora
   });
   localStorage.setItem('citas', JSON.stringify(citas));
+
+  //Guardar en la base de datos 
+    const nuevaCitaEnFirebase: Place = {
+      name: this.userINFO.name,
+      //name: this.userINFO.name, 
+      grupo: this.userINFO.grupo,
+      sexo:this.userINFO.sexo,
+      fechaCita: this.userINFO.fechaCita,
+      hora: this.userINFO.hora,
+      
+  };
+    this.usuariosService.addPlace(nuevaCitaEnFirebase);//Se integra en la firestore
+
 
     localStorage.removeItem('formularioUsuario');
     this.userINFO = this.usuariosService.nuevoUsuario();

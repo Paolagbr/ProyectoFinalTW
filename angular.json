@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "MiniProyectoANGULAR": {
+    "proyectofinaltw": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/mini-proyecto-angular",
+            "outputPath": "dist/proyectofinaltw",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -68,10 +68,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "MiniProyectoANGULAR:build:production"
+              "buildTarget": "proyectofinaltw:build:production"
             },
             "development": {
-              "buildTarget": "MiniProyectoANGULAR:build:development"
+              "buildTarget": "proyectofinaltw:build:development"
             }
           },
           "defaultConfiguration": "development"

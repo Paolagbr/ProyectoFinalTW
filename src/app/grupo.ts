@@ -51,7 +51,7 @@ export const HORA=[
         horaC:" 14:00pm"
     }, {
         id:0,
-        horaC:" 15:0pm"
+        horaC:" 15:00pm"
     }, {
         id:0,
         horaC:" 16:00pm"
