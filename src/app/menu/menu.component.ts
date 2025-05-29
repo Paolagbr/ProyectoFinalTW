@@ -17,6 +17,7 @@ import { userInfo } from '../datos';
 import { GRUPOS, Genero, HORA as HORAS } from '../grupo';
 import { ComentarioService } from '../servicios/comentario.service';
 import { CuestionarioComponent } from '../components/cuestionario/cuestionario.component';
+import { UsuariosService } from '../servicios/usuarios.service';
 
 @Component({
   selector: 'app-menu',
@@ -52,22 +53,25 @@ export class MenuComponent implements OnInit {
 
   comentarioSeleccionado: any = null;
 
-  
+
   selectedOption = '1';
   options = [
     { value: '1', label: 'Agendar cita' },
     { value: '2', label: 'Ver comentarios' }
   ];
+  editingCitaId: string | undefined;
   originalUserName?: string;
 
   constructor(
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private comentarioService: ComentarioService
-  ) {}
+    private comentarioService: ComentarioService,
+    private usuariosService: UsuariosService
+  ) { }
 
   ngOnInit(): void {
-    this.listaCitas = JSON.parse(localStorage.getItem('citas') || '[]');
+    this.cargarCitas(); 
+    //this.listaCitas = JSON.parse(localStorage.getItem('citas') || '[]');
     this.comentarios = JSON.parse(localStorage.getItem('comentariosUsuario') || '[]');
 
     const datosParaEditar = localStorage.getItem('usuarioParaEditar');
@@ -85,16 +89,66 @@ export class MenuComponent implements OnInit {
   }
 
   trackOption(_: number, o: any) { return o.value; }
-  trackGrupo(_: number, g: any)  { return g.id; }
-  trackGenero(_: number, g: any){ return g.id; }
-  trackHora(_: number, h: any)   { return h.id; }
-  trackCita(_: number, u: any)   { return u.name; }
-  trackComentario(_: number, c:any){ return c.nombre; }
+  trackGrupo(_: number, g: any) { return g.id; }
+  trackGenero(_: number, g: any) { return g.id; }
+  trackHora(_: number, h: any) { return h.id; }
+  trackCita(_: number, u: any) { return u.name; }
+  trackComentario(_: number, c: any) { return c.nombre; }
 
-  getNomServicio(id: number): string {
-    const g = this.grupos.find(x => x.id === id);
+  //Se integra el nombre del servicio de acorde al id en grupos
+  getNomServicio(id: any): string {
+    const idAsNumber = typeof id === 'string' ? parseInt(id, 10) : id;
+
+    if (isNaN(idAsNumber)) {
+      console.warn('getNomServicio: ID de grupo no válido (NaN):', id);
+      return '';
+    }
+
+    const g = this.grupos.find(x => x.id === idAsNumber);
     return g ? g.nomServicio : '';
   }
+
+  eliminarUsuario(place: userInfo) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¡Esta acción no se puede deshacer!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.usuariosService.deletePlace(place)
+          .then(() => {
+            Swal.fire('Eliminado', 'La cita ha sido eliminada.', 'success');
+            this.cargarCitas();
+            if (this.editingCitaId === place.id) {
+              this.limpiarFormulario();
+            }
+          })
+          .catch((error) => {
+            Swal.fire('Error', 'No se pudo eliminar la cita.', 'error');
+            console.error("Error al eliminar la cita:", error);
+          });
+      }
+    });
+  }
+  cargarCitas() {
+    this.usuariosService.getPlaces().subscribe(places => {
+      this.listaCitas = places;
+
+      if (this.editingCitaId && !this.listaCitas.some(c => c.id === this.editingCitaId)) {
+        this.limpiarFormulario();
+        Swal.fire('Información', 'La cita que intentabas editar ya no existe.', 'info');
+      }
+      this.cdr.detectChanges();
+    }, error => {
+      console.error("Error al cargar las citas desde Firestore:", error);
+      Swal.fire('Error', 'No se pudieron cargar las citas.', 'error');
+    });
+  }
+
 
   editarUsuario(u: userInfo) {
     localStorage.setItem('usuarioParaEditar', JSON.stringify(u));
@@ -105,38 +159,22 @@ export class MenuComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  eliminarUsuario(u: userInfo) {
-    Swal.fire({
-      title: `¿Eliminar a ${u.name}?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí'
-    }).then(res => {
-      if (res.isConfirmed) {
-        const updated = this.listaCitas.filter(x => x.name !== u.name);
-        localStorage.setItem('citas', JSON.stringify(updated));
-        this.listaCitas = updated;
-        if (this.originalUserName === u.name) this.limpiarFormulario();
-        Swal.fire('Eliminado', '', 'success');
-        this.cdr.detectChanges();
-      }
-    });
-  }
+
 
   actualizarUsuario() {
     if (!this.originalUserName) {
       Swal.fire('Selecciona un usuario', '', 'warning');
       return;
     }
-    const citas = JSON.parse(localStorage.getItem('citas')||'[]');
-    const idx = citas.findIndex((x:any)=>x.name===this.originalUserName);
-    if (idx>=0) {
+    const citas = JSON.parse(localStorage.getItem('citas') || '[]');
+    const idx = citas.findIndex((x: any) => x.name === this.originalUserName);
+    if (idx >= 0) {
       citas[idx] = { ...this.userINFO };
       localStorage.setItem('citas', JSON.stringify(citas));
       this.listaCitas = citas;
-      Swal.fire('Guardado','', 'success');
+      Swal.fire('Guardado', '', 'success');
     } else {
-      Swal.fire('Error','Usuario no encontrado','error');
+      Swal.fire('Error', 'Usuario no encontrado', 'error');
     }
     this.originalUserName = undefined;
     localStorage.removeItem('usuarioParaEditar');
@@ -162,20 +200,20 @@ export class MenuComponent implements OnInit {
     this.guardarCitaStorage();
   }
 
-  myFilter = (d: Date|null) => {
-    const dt = (d||new Date());
-    dt.setHours(0,0,0,0);
-    const today = new Date(); today.setHours(0,0,0,0);
-    return dt>=today && dt.getDay()!==0;
+  myFilter = (d: Date | null) => {
+    const dt = (d || new Date());
+    dt.setHours(0, 0, 0, 0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    return dt >= today && dt.getDay() !== 0;
   };
 
   cargarHorasOcupadas(fecha: string) {
-    const citas = JSON.parse(localStorage.getItem('citas')||'[]');
-    this.horasOcupadas = citas.filter((x:any)=>x.fecha===fecha).map((x:any)=>x.hora);
+    const citas = JSON.parse(localStorage.getItem('citas') || '[]');
+    this.horasOcupadas = citas.filter((x: any) => x.fecha === fecha).map((x: any) => x.hora);
   }
 
   limpiarFormulario() {
-    this.userINFO = { name:'', grupo:0, sexo:'', fechaCita:'', hora:'' };
+    this.userINFO = { name: '', grupo: 0, sexo: '', fechaCita: '', hora: '' };
     this.originalUserName = undefined;
     localStorage.removeItem('usuarioParaEditar');
     this.cdr.detectChanges();
@@ -191,15 +229,15 @@ export class MenuComponent implements OnInit {
   }
 
   eliminarComentario(c: any) {
-    this.comentarios = this.comentarios.filter(x=>x!==c);
+    this.comentarios = this.comentarios.filter(x => x !== c);
     localStorage.setItem('comentariosUsuario', JSON.stringify(this.comentarios));
   }
 
   private guardarCitaStorage() {
-    const citas = JSON.parse(localStorage.getItem('citas')||'[]');
+    const citas = JSON.parse(localStorage.getItem('citas') || '[]');
     if (this.originalUserName) {
-      const i = citas.findIndex((x:any)=>x.name===this.originalUserName);
-      if (i>=0) citas[i] = { ...this.userINFO };
+      const i = citas.findIndex((x: any) => x.name === this.originalUserName);
+      if (i >= 0) citas[i] = { ...this.userINFO };
     } else {
       citas.push({ ...this.userINFO });
     }

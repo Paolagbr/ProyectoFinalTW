@@ -87,7 +87,7 @@
                 (selectionChange)="guardarServicio($event)">
                 <mat-option value="">-- Elige un servicio --</mat-option>
                 @for (grupo of grupos; track grupo) {
-                <mat-option [value]="grupo.nomServicio"> {{grupo.nomServicio}}</mat-option>
+                <mat-option [value]="grupo.id"> {{grupo.nomServicio}}</mat-option>
                 }
             </mat-select>
         </mat-form-field>

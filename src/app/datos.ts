@@ -3,6 +3,7 @@ export interface lista{
    nomServicio:string;
 }
 export interface userInfo{
+   id?:string;
    name: string;
    grupo:number;
    sexo:string;
