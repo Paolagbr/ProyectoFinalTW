@@ -84,7 +84,7 @@ export class CitaComponent {
   }
   //Hora seleccionada
   guardarHora(event: any): void {
-    this.userINFO.hora = event.target.value;
+    this.userINFO.hora = event.value;
     this.guardarFormulario();
   }
   //Tipo de Servicio que se almacena
