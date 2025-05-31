@@ -102,11 +102,11 @@
 
   <!-- Botón -->
   <div class="boton-contenedor">
-    <button mat-raised-button color="accent" (click)="guardarCita()" [disabled]="!form.valid"
-      [ngClass]="form.valid ? 'btn-activo' : 'btn-inactivo'">
-      Guardar cambios
-    </button>
-  </div>
+        <button mat-raised-button color="primary" (click)="guardarCita()" [disabled]="!form.valid"
+            [ngClass]="form.valid ? 'btn-activo' : 'btn-inactivo'">
+            Agendar
+        </button>
+    </div>
 </form>
 
 <!-- LISTADO DE CITAS -->
@@ -146,25 +146,25 @@
 </div>
 <!-- PARTE DOS -->
 } @else if (selectedOption === '2') {
+<div class="form-card1">
+  <h1 class="form-title1">Quejas y Sugerencias</h1>
 
-<div class="card">
-  <h1 class="title">Quejas y Sugerencias</h1>
-  <div class="card-body">
+  <div class="form-body1">
     <form [formGroup]="formulario">
 
       <!-- Nombre -->
-      <div class="mb-2">
-        <label class="form-label">Nombre</label>
-        <input type="text" formControlName="nombre" class="form-control" placeholder="Ingresa tu nombre" />
+      <div class="form-group1">
+        <label class="form-label1">Nombre</label>
+        <input type="text" formControlName="nombre" class="form-control1" placeholder="Ingresa tu nombre" />
         @if (!formulario.get('nombre')?.valid && !formulario.get('nombre')?.pristine) {
         <div class="alert alert-danger mt-2">El nombre es obligatorio</div>
         }
       </div>
 
       <!-- Email -->
-      <div class="mb-2">
-        <label class="form-label">Email</label>
-        <input type="email" formControlName="email" class="form-control" placeholder="Ingresa tu email" />
+      <div class="form-group1">
+        <label class="form-label1">Email</label>
+        <input type="email" formControlName="email" class="form-control1" placeholder="Ingresa tu email" />
         @if (!formulario.get('email')?.valid && !formulario.get('email')?.pristine) {
         <div class="alert alert-danger mt-2">
           @if (formulario.get('email')?.errors?.['required']) {
@@ -178,8 +178,8 @@
       </div>
 
       <!-- Feedback -->
-      <label class="form-label">¿Qué fue lo que más te gustó de la página?</label>
-      <div formGroupName="feedback" class="mb-3">
+      <label class="form-label1">¿Qué fue lo que más te gustó de la página?</label>
+      <div formGroupName="feedback" class="checkbox-group1 mb-3">
         <label><input type="checkbox" formControlName="facilidadNavegar" /> Facilidad de navegar</label><br />
         <label><input type="checkbox" formControlName="buenaPresentacion" /> Buena presentación</label><br />
         <label><input type="checkbox" formControlName="facilEntender" /> Fácil de entender los servicios</label><br />
@@ -187,8 +187,8 @@
       </div>
 
       <!-- Servicio -->
-      <label for="servicio">Servicio que más te gustó</label><br />
-      <select formControlName="servicio" id="servicio" class="form-select mb-3">
+      <label for="servicio" class="form-label1">Servicio que más te gustó</label><br />
+      <select formControlName="servicio" id="servicio" class="form-select1 mb-3">
         <option value="" disabled selected>Selecciona una opción</option>
         <option value="Masaje Corporal">Masaje corporal</option>
         <option value="Facial">Facial</option>
@@ -200,9 +200,9 @@
       </select>
 
       <!-- Mensaje -->
-      <div class="mb-2">
-        <label class="form-label">Mensaje de queja o sugerencia</label>
-        <textarea formControlName="mensaje" class="form-control" placeholder="Escribe tu queja o sugerencia aquí"
+      <div class="form-group1">
+        <label class="form-label1">Mensaje de queja o sugerencia</label>
+        <textarea formControlName="mensaje" class="form-control1" placeholder="Escribe tu queja o sugerencia aquí"
           rows="5"></textarea>
         @if (!formulario.get('mensaje')?.valid && !formulario.get('mensaje')?.pristine) {
         <div class="alert alert-danger mt-2">
@@ -212,9 +212,9 @@
       </div>
 
       <!-- Fecha -->
-      <div class="campo mb-3">
-        <label class="label-genero">¿En qué fecha volverías a venir?</label><br />
-        <mat-form-field appearance="fill">
+      <div class="form-group1 mb-3">
+        <label class="form-label1">¿En qué fecha volverías a venir?</label><br />
+        <mat-form-field appearance="fill" class="mat-form-field1">
           <mat-label>Fecha de la cita</mat-label>
           <input matInput [matDatepicker]="picker" formControlName="fechaCita" required
             [matDatepickerFilter]="myFilter" />
@@ -222,60 +222,114 @@
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
         @if (formulario.get('fechaCita')?.touched && formulario.get('fechaCita')?.hasError('required')) {
-        <div class="text-error">El campo es requerido</div>
+        <div class="text-error1">El campo es requerido</div>
         }
       </div>
 
-      <button type="submit" [disabled]="formulario.invalid" (click)="enviarComentario()">
+      <button type="submit" [disabled]="formulario.invalid" (click)="enviarComentario()" class="submit-button1">
         {{ modoEdicion ? 'Actualizar Comentario' : 'Enviar Comentario' }}
       </button>
 
     </form>
-
   </div>
 </div>
-<h2 class="titulo">Comentarios</h2>
 
-<div class="contenedor-comentarios">
-  @for (com of comentarios; track com.id) {
-  <div class="comentario-card">
-    <p><strong>Nombre:</strong> {{ com.nombre }}</p>
-    <p><strong>Email:</strong> {{ com.email }}</p>
 
-    <p class="seccion">Te gustó de la página:</p>
-    <ul>
-      @if (com.feedback?.facilidadNavegar) {
-      <li>Facilidad de navegar</li>
-      }
-      @if (com.feedback?.buenaPresentacion) {
-      <li>Buena presentación</li>
-      }
-      @if (com.feedback?.facilEntender) {
-      <li>Fácil de entender los servicios</li>
-      }
-      @if (com.feedback?.estructuraUtilizada) {
-      <li>La estructura que se utilizó</li>
-      }
-    </ul>
+<!-- LISTADO DE CITAS -->
+<div id="container2" class="mt-6">
+  <h2>Comentarios</h2>
+  <table class="table table-striped w-full">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Mejor Aspecto</th>
+        <th>Mejor Servicio</th>
+        <th>Comentario</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (com of comentarios; track com.i) {
+      <tr>
+        <td>{{ com.nombre }}</td>
+        <td>{{ com.email }}</td>
+        <td>
+          <ul>
+            @if (com.feedback?.facilidadNavegar) {
+            <li>Facilidad de navegar</li>
+            }
+            @if (com.feedback?.buenaPresentacion) {
+            <li>Buena presentación</li>
+            }
+            @if (com.feedback?.facilEntender) {
+            <li>Fácil de entender los servicios</li>
+            }
+            @if (com.feedback?.estructuraUtilizada) {
+            <li>La estructura que se utilizó</li>
+            }
+          </ul>
+        </td>
+        <td>{{com.servicio}}</td>
+        <td>{{ com.mensaje }}</td>
+        <td>{{ com.fechaCita }}</td>
 
-    <p><strong>Servicio que más te gustó:</strong> {{ com.servicio }}</p>
-    <p><strong>Mensaje:</strong> {{ com.mensaje }}</p>
-    <p><strong>Fecha:</strong> {{ com.fechaCita | date }}</p>
+        <td class="flex gap-2">
+          <button mat-button color="primary" (click)="editarComentario(com)">Editar</button>
+          <button mat-button color="warn" (click)="eliminarComentario(com)">Borrar</button>
+        </td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="6" class="text-center">No hay comentarios por el momento</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  <!-- <h2 class="titulo">Comentarios</h2>
 
-    <div class="botones-comentario">
-      <button mat-raised-button color="primary" class="boton-chido editar" (click)="editarComentario(com)">
-        Editar
-      </button>
-      <button mat-raised-button color="warn" class="boton-chido eliminar" (click)="eliminarComentario(com)">
-        Eliminar
-      </button>
+  <div class="contenedor-comentarios">
+    @for (com of comentarios; track com.id) {
+    <div class="comentario-card">
+      <p><strong>Nombre:</strong> {{ com.nombre }}</p>
+      <p><strong>Email:</strong> {{ com.email }}</p>
+
+      <p class="seccion">Te gustó de la página:</p>
+      <ul>
+        @if (com.feedback?.facilidadNavegar) {
+        <li>Facilidad de navegar</li>
+        }
+        @if (com.feedback?.buenaPresentacion) {
+        <li>Buena presentación</li>
+        }
+        @if (com.feedback?.facilEntender) {
+        <li>Fácil de entender los servicios</li>
+        }
+        @if (com.feedback?.estructuraUtilizada) {
+        <li>La estructura que se utilizó</li>
+        }
+      </ul>
+
+      <p><strong>Servicio que más te gustó:</strong> {{ com.servicio }}</p>
+      <p><strong>Mensaje:</strong> {{ com.mensaje }}</p>
+      <p><strong>Fecha:</strong> {{ com.fechaCita | date }}</p>
+
+      <div class="botones-comentario">
+        <button mat-raised-button color="primary" class="boton-chido editar" (click)="editarComentario(com)">
+          Editar
+        </button>
+        <button mat-raised-button color="warn" class="boton-chido eliminar" (click)="eliminarComentario(com)">
+          Eliminar
+        </button>
+      </div>
+
     </div>
+    } @empty {
+    <div class="sin-comentarios">No hay comentarios disponibles</div>
+    }
+  </div> -->
 
-  </div>
-  } @empty {
-  <div class="sin-comentarios">No hay comentarios disponibles</div>
-  }
+
 </div>
-
-
 }
