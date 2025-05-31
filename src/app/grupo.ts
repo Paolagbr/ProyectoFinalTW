@@ -1,19 +1,23 @@
 export const GRUPOS=[
     {
-        id:0,
+        id: 0,
+        nomServicio:"---Elige un Servicio----"
+    },
+    {
+        id:1,
         nomServicio:"Tratamientos Faciales"
     },{
-        id:1,
+        id:2,
         nomServicio:"Tratamientos Corporales"
     },{
-        id:2,
+        id:3,
         nomServicio:"Masajes Terapeuticos",
         
     },{
-        id:3,
+        id:4,
         nomServicio:"Baños de Vapor y sauna"
     },{
-        id:4,
+        id:5,
         nomServicio:"Aromaterapia"
     }
 

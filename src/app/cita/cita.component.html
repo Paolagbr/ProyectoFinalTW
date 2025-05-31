@@ -1,11 +1,11 @@
 <div class="banner">
-  <img src="/contacto.png" alt="Contacto" />
-  <div class="mensaje">
-    <h1 class="tt">MAGNOLIA SPA</h1>
-    <div class="experiencia">
-      Vive la experiencia Magnolia SPA.
+    <img src="/contacto.png" alt="Contacto" />
+    <div class="mensaje">
+        <h1 class="tt">MAGNOLIA SPA</h1>
+        <div class="experiencia">
+            Vive la experiencia Magnolia SPA.
+        </div>
     </div>
-  </div>
 </div>
 
 <!--Telefono-->
@@ -78,23 +78,25 @@
     </div>
 
     <!-- Servicio -->
-    <div class="campo">
+    <div class="campo mb-3">
         <label class="label-genero">Servicio:</label>
-        <mat-form-field appearance="fill">
-
+        <mat-form-field appearance="fill" class="w-full">
             <mat-label>Servicio</mat-label>
-            <mat-select [(ngModel)]="userINFO.grupo" name="grupo" required #grupoSelect="ngModel"
+            <mat-select [(ngModel)]="userINFO.grupo" name="grupo" #grupoSelect="ngModel"
                 (selectionChange)="guardarServicio($event)">
-                <mat-option value="">-- Elige un servicio --</mat-option>
-                @for (grupo of grupos; track grupo) {
-                <mat-option [value]="grupo.id"> {{grupo.nomServicio}}</mat-option>
+                @for (g of grupos; track g.id) {
+                <mat-option [value]="g.id">
+                    {{ g.nomServicio }}
+                </mat-option>
                 }
             </mat-select>
         </mat-form-field>
-        @if(grupoSelect.touched && grupoSelect.hasError('required')){
+        @if (grupoSelect.touched && grupoSelect.hasError('required')) {
         <div class="text-error">El campo es requerido</div>
         }
-
+        @if (grupoSelect.touched && (grupoSelect.hasError('required') || userINFO.grupo === 0)) {
+        <div class="text-error">El campo es requerido o el servicio seleccionado no es válido.</div>
+        }
     </div>
 
     <!-- Sexo -->

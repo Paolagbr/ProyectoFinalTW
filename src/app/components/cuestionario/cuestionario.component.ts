@@ -29,13 +29,13 @@ import { ComentarioService } from '../../servicios/comentario.service';
   templateUrl: './cuestionario.component.html',
   styleUrls: ['./cuestionario.component.css']
 })
-export class CuestionarioComponent implements OnInit, OnChanges  {
-   @Input() comentarioParaEditar: any; 
+export class CuestionarioComponent implements OnInit, OnChanges {
+  @Input() comentarioParaEditar: any;
   formulario: FormGroup;
   comentarios: any[] = [];
   modoEdicion = false;
   indiceEdicion: number | null = null;
-  
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -55,26 +55,26 @@ export class CuestionarioComponent implements OnInit, OnChanges  {
       }),
       id: [''] // <-- AÑADIDO AQUÍ
     });
-   
+
   }
 
 
   ngOnInit(): void {
-  // Cargar comentarios desde localStorage
-  const comentariosGuardados = localStorage.getItem('comentariosUsuario');
-  this.comentarios = comentariosGuardados ? JSON.parse(comentariosGuardados) : [];
-  const comentarioEditar = this.comentarioService.getComentarioEditar();
-  if (comentarioEditar) {
-    this.formulario.patchValue(comentarioEditar);
-    this.formulario.get('feedback')?.patchValue(comentarioEditar.feedback || {});
-    this.indiceEdicion = this.comentarios.findIndex(c => c.id === comentarioEditar.id);
-    this.modoEdicion = true;
-    this.comentarioService.limpiarComentarioEditar();
+    // Cargar comentarios desde localStorage
+    //const comentariosGuardados = localStorage.getItem('comentariosUsuario');
+    //this.comentarios = comentariosGuardados ? JSON.parse(comentariosGuardados) : [];
+    const comentarioEditar = this.comentarioService.getComentarioEditar();
+    if (comentarioEditar) {
+      this.formulario.patchValue(comentarioEditar);
+      this.formulario.get('feedback')?.patchValue(comentarioEditar.feedback || {});
+      this.indiceEdicion = this.comentarios.findIndex(c => c.id === comentarioEditar.id);
+      this.modoEdicion = true;
+      this.comentarioService.limpiarComentarioEditar();
+    }
   }
-}
 
 
-ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['comentarioParaEditar'] && this.comentarioParaEditar) {
       this.formulario.patchValue(this.comentarioParaEditar);
       this.formulario.get('feedback')?.patchValue(this.comentarioParaEditar.feedback || {});
@@ -86,65 +86,48 @@ ngOnChanges(changes: SimpleChanges): void {
   }
 
   enviarComentario(): void {
-  if (this.formulario.valid) {
-    const comentario = { ...this.formulario.value };
+    if (this.formulario.valid) {
+      //const comentario = { ...this.formulario.value };
+      const rawComentario = this.formulario.value;
+      const comentario = {
+        ...rawComentario,
+        fechaCita: rawComentario.fechaCita
+          ? new Date(rawComentario.fechaCita).toISOString().slice(0, 10) // Formato YYYY-MM-DD
+          : null
+      };
+      // Si estamos en modo edición, actualizamos el comentario existente
+      if (this.modoEdicion) {
+        const index = this.comentarios.findIndex(c => c.id === comentario.id);
+        this.comentarios[index] = comentario;
+      } else {
+        // Si no, agregamos un nuevo comentario
+        comentario.id = Date.now(); // genera nuevo ID
+        this.comentarios.push(comentario);
+      }
+      //GuardarBase de datos
+      this.comentarioService.addPlace(comentario);
 
-    // Si estamos en modo edición, actualizamos el comentario existente
-    if (this.modoEdicion) {
-      const index = this.comentarios.findIndex(c => c.id === comentario.id);
-      this.comentarios[index] = comentario;
+      //this.comentarioService.addPlace(this.formulario.value);
+
+      // Guardar en localStorage
+      //localStorage.setItem('comentariosUsuario', JSON.stringify(this.comentarios));
+      // this.formulario.reset();
+      // this.modoEdicion = false;
+      // this.indiceEdicion = null;
+
+      Swal.fire({
+        title: '¡Guardado!',
+        text: 'Tu comentario ha sido registrado.',
+        icon: 'success'
+      });
     } else {
-      // Si no, agregamos un nuevo comentario
-      comentario.id = Date.now(); // genera nuevo ID
-      this.comentarios.push(comentario);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Completa todos los campos correctamente'
+      });
     }
-    //GuardarBase de datos
-    this.comentarioService.addPlace(this.formulario.value);
-
-    // Guardar en localStorage
-    localStorage.setItem('comentariosUsuario', JSON.stringify(this.comentarios));
-    this.formulario.reset();
-    this.modoEdicion = false;
-    this.indiceEdicion = null;
-
-    Swal.fire({
-      title: '¡Guardado!',
-      text: 'Tu comentario ha sido registrado.',
-      icon: 'success'
-    });
-  } else {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Completa todos los campos correctamente'
-    });
   }
-}
-
-  editarComentario(index: number): void {
-  const comentario = this.comentarios[index];
-  this.formulario.patchValue({
-    nombre: comentario.nombre,
-    email: comentario.email,
-    mensaje: comentario.mensaje,
-    servicio: comentario.servicio,
-    fechaCita: comentario.fechaCita,
-    id: comentario.id // Esto es importante para poder encontrarlo después
-  });
-  this.formulario.get('feedback')?.patchValue(comentario.feedback || {});
-  this.modoEdicion = true;
-  this.indiceEdicion = index;
-}
-
-  eliminarComentario(index: number): void {
-  this.comentarios.splice(index, 1);
-  localStorage.setItem('comentariosUsuario', JSON.stringify(this.comentarios));
-  Swal.fire({
-    icon: 'info',
-    title: 'Comentario eliminado',
-    text: 'Se ha eliminado correctamente.'
-  });
-}
 
 
   myFilter = (d: Date | null): boolean => {

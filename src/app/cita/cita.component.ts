@@ -19,7 +19,7 @@ export interface Place {
   name: string;
   grupo: number;
   sexo: string;
-  fechaCita: string;
+  fechaCita: string ;
   hora: string;
 }
 
