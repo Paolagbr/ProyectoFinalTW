@@ -20,6 +20,8 @@
                 <!--Se checa que este en funcion la cuenta en caso de ser asi se redirecciona a sesion donde esta le menu para poder editar el 
                 localStorage y se integra el nombre del Admin -->
                 @if (!isAuthenticated) {
+                    <a class="nav-link" [routerLink]="['/ingresarUsuario']">
+                        Registrarte</a>
                 <li class="nav-item mx-2">
                     <a class="nav-link" [routerLink]="['/sesion']">
                         <i class="fas fa-user"></i> Iniciar Sesión </a>
