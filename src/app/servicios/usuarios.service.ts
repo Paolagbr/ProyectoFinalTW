@@ -15,7 +15,7 @@ export class UsuariosService {
   horas: hora[]=HORA;
 
   constructor(private firestore:Firestore) { 
-    this.userINFO=JSON.parse(localStorage.getItem("data")|| '[]');
+   // this.userINFO=JSON.parse(localStorage.getItem("data")|| '[]');
   }
   //Configuracion de BD
   addPlace(place: userInfo){
