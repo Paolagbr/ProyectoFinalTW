@@ -1,0 +1,88 @@
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate
+  class="p-4 bg-purple-100 rounded shadow-lg mx-auto mt-5 formulario"
+  style="max-width: 500px;">
+
+  <h2 class="text-center text-purple-800 mb-4">Crear cuenta</h2>
+
+  <div class="mb-3">
+    <label for="nombre" class="form-label text-purple-700" style="font-weight: bold;">Nombre</label>
+    <input id="nombre" type="text" formControlName="nombre"
+      class="form-control border-purple-300 focus-border-purple-500" [ngClass]="{'is-invalid': nombre?.touched && nombre?.invalid}" />
+    @if (nombre?.touched && nombre?.invalid) {
+      <div class="invalid-feedback">
+        @if (nombre?.errors?.['required']) {
+          <div>El nombre es obligatorio.</div>
+        }
+        @if (nombre?.errors?.['pattern']) {
+          <div>Solo se aceptan letras y espacios.</div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="email" class="form-label text-purple-700" style="font-weight: bold;">Correo electrónico</label>
+    <input id="email" type="email" formControlName="email"
+      class="form-control border-purple-300 focus-border-purple-500" [ngClass]="{'is-invalid': email?.touched && email?.invalid}" />
+    @if (email?.touched && email?.invalid) {
+      <div class="invalid-feedback">
+        @if (email?.errors?.['required']) {
+          <div>El correo es obligatorio.</div>
+        }
+        @if (email?.errors?.['email']) {
+          <div>Formato de correo inválido.</div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="password" class="form-label text-purple-700" style="font-weight: bold;">Contraseña</label>
+    <input id="password" type="password" formControlName="password"
+      class="form-control border-purple-300 focus-border-purple-500" [ngClass]="{'is-invalid': password?.touched && password?.invalid}" />
+    @if (password?.touched && password?.invalid) {
+      <div class="invalid-feedback">
+        @if (password?.errors?.['required']) {
+          <div>La contraseña es obligatoria.</div>
+        }
+        @if (password?.errors?.['minlength']) {
+          <div>Debe tener al menos 12 caracteres.</div>
+        }
+        @if (password?.errors?.['pattern']) {
+          <div>
+            Debe contener letras, dígitos, _, al menos una mayúscula y un dígito.
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="passwordRepeted" class="form-label text-purple-700" style="font-weight: bold;">Repetir contraseña</label>
+    <input id="passwordRepeted" type="password" formControlName="passwordRepeted"
+      class="form-control border-purple-300 focus-border-purple-500" [ngClass]="{'is-invalid': passwordRepeted?.touched && passwordRepeted?.invalid}" />
+    @if (passwordRepeted?.touched && passwordRepeted?.invalid) {
+      <div class="invalid-feedback">
+        @if (passwordRepeted?.errors?.['required']) {
+          <div>Repetir la contraseña es obligatorio.</div>
+        }
+        @if (passwordRepeted?.errors?.['minlength']) {
+          <div>Debe tener al menos 12 caracteres.</div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (form.errors?.['passwordsMismatch'] && form.touched) {
+    <div class="text-danger text-center mb-3">
+      Las contraseñas no coinciden.
+    </div>
+  }
+
+  <div class="d-grid gap-2">
+    <button type="submit" class="btn btn-purple" [disabled]="form.invalid">
+      Enviar
+    </button>
+  </div>
+</form>

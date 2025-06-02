@@ -1,8 +1,9 @@
 <header style="background-color: #cdbcd0;">
     <nav class="navbar navbar-expand-lg navbar-light container-fluid px-3"> <!-- container-fluid + padding reducido -->
         <a class="navbar-brand d-flex align-items-center" href="#">
-            <img src="/logo1A.png" alt="ALESIA" style="height: 70px; width: 200px; margin:0px; margin-left: 35px;"  class="me-2">
-            
+            <img src="/logo1A.png" alt="ALESIA" style="height: 70px; width: 200px; margin:0px; margin-left: 35px;"
+                class="me-2">
+
         </a>
         <div class="collapse navbar-collapse justify-content-center letra" id="navbarNav" style="margin-left: 280px;">
             <ul class="navbar-nav">
@@ -10,21 +11,29 @@
                 <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/servicio']">SERVICIOS</a></li>
                 <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/Tienda']">TIENDA</a></li>
                 <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/Contacto']">CONTACTO</a></li>
-                <li class="nav-item mx-2" ><a class="nav-link" [routerLink]="['/Nosotros']">NOSOTROS</a></li>
-                <li class="nav-item mx-2" ><a class="nav-link" [routerLink]="['/Cuestionario']">Q & A</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/Nosotros']">NOSOTROS</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/Cuestionario']">Q & A</a></li>
             </ul>
         </div>
-          <!-- Parte de iniciar sesión -->
+        <!-- Parte de iniciar sesión -->
         <div class="collapse navbar-collapse justify-content-end letra" id="navbarNav" style="margin-right: 10px;">
             <ul class="navbar-nav">
                 <!--Se checa que este en funcion la cuenta en caso de ser asi se redirecciona a sesion donde esta le menu para poder editar el 
                 localStorage y se integra el nombre del Admin -->
+
                 @if (!isAuthenticated) {
+<<<<<<< HEAD
                     <a class="nav-link" [routerLink]="['/ingresarUsuario']">
                         Registrarte</a>
+=======
+                <a class="nav-link" [routerLink]="['/usuario']">
+                    Registrarte </a>
+>>>>>>> 342c28e694589aebebb965b4cccf1f6dacb4e52a
                 <li class="nav-item mx-2">
+
                     <a class="nav-link" [routerLink]="['/sesion']">
                         <i class="fas fa-user"></i> Iniciar Sesión </a>
+
                 </li>
                 } @else {
                 <li class="nav-item mx-2">
@@ -33,12 +42,12 @@
                 </li>
                 <li class="nav-item mx-2">
                     <!--Desactivamos la sesion y se quite el nombre de admin en la parte de la barra de navegacion-->
-                  <button class="nav-link btn btn-link" (click)="logout()" style="cursor: pointer;">Cerrar Sesión</button> </li>
+                    <button class="nav-link btn btn-link" (click)="logout()" style="cursor: pointer;">Cerrar
+                        Sesión</button>
+                </li>
                 }
                 <!-- <li class="nav-item mx-2"><a class="nav-link active" [routerLink]="['/sesion']">Iniciar Sesión</a></li> -->
             </ul>
         </div>
     </nav>
 </header>
-
-

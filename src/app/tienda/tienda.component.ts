@@ -30,4 +30,5 @@ export class TiendaComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     document.body.classList.remove('tienda-background');
   }
+  
 }
