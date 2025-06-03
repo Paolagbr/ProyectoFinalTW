@@ -1,0 +1,10 @@
+footer .btn-floating {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Ajusta tamaño y margen si quieres */
+}
+
+footer .btn-floating:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}

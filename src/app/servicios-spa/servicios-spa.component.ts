@@ -9,7 +9,7 @@ import { DomseguroPipe } from '../domseguro.pipe';
 @Component({
   selector: 'app-servicios-spa',
   standalone: true,
-  imports: [RouterOutlet, HttpClientModule, JsonPipe, CommonModule, FormsModule, DomseguroPipe],
+  imports: [RouterOutlet, HttpClientModule, CommonModule, FormsModule, DomseguroPipe],
   templateUrl: './servicios-spa.component.html',
   styleUrl: './servicios-spa.component.css'
 })
