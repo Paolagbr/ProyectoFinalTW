@@ -13,8 +13,11 @@ import { CommonModule } from '@angular/common';
 
 export interface UsuarioIngresar {
   nombre: string;
+  username: string;
   email: string;
   password: string;
+  userType?: 'usuario' | 'administrador';
+  adminKey?: string;
 }
 
 @Component({
@@ -30,16 +33,23 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
       Validators.required,
       Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s]*$')
     ]),
+    username: new FormControl('', [Validators.required, Validators.maxLength(8)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
-      Validators.minLength(8)
+      Validators.minLength(6), 
+      Validators.maxLength(8)  
     ]),
     passwordRepeted: new FormControl('', [
       Validators.required,
-      Validators.minLength(8)
-    ])
+      Validators.minLength(6), 
+      Validators.maxLength(8)  
+    ]),
+    userType: new FormControl('usuario', [Validators.required]), 
+    adminKey: new FormControl('') 
   }, { validators: [IngresarUsuarioComponent.passwordsMatchValidator] });
+
+  private readonly ADMIN_SECRET_KEY = 'MICLAVEADMIN123'; 
 
   constructor(private usuariosService: IngresarUsuarioService) {}
 
@@ -49,14 +59,51 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
     return password === repeated ? null : { passwordsMismatch: true };
   }
 
+  ngOnInit() {
+    document.body.classList.add('usuarios-background');
+
+    // Suscribirse a los cambios de 'userType'
+    this.form.get('userType')?.valueChanges.subscribe(userType => {
+      const adminKeyControl = this.form.get('adminKey');
+      if (userType === 'administrador') {
+        adminKeyControl?.setValidators([
+          Validators.required,
+          // Validador personalizado para la clave de administrador
+          // Puedes usar un Validators.pattern si la clave tiene un formato específico
+          Validators.pattern(this.ADMIN_SECRET_KEY) // Aquí validamos que sea la clave secreta
+        ]);
+      } else {
+        adminKeyControl?.clearValidators(); // Limpiar validadores si no es administrador
+        adminKeyControl?.setValue('');      // Limpiar el valor si no es administrador
+      }
+      adminKeyControl?.updateValueAndValidity(); // Recalcular la validez del control
+    });
+  }
+
+  ngOnDestroy() {
+    document.body.classList.remove('usuarios-background');
+  }
+
   async onSubmit() {
+    // Marcar todos los controles como 'touched' para mostrar los errores de validación
+    this.form.markAllAsTouched();
+
     if (this.form.valid) {
       try {
         const usuario: UsuarioIngresar = {
           nombre: this.form.get('nombre')?.value ?? '',
+          username: this.form.get('username')?.value ?? '',
           email: this.form.get('email')?.value ?? '',
-          password: this.form.get('password')?.value ?? ''
+          password: this.form.get('password')?.value ?? '',
+          userType: this.form.get('userType')?.value as 'usuario' | 'administrador',
+          adminKey: this.form.get('adminKey')?.value ?? ''
         };
+
+        // Si es administrador y la clave no es la correcta, mostrar un error
+        if (usuario.userType === 'administrador' && usuario.adminKey !== this.ADMIN_SECRET_KEY) {
+          Swal.fire('Error', 'La clave de administrador es incorrecta.', 'error');
+          return; // Detener el envío del formulario
+        }
 
         await this.usuariosService.registrarUsuario(usuario);
 
@@ -71,30 +118,33 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
-    document.body.classList.add('usuarios-background');
-  }
-
-  ngOnDestroy() {
-    document.body.classList.remove('usuarios-background');
-  }
-
   // Getters útiles en el template
   get nombre() { return this.form.get('nombre'); }
+  get username() { return this.form.get('username'); }
   get email() { return this.form.get('email'); }
   get password() { return this.form.get('password'); }
   get passwordRepeted() { return this.form.get('passwordRepeted'); }
+  get userType() { return this.form.get('userType'); } // Nuevo getter
+  get adminKey() { return this.form.get('adminKey'); } // Nuevo getter
 }
 
 
-// import { CommonModule } from '@angular/common';
 // import { Component, OnDestroy, OnInit } from '@angular/core';
-// import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators, AbstractControl } from '@angular/forms';
+// import {
+//   FormControl,
+//   FormGroup,
+//   Validators,
+//   AbstractControl,
+//   ValidationErrors,
+//   ReactiveFormsModule
+// } from '@angular/forms';
 // import Swal from 'sweetalert2';
 // import { IngresarUsuarioService } from '../servicios/ingresar-usuario.service';
+// import { CommonModule } from '@angular/common';
 
 // export interface UsuarioIngresar {
 //   nombre: string;
+//   username:string;
 //   email: string;
 //   password: string;
 // }
@@ -104,26 +154,29 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
 //   standalone: true,
 //   imports: [ReactiveFormsModule, CommonModule],
 //   templateUrl: './ingresar-usuario.component.html',
-//   styleUrl: './ingresar-usuario.component.css',
+//   styleUrls: ['./ingresar-usuario.component.css']
 // })
 // export class IngresarUsuarioComponent implements OnInit, OnDestroy {
-//   private passwordPattern: RegExp = /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9_]{8,}$/;
+//   form = new FormGroup({
+//     nombre: new FormControl('', [
+//       Validators.required,
+//       Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s]*$')
+//     ]),
+//     username: new FormControl('', [Validators.required,Validators.maxLength(8)]),
+//     email: new FormControl('', [Validators.required, Validators.email]),
+//     password: new FormControl('', [
+//       Validators.required,
+//       Validators.minLength(6),
+//        Validators.maxLength(8)
+//     ]),
+//     passwordRepeted: new FormControl('', [
+//       Validators.required,
+//       Validators.minLength(6),
+//        Validators.maxLength(8)
+//     ])
+//   }, { validators: [IngresarUsuarioComponent.passwordsMatchValidator] });
 
-//   public form = new FormGroup(
-//     {
-//       nombre: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s]*$')]),
-//       email: new FormControl('', [Validators.required, Validators.email]),
-//       password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(12), Validators.pattern(this.passwordPattern)]),
-//       passwordRepeted: new FormControl('', [Validators.required]),
-//     },
-//     { validators: [IngresarUsuarioComponent.passwordsMatchValidator] }
-//   );
-
-//   constructor(private usuariosService: IngresarUsuarioService) { }
-
-//   ngOnInit(): void {
-//     document.body.classList.add('usuarios-background');
-//   }
+//   constructor(private usuariosService: IngresarUsuarioService) {}
 
 //   static passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
 //     const password = group.get('password')?.value;
@@ -131,43 +184,43 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
 //     return password === repeated ? null : { passwordsMismatch: true };
 //   }
 
-//   get nombre() { return this.form.get('nombre'); }
-//   get email() { return this.form.get('email'); }
-//   get password() { return this.form.get('password'); }
-//   get passwordRepeted() { return this.form.get('passwordRepeted'); }
-
-
-//   /*******************************Encriptacion de la contraseña mediante Cliente en Angular */
 //   async onSubmit() {
-
 //     if (this.form.valid) {
 //       try {
-//         await this.usuariosService.registrarUsuario(this.form.value);
+//         const usuario: UsuarioIngresar = {
+//           nombre: this.form.get('nombre')?.value ?? '',
+//           username: this.form.get('username')?.value ?? '',
+//           email: this.form.get('email')?.value ?? '',
+//           password: this.form.get('password')?.value ?? ''
+//         };
+
+//         await this.usuariosService.registrarUsuario(usuario);
+
 //         this.form.reset();
-//         Swal.fire({
-//           icon: 'success',
-//           title: '¡Registro exitoso!',
-//           text: 'El usuario ha sido registrado correctamente.',
-//           confirmButtonText: 'Ok',
-//         });
-//       } catch (error) {
-//         Swal.fire({
-//           icon: 'error',
-//           title: 'Error al registrar',
-//           text: 'Ocurrió un problema al guardar los datos.',
-//         });
+//         Swal.fire('¡Registro exitoso!', 'Usuario registrado correctamente.', 'success');
+//       } catch (error: any) {
 //         console.error(error);
+//         Swal.fire('Error', error.message || 'Error al registrar usuario.', 'error');
 //       }
 //     } else {
-//       Swal.fire({
-//         icon: 'warning',
-//         title: 'Formulario inválido',
-//         text: 'Revisa los campos antes de enviar.',
-//       });
+//       Swal.fire('Formulario inválido', 'Revisa los datos del formulario.', 'warning');
 //     }
 //   }
 
-//   ngOnDestroy(): void {
+//   ngOnInit() {
+//     document.body.classList.add('usuarios-background');
+//   }
+
+//   ngOnDestroy() {
 //     document.body.classList.remove('usuarios-background');
 //   }
+
+//   // Getters útiles en el template
+//   get nombre() { return this.form.get('nombre'); }
+//    get username() { return this.form.get('username'); }
+//   get email() { return this.form.get('email'); }
+//   get password() { return this.form.get('password'); }
+//   get passwordRepeted() { return this.form.get('passwordRepeted'); }
 // }
+
+
