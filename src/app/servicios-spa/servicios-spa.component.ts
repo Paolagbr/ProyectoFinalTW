@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { DomseguroPipe } from '../domseguro.pipe';
 
+declare var paypal: any; // Es para usar PayPal
+
 @Component({
   selector: 'app-servicios-spa',
   standalone: true,
@@ -21,7 +23,7 @@ export class ServiciosSPAComponent {
   expandido?: boolean;
   terminoBusqueda: string = '';
   serviciosFiltrados: Informacion[] = [];
-   video:string="DjCFi8NRWvs"
+  video: string = "DjCFi8NRWvs";
 
   constructor(private tuApiService: ServiciosSPAService) { }
 
@@ -35,16 +37,9 @@ export class ServiciosSPAComponent {
       error: (error) => {
         this.error = error;
         this.cargando = false;
-
         console.error('Error al obtener datos: ', error);
       }
     });
-  }
-  /*trackById(index: number, item: Informacion): number {
-    return item.id;
-  }*/
-  toggleDetalles(dato: any): void {
-    dato.expandido = !dato.expandido;
   }
 
   filtrarServicios(): void {
@@ -53,6 +48,36 @@ export class ServiciosSPAComponent {
       servicio.name.toLowerCase().includes(termino) ||
       servicio.description.toLowerCase().includes(termino)
     );
+  }
 
+  toggleDetalles(dato: any): void {
+    dato.expandido = !dato.expandido;
+
+    if (dato.expandido && !dato.paypalRendered) {
+      setTimeout(() => {
+        paypal.Buttons({
+          createOrder: (data: any, actions: any) => {
+            return actions.order.create({
+              purchase_units: [{
+                amount: {
+                  value: dato.price.toString() // Asegúrate que `dato.price` sea número
+                }
+              }]
+            });
+          },
+          onApprove: (data: any, actions: any) => {
+            return actions.order.capture().then((details: any) => {
+              alert('✅ Pago completado por: ' + details.payer.name.given_name);
+              // Aquí podrías guardar en localStorage o enviar al servidor
+            });
+          },
+          onError: (err: any) => {
+            console.error('❌ Error al procesar el pago:', err);
+          }
+        }).render('#paypal-button-' + dato.id);
+
+        dato.paypalRendered = true;
+      }, 0);
+    }
   }
 }

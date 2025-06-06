@@ -55,6 +55,7 @@
             
             <div class="detalles">
               <p class="precio">Precio: ${{ dato.price }}</p>
+              <div class="paypal-button" [id]="'paypal-button-' + dato.id"></div>
               <button class="boton-ver-mas" (click)="toggleDetalles(dato)">
                 {{ dato.expandido ? 'Ver menos' : 'Ver detalles' }}
               </button>

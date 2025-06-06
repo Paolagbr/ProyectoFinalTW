@@ -198,3 +198,8 @@ div[ngif] {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: justify;
 }
+
+.paypal-button {
+  margin: 10px 0;
+}
+
