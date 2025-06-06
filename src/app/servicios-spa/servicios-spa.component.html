@@ -1,3 +1,5 @@
+
+
 <div class="contenedor-video-texto">
   <div class="video-box">
     <iframe
@@ -25,17 +27,17 @@
 </div>
 <!--Tarjetas de servicio-->
 <h1>Busca tus servicios</h1>
-<input 
-  type="text" 
-  placeholder="Buscar servicio..." 
-  [(ngModel)]="terminoBusqueda" 
-  (input)="filtrarServicios()" 
-  class="barra-busqueda" 
+<input
+  type="text"
+  placeholder="Buscar servicio..."
+  [(ngModel)]="terminoBusqueda"
+  (input)="filtrarServicios()"
+  class="barra-busqueda"
 />
 
 @if (!cargando && !error) {
   <div class="contenedor-grid">
-    @if (inf.length > 0) {
+    @if (serviciosFiltrados.length > 0) {
       @for (dato of serviciosFiltrados; track dato.id) {
         <div class="tarjeta">
           <div class="imagen-contenedor">
@@ -45,14 +47,14 @@
             <h2>{{ dato.name }}</h2>
             <br>
             <p class="descripcion">{{ dato.description }}</p>
-            
+
             @if (dato.expandido) {
               <div class="contenido-extra">
                 <p class="descripcion"><strong>Beneficios:</strong> {{dato.beneficio}}</p>
                 <p class="descripcion"><strong>Duración:</strong> {{dato.duracion}}</p>
               </div>
             }
-            
+
             <div class="detalles">
               <p class="precio">Precio: ${{ dato.price }}</p>
               <div class="paypal-button" [id]="'paypal-button-' + dato.id"></div>
@@ -64,7 +66,11 @@
         </div>
       }
     } @else {
-      <div>No hay productos disponibles.</div>
+      <div class="mensajeError">No hay servicios disponibles que coincidan con tu búsqueda.</div>
     }
   </div>
+} @else if (cargando) {
+  <div>Cargando servicios...</div>
+} @else if (error) {
+  <div>Ocurrió un error al cargar los servicios. Por favor, inténtalo de nuevo más tarde.</div>
 }

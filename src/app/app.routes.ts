@@ -8,7 +8,9 @@ import { IngresarComponent } from './ingresar/ingresar.component';
 import { MenuComponent } from './menu/menu.component';
 import { CuestionarioComponent } from './components/cuestionario/cuestionario.component';
 import { ServiciosSPAComponent } from './servicios-spa/servicios-spa.component';
+import { IngresarUsuarioComponent } from './ingresar-usuario/ingresar-usuario.component';
 import { RegistroUsuariosComponent } from './registro-usuarios/registro-usuarios.component';
+
 
 export const routes: Routes = [
     { path: '', redirectTo: '/inicio', pathMatch: 'full' },
@@ -21,5 +23,8 @@ export const routes: Routes = [
     {path: 'menu', component: MenuComponent},
     {path: 'Cuestionario', component: CuestionarioComponent},
     {path: 'servicio', component: ServiciosSPAComponent},
-    {path: 'usuario', component: RegistroUsuariosComponent}
+
+    {path: 'ingresarUsuario', component: IngresarUsuarioComponent},
+
+    
 ];

@@ -7,6 +7,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -17,7 +18,9 @@ bootstrapApplication(AppComponent, {
        storageBucket: "proyectofinaltw-73dc0.firebasestorage.app", 
        apiKey: "AIzaSyBJXHh0cp0E3_9rJOWV1i54gr9DTGmsSw0",
         authDomain: "proyectofinaltw-73dc0.firebaseapp.com", 
-        messagingSenderId: "691281619346" })), provideFirestore(() => getFirestore())
+        messagingSenderId: "691281619346" })), provideFirestore(() => getFirestore()),
+        provideAuth(() => getAuth()),
+        
   ]
 })
   .catch((err) => console.error(err));

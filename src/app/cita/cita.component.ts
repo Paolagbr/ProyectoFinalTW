@@ -63,7 +63,7 @@ export class CitaComponent {
   }
 
   guardarFormulario(): void {
-    localStorage.setItem('formularioUsuario', JSON.stringify(this.userINFO));
+    //localStorage.setItem('formularioUsuario', JSON.stringify(this.userINFO));
   }
 
   actualizarSexo(event: any): void {
@@ -105,7 +105,7 @@ export class CitaComponent {
     fecha: this.userINFO.fechaCita,
     hora: this.userINFO.hora
   });
-  localStorage.setItem('citas', JSON.stringify(citas));
+  //localStorage.setItem('citas', JSON.stringify(citas));
 
   //Guardar en la base de datos 
     const nuevaCitaEnFirebase: Place = {
@@ -120,7 +120,7 @@ export class CitaComponent {
     this.usuariosService.addPlace(nuevaCitaEnFirebase);//Se integra en la firestore
 
 
-    localStorage.removeItem('formularioUsuario');
+    //localStorage.removeItem('formularioUsuario');
     this.userINFO = this.usuariosService.nuevoUsuario();
     this.horasOcupadas = [];
     
