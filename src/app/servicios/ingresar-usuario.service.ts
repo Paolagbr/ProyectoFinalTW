@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc } from '@angular/fire/firestore'; // Importa 'doc' y 'setDoc'
+import { Firestore, collection, doc, setDoc, query, where, getDocs } from '@angular/fire/firestore';
 import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
 
@@ -7,41 +7,64 @@ import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component'
   providedIn: 'root'
 })
 export class IngresarUsuarioService {
+
   constructor(private firestore: Firestore, private auth: Auth) {}
 
-  async registrarUsuario(usuario: UsuarioIngresar) {
-    const userCredential = await createUserWithEmailAndPassword(
-      this.auth,
-      usuario.email,
-      usuario.password
-    );
+  async isUsernameTaken(username: string): Promise<boolean> {
+    const usuariosRef = collection(this.firestore, "usuarios");
+    const qUsuarios = query(usuariosRef, where("username", "==", username));
+    const usuariosSnapshot = await getDocs(qUsuarios);
 
-    const uid = userCredential.user.uid;
-    const userType = usuario.userType; 
-    
-
-    let collectionPath: string;
-    if (userType === 'administrador') {
-      collectionPath = 'admin'; 
-    } else {
-      collectionPath = 'usuarios'; 
+    if (!usuariosSnapshot.empty) {
+      return true;
     }
 
-   
-    const targetCollectionRef = collection(this.firestore, collectionPath);
+    const adminRef = collection(this.firestore, "admin");
+    const qAdmin = query(adminRef, where("username", "==", username));
+    const adminSnapshot = await getDocs(qAdmin);
 
-   
-    const userDocRef = doc(targetCollectionRef, uid);
+    if (!adminSnapshot.empty) {
+      return true;
+    }
 
+    return false;
+  }
 
-    await setDoc(userDocRef, {
-      uid: uid,
-      nombre: usuario.nombre,
-      username: usuario.username,
-      email: usuario.email,
-      userType: userType, 
-      fechaCreacion: new Date()
-    });
+  async registrarUsuario(usuario: UsuarioIngresar): Promise<void> {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        this.auth,
+        usuario.email,
+        usuario.password
+      );
+
+      const uid = userCredential.user.uid;
+      const userType = usuario.userType;
+
+      let collectionPath: string;
+      if (userType === 'administrador') {
+        collectionPath = 'admin';
+      } else {
+        collectionPath = 'usuarios';
+      }
+
+      const targetCollectionRef = collection(this.firestore, collectionPath);
+      const userDocRef = doc(targetCollectionRef, uid);
+
+      await setDoc(userDocRef, {
+        uid: uid,
+        nombre: usuario.nombre,
+        username: usuario.username,
+        email: usuario.email,
+        userType: userType,
+        fechaCreacion: new Date()
+      });
+      console.log('Usuario registrado exitosamente en Firestore y Authentication.');
+
+    } catch (error) {
+      console.error('Error al registrar usuario en el servicio:', error);
+      throw error;
+    }
   }
 }
 
