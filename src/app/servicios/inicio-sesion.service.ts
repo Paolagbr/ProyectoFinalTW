@@ -1,77 +1,287 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-interface AdminUser {
-  nombre: string;
-  username: string;
-  
-}
+import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  Auth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  User,
+  fetchSignInMethodsForEmail,
+  linkWithCredential,
+  getAdditionalUserInfo,
+  linkWithPopup
+} from '@angular/fire/auth';
+import {
+  collection,
+  getFirestore,
+  query,
+  where,
+  getDocs
+} from '@angular/fire/firestore';
+import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
+
 @Injectable({
   providedIn: 'root'
 })
 export class InicioSesionService {
-  
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.checkAuthStatus());
-  isAuthenticated$ = this.isAuthenticatedSubject.asObservable(); 
 
-  
-  private loggedInUserNameSubject = new BehaviorSubject<string | null>(this.getStoredUsername());
-  loggedInUserName$ = this.loggedInUserNameSubject.asObservable(); 
+  public username: string | undefined;
+  private _isAuthenticated = new BehaviorSubject<boolean>(false);
+  isAuthenticated$: Observable<boolean> = this._isAuthenticated.asObservable();
 
-  constructor() {
-     this.isAuthenticatedSubject.next(this.checkAuthStatus());
-     this.loggedInUserNameSubject.next(this.getStoredUsername());
+  private _currentUser = new BehaviorSubject<User | null>(null);
+  currentUser$: Observable<User | null> = this._currentUser.asObservable();
+
+  private _appUsername = new BehaviorSubject<string | null>(null);
+  appUsername$: Observable<string | null> = this._appUsername.asObservable();
+
+  constructor(private auth: Auth) {
+    onAuthStateChanged(this.auth, async (user) => {
+      if (user && user.email) {
+        this._isAuthenticated.next(true);
+        this._currentUser.next(user);
+
+        try {
+          const db = getFirestore();
+          const usuariosRef = collection(db, 'usuarios');
+          const q = query(usuariosRef, where('email', '==', user.email));
+          const querySnap = await getDocs(q);
+
+          if (!querySnap.empty) {
+            const userData = querySnap.docs[0].data() as UsuarioIngresar;
+            if (userData.username) {
+              this._appUsername.next(userData.username);
+            } else {
+              await this.logOut();
+              this._appUsername.next(null);
+            }
+          } else {
+            await this.logOut();
+            this._appUsername.next(null);
+          }
+        } catch (error) {
+          console.error('Error al obtener datos del usuario:', error);
+          await this.logOut();
+          this._appUsername.next(null);
+        }
+      } else {
+        this._isAuthenticated.next(false);
+        this._currentUser.next(null);
+        this._appUsername.next(null);
+      }
+    });
   }
 
- 
-  private checkAuthStatus(): boolean {
-    return !!localStorage.getItem('adminUsername');
+  // async logIn(email: string, password: string) {
+  //   const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+  //   const user = userCredential.user;
+
+  //   const isRegistered = await this.isUserRegistered(user.email || '');
+
+  //   if (!isRegistered) {
+  //     await this.logOut();
+  //     throw new Error('Usuario no registrado en la base de datos');
+  //   }
+
+  //   return userCredential;
+  // }
+  async logIn(email: string, password: string) {
+  const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+  const user = userCredential.user;
+
+  const isRegistered = await this.isUserRegistered(user.email || '');
+  if (!isRegistered) {
+    await this.logOut();
+    throw new Error('Usuario no registrado en la base de datos');
   }
 
- 
-  private getStoredUsername(): string | null {
-    return localStorage.getItem('adminUsername');
-  }
-  loginSuccess(user: AdminUser): void {
-    console.log('InicioSesionService: Método loginSuccess llamado con', user);
-    if (user && user.nombre) {
+
+  const alreadyLinked = user.providerData.some(p => p.providerId === 'google.com');
+  if (!alreadyLinked) {
+    try {
+      const provider = new GoogleAuthProvider();
+      await linkWithPopup(user, provider);
+      console.log('Cuenta de Google vinculada automáticamente.');
+    } catch (error: any) {
+      if (error.code === 'auth/credential-already-in-use') {
+        console.warn('Esta cuenta de Google ya está vinculada a otro usuario.');
        
-       localStorage.setItem('adminUsername', user.nombre);
-       
-       localStorage.setItem('isAuthenticatedFlag', 'true'); 
-      
-       this.isAuthenticatedSubject.next(true);
-       this.loggedInUserNameSubject.next(user.nombre);
-
-       console.log('InicioSesionService: Estado de sesión actualizado a logueado');
-
-    } else {
-        console.error("InicioSesionService: loginSuccess llamado con datos de usuario incompletos:", user);
-        
-        this.logout(); 
+      } else {
+        console.error('Error al vincular automáticamente con Google:', error);
+      }
     }
   }
 
- 
-  logout(): void {
-    console.log('InicioSesionService: Cerrando sesión');
+  return userCredential;
+}
 
-   
-    localStorage.removeItem('adminUsername');
-    localStorage.removeItem('isAuthenticatedFlag'); 
-   
-    this.isAuthenticatedSubject.next(false);
-    this.loggedInUserNameSubject.next(null);
 
-    console.log('InicioSesionService: Estado de sesión actualizado a deslogueado');
-  }
+ async logInGoogle() {
+  const provider = new GoogleAuthProvider();
 
- 
-  isAuthenticated(): boolean {
-    return this.isAuthenticatedSubject.value;
-  }
+  try {
+    const result = await signInWithPopup(this.auth, provider);
+  
 
-  getLoggedInUserName(): string | null {
-    return this.loggedInUserNameSubject.value;
+    const user = result.user;
+    const email = user.email;
+
+    if (!email) {
+      throw new Error('No se pudo obtener el correo del usuario');
+    }
+
+    const isRegistered = await this.isUserRegistered(email);
+
+    if (!isRegistered) {
+      await this.logOut();
+      throw new Error('El correo no está registrado en la base de datos');
+    }
+
+    return result;
+
+  } catch (error: any) {
+    if (error.code === 'auth/account-exists-with-different-credential') {
+      const email = error.customData?.email;
+      const pendingCred = GoogleAuthProvider.credentialFromError(error);
+
+      if (!email || !pendingCred) {
+        throw new Error('No se pudo obtener el correo o credenciales para vincular cuentas');
+      }
+
+      const methods = await fetchSignInMethodsForEmail(this.auth, email);
+
+      if (methods.includes('password')) {
+        
+        const password = prompt('Ya existe una cuenta con este correo. Ingresa tu contraseña para vincularla con Google:');
+
+        if (!password) {
+          throw new Error('Contraseña necesaria para vincular cuentas');
+        }
+
+        const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+        await linkWithCredential(userCredential.user, pendingCred);
+        alert('Cuentas vinculadas correctamente');
+        return userCredential;
+
+      } else {
+        throw new Error(`Por favor inicia sesión usando el proveedor: ${methods[0]}`);
+      }
+    } else {
+      throw error;
+    }
   }
 }
+
+
+  isAuthenticated(): boolean {
+    return this.auth.currentUser !== null;
+  }
+
+  async isUserRegistered(email: string): Promise<boolean> {
+    const db = getFirestore();
+    const usuariosRef = collection(db, 'usuarios');
+    const q = query(usuariosRef, where('email', '==', email));
+    const querySnap = await getDocs(q);
+    return !querySnap.empty;
+  }
+
+  async logOut() {
+    try {
+      await signOut(this.auth);
+    } catch (error) {
+      throw error;
+    }
+  }
+}
+
+
+
+// import { Injectable } from '@angular/core';
+// import { BehaviorSubject, Observable } from 'rxjs';
+// import { Auth, signInWithEmailAndPassword, signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, User, signInWithRedirect } from '@angular/fire/auth';
+// import { doc, getDoc, getFirestore, setDoc } from '@angular/fire/firestore'; // Importa setDoc
+// import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
+
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class InicioSesionService {
+
+//   private _isAuthenticated = new BehaviorSubject<boolean>(false);
+//   isAuthenticated$: Observable<boolean> = this._isAuthenticated.asObservable();
+
+//   private _currentUser = new BehaviorSubject<User | null>(null);
+//   currentUser$: Observable<User | null> = this._currentUser.asObservable();
+
+//   private _appUsername = new BehaviorSubject<string | null>(null);
+//   appUsername$: Observable<string | null> = this._appUsername.asObservable();
+
+//   constructor(private auth: Auth) {
+//     onAuthStateChanged(this.auth, async (user) => {
+//       if (user) {
+//         this._isAuthenticated.next(true);
+//         this._currentUser.next(user);
+//         try {
+//           const db = getFirestore();
+//           const userDocRef = doc(db, 'usuarios', user.uid);
+//           const userDocSnap = await getDoc(userDocRef);
+//           const userData = userDocSnap.data() as UsuarioIngresar;
+
+//           if (userDocSnap.exists() && userData.username) {
+//             this._appUsername.next(userData.username);
+//           } else {
+//             // Si no hay username en Firestore, usa el displayName de Google o el email
+//             this._appUsername.next(user.displayName || user.email);
+//           }
+//         } catch {
+//           this._appUsername.next(user.email);
+//         }
+//       } else {
+//         this._isAuthenticated.next(false);
+//         this._currentUser.next(null);
+//         this._appUsername.next(null);
+//       }
+//     });
+//   }
+
+//   logIn(email: string, password: string) {
+//     return signInWithEmailAndPassword(this.auth, email, password);
+//   }
+
+//   async logInGoogle() {
+//     const provider = new GoogleAuthProvider();
+//     try {
+//       const result = await signInWithPopup(this.auth, provider);
+//       const user = result.user;
+//       const db = getFirestore();
+//       const userDocRef = doc(db, 'usuarios', user.uid);
+//       const userDocSnap = await getDoc(userDocRef);
+
+//       // Si el documento no existe o no tiene username, créalo/actualízalo
+//       if (!userDocSnap.exists() || !userDocSnap.data()?.['username']) {
+//         await setDoc(userDocRef, {
+//           username: user.displayName, // Usa el displayName de Google como username
+//           email: user.email
+//         }, { merge: true }); // 'merge: true' para no sobrescribir otros campos si ya existen
+//       }
+//       return result;
+//     } catch (error) {
+//       throw error;
+//     }
+//   }
+
+//   async logOut() {
+//     try {
+//       await signOut(this.auth);
+//     } catch (error) {
+//       throw error;
+//     }
+//   }
+
+//   isAuthenticated(): boolean {
+//     return this.auth.currentUser !== null;
+//   }
+// }
 

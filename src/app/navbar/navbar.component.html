@@ -22,6 +22,25 @@
                 localStorage y se integra el nombre del Admin -->
 
                 @if (!isAuthenticated) {
+                <li class="nav-item mx-2">
+                    <a class="nav-link" [routerLink]="['/ingresarUsuario']">Registrarte</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" [routerLink]="['/sesion']">
+                        <i class="fas fa-user"></i> Iniciar Sesión
+                    </a>
+                </li>
+                } @else {
+                <li class="nav-item mx-2">
+                    <!-- Asumiendo que '/menu' es la página a la que va el usuario logueado -->
+                    <a class="nav-link" [routerLink]="['/menu']" style="cursor: pointer;">{{ appUsername}}</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <button class="nav-link btn btn-link" (click)="logout()" style="cursor: pointer;">Cerrar
+                        Sesión</button>
+                </li>
+                }
+                <!-- @if (!isAuthenticated) {
 
                 <a class="nav-link" [routerLink]="['/ingresarUsuario']">
                     Registrarte</a>
@@ -37,11 +56,11 @@
                     </a>
                 </li>
                 <li class="nav-item mx-2">
-                    <!--Desactivamos la sesion y se quite el nombre de admin en la parte de la barra de navegacion-->
+                   
                     <button class="nav-link btn btn-link" (click)="logout()" style="cursor: pointer;">Cerrar
                         Sesión</button>
                 </li>
-                }
+                } -->
                 <!-- <li class="nav-item mx-2"><a class="nav-link active" [routerLink]="['/sesion']">Iniciar Sesión</a></li> -->
             </ul>
         </div>

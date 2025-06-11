@@ -1,37 +1,102 @@
-<form [formGroup]="IngresarSesion" (ngSubmit)="onSubmit()" class="login-form">
-  <h2 class="form-title">Iniciar Sesión</h2>
+<div class="container">
+  <div class="row" style="height: 100vh;">
+    <div class="col-12 d-flex align-items-center justify-content-center">
+      <div class="row d-flex align-items-center bg-img shadow">
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Username</mat-label>
-    <input matInput formControlName="username" required />
+        <!-- Ilustración -->
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 p-4">
+          <img src="/logo1A.png" alt="login" class="illustration animation">
+        </div>
 
-    @if (IngresarSesion.get('username')?.hasError('required') &&
-    (IngresarSesion.get('username')?.dirty ||
-     IngresarSesion.get('username')?.touched)) {
-    <mat-error>El username o nombre es requerido.</mat-error>
-    }
-   
-  </mat-form-field>
+        <!-- Formulario -->
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 p-0">
+          <div class="login-container p-4">
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Contraseña</mat-label>
-    <input matInput [type]="hide() ? 'password' : 'text'" formControlName="password" required />
+            <div class="text-center text-lg-start mb-3">
+              <h1 class="fw-bold text-center">INICIAR SESIÓN</h1>
 
-    <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'"
-      [attr.aria-pressed]="hide()">
-      <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
-    </button>
+              <button class="btn btn-light btn-lg rounded-pill w-100 mb-2" (click)="googleAuth()">
+                <i class="fab fa-google"></i>
+                <span class="text-dark fs-6 ps-2">Iniciar sesión con Google</span> </button>
 
-    @if (IngresarSesion.get('password')?.hasError('required') &&
-    (IngresarSesion.get('password')?.dirty || IngresarSesion.get('password')?.touched)) {
-    <mat-error>La contraseña es requerida.</mat-error>
-    }
-   
-  </mat-form-field>
-  @if (credencialesIncorrectas()) {
-    <mat-error class="general-error">Nombre o contraseña incorrecta.</mat-error>
-  }
-  <button mat-raised-button color="primary" type="submit" [disabled]="IngresarSesion.invalid" class="submit-button">
-    Ingresar
-  </button>
-</form>
+              <button class="btn btn-light btn-lg rounded-pill w-100 mb-3">
+                <i class="fab fa-facebook"></i>
+                <span class="text-dark fs-6 ps-2">Iniciar sesión con Facebook</span> </button>
+            </div>
+
+            <!-- Separador -->
+            <div class="row d-flex align-items-center">
+              <div class="col">
+                <hr>
+              </div>
+              <div class="col-5 my-2 text-center"><small>O inicia sesión con correo</small></div>
+              <div class="col">
+                <hr>
+              </div>
+            </div>
+
+            <!-- Formulario Angular -->
+            <form [formGroup]="IngresarSesion" (ngSubmit)="login()" class="mt-3">
+
+              <!-- Email -->
+              <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" required>
+                <mat-icon matPrefix>email</mat-icon>
+
+                @if (IngresarSesion.get('email')?.invalid && (IngresarSesion.get('email')?.dirty ||
+                IngresarSesion.get('email')?.touched)) {
+                <mat-error>El correo es requerido.</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Contraseña -->
+              <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Contraseña</mat-label>
+                <input matInput [type]="hide() ? 'password' : 'text'" formControlName="password" required>
+                <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Ocultar contraseña'"
+                  [attr.aria-pressed]="hide()">
+                  <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+
+                @if (IngresarSesion.get('password')?.invalid && (IngresarSesion.get('password')?.dirty ||
+                IngresarSesion.get('password')?.touched)) {
+                <mat-error>La contraseña es requerida.</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Recordar / Olvidó -->
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <a href="javascript:void(0);" class="text-xs text-decoration-none">¿Olvidaste tu contraseña?</a>
+                </div>
+              </div>
+
+<!--             
+              @if (credencialesIncorrectas()) {
+              <mat-error class="text-danger mb-2 d-block text-center">
+                Correo o contraseña incorrecta.
+              </mat-error>
+              } -->
+
+              <!-- Botón -->
+              <button mat-raised-button color="primary" type="submit" 
+                class="w-100 rounded-pill" (click)="login()"   >
+                Ingresar
+              </button>
+
+              <!-- Crear cuenta -->
+              <div class="text-center mt-3">
+                <span class="text-muted">¿No tienes cuenta?</span>
+                <a href="#" class="text-primary text-decoration-none ms-1">Crear cuenta</a>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -102,11 +102,11 @@
 
   <!-- Botón -->
   <div class="boton-contenedor">
-        <button mat-raised-button color="primary" (click)="guardarCita()" [disabled]="!form.valid"
-            [ngClass]="form.valid ? 'btn-activo' : 'btn-inactivo'">
-            Agendar
-        </button>
-    </div>
+    <button mat-raised-button color="primary" (click)="guardarCita()" [disabled]="!form.valid"
+      [ngClass]="form.valid ? 'btn-activo' : 'btn-inactivo'">
+      Agendar
+    </button>
+  </div>
 </form>
 
 <!-- LISTADO DE CITAS -->
@@ -329,7 +329,9 @@
     <div class="sin-comentarios">No hay comentarios disponibles</div>
     }
   </div> -->
-
+  <button mat-raised-button color="primary" (click)="linkGoogleAccount()">
+    Agendar
+  </button>
 
 </div>
 }

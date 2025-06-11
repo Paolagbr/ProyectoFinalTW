@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, signal, ViewChild } from '@angular/core';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -6,11 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { InicioSesionService } from '../servicios/inicio-sesion.service';
+import { Auth, getRedirectResult } from '@angular/fire/auth';
+import { Component, OnInit, signal } from '@angular/core';
 
-interface AdminCredential {
+export interface AdminCredential {
   nombre: string;
+  email: string;
   username: string;
-  password?: string; 
+  password: string;
 }
 
 @Component({
@@ -21,54 +24,218 @@ interface AdminCredential {
   styleUrl: './ingresar.component.css',
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IngresarComponent {
-  readonly admin = [
-    { nombre: 'Paola Becerra', username: 'PaoB', password: 'pao123.' },
-    { nombre: 'Edith Garcia', username: 'EdyG', password: 'edgl658' },
-    { nombre: 'Alondra Ibarra', username: 'AloI', password: 'aloib25' },
-
-  ];
-
+export class IngresarComponent implements OnInit {
 
   IngresarSesion: FormGroup;
-  hide = signal(true);//visibilidad de la contraseña
- credencialesIncorrectas=signal(false);
+  hide = signal(true);
+  credencialesIncorrectas = signal(false);
+  isLoggingIn = false;
+  auth: Auth;
 
 
-  constructor(private router: Router,  private authService: InicioSesionService) {
+  constructor(private router: Router, private authService: InicioSesionService, auth: Auth) {
+    this.auth = auth;
     this.IngresarSesion = new FormGroup({
       username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
+      email: new FormControl('', Validators.required)
+
     });
+
+    // getRedirectResult(this.auth)
+    //   .then((result) => {
+    //     if (result?.user) {
+    //       console.log('Usuario autenticado por redirect:', result.user);
+    //       this.router.navigate(['/menu']);
+    //        alert('INICIO.');
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.error('Error en redirect login:', err);
+    //     alert('Error en el inicio de sesión con Google.');
+    //   });
   }
+  ngOnInit(): void {
+    getRedirectResult(this.auth)
+      .then((result) => {
+        if (result?.user) {
+          console.log('Usuario autenticado por redirect:', result.user);
+          this.router.navigate(['/menu']);
+          alert('INICIO.');
+        }
+      })
+      .catch(err => {
+        console.error('Error en redirect login:', err);
+        alert('Error en el inicio de sesión con Google.');
+      });
+  }
+
+  login() {
+    const { email, password } = this.IngresarSesion.value;
+
+    if (!email || !password) {
+      alert('Por favor llena todos los campos');
+      return;
+    }
+    this.authService.logIn(email.trim(), password)
+      .then(() => {
+        this.router.navigate(['/menu']);
+      })
+      .catch((error) => {
+        if (error.message === 'Usuario no registrado en la base de datos') {
+          alert('Este correo no está registrado para ingresar.');
+        } else if (error.code === 'auth/account-exists-with-different-credential' || error.code === 'auth/wrong-password') {
+          alert('Este correo está vinculado a otra forma de inicio de sesión (como Google). Por favor, inicia sesión con Google.');
+        } else if (error.code === 'auth/user-not-found') {
+          alert('No existe una cuenta con este correo.');
+        } else {
+          alert(`Error al iniciar sesión: ${error.message}`);
+        }
+        console.error(error);
+      });
+      
+  }
+
+
+  googleAuth() {
+    if (this.isLoggingIn) return;
+    this.isLoggingIn = true;
+
+    this.authService.logInGoogle()
+      .catch((error) => {
+        //alert(Error al iniciar sesión con Google: ${error.message});
+        console.error(error);
+      })
+      .finally(() => {
+        this.isLoggingIn = false;
+      });
+  }
+
   clickEvent(event: MouseEvent) {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
+  /* */
 
-  onSubmit() {
-    console.log('onSubmit ejecutado');
-    this.credencialesIncorrectas.set(false);
-    if (this.IngresarSesion.valid) {
-      console.log('Formulario válido:', this.IngresarSesion.value);
-      const nom = this.IngresarSesion.get('username')?.value;
-      const password = this.IngresarSesion.get('password')?.value;
 
-      const user = this.admin.find(
-        (u) => (u.username === nom || u.nombre === nom) && u.password === password
-      );
 
-      if (user) {
-        console.log('¡Inicio de sesión exitoso!', user);
-         this.authService.loginSuccess(user);
-        this.router.navigate(['/menu']);
-      } else {
-        console.log('Credenciales inválidas detectadas');
-        this.credencialesIncorrectas.set(true);
-      }
-    } else {
-      console.log('Formulario inválido. Por favor, completa todos los campos.');
-    }
-  }
 }
+// import { MatButtonModule } from '@angular/material/button';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatInputModule } from '@angular/material/input';
+// import { MatIconModule } from '@angular/material/icon';
+// import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+// import { Router } from '@angular/router';
+// import { InicioSesionService } from '../servicios/inicio-sesion.service';
+// import { Auth, getRedirectResult } from '@angular/fire/auth';
+// import { Component, OnInit, signal } from '@angular/core';
+
+// export interface AdminCredential {
+//   nombre: string;
+//   email: string;
+//   username: string;
+//   password: string;
+// }
+
+// @Component({
+//   selector: 'app-ingresar',
+//   standalone: true,
+//   imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, ReactiveFormsModule],
+//   templateUrl: './ingresar.component.html',
+//   styleUrl: './ingresar.component.css',
+//   // changeDetection: ChangeDetectionStrategy.OnPush,
+// })
+// export class IngresarComponent implements OnInit {
+
+//   IngresarSesion: FormGroup;
+//   hide = signal(true);
+//   credencialesIncorrectas = signal(false);
+//   isLoggingIn = false;
+//   auth: Auth;
+
+
+//   constructor(private router: Router, private authService: InicioSesionService, auth: Auth) {
+//     this.auth = auth;
+//     this.IngresarSesion = new FormGroup({
+//       username: new FormControl('', Validators.required),
+//       password: new FormControl('', Validators.required),
+//       email: new FormControl('', Validators.required)
+
+//     });
+
+//     // getRedirectResult(this.auth)
+//     //   .then((result) => {
+//     //     if (result?.user) {
+//     //       console.log('Usuario autenticado por redirect:', result.user);
+//     //       this.router.navigate(['/menu']);
+//     //        alert('INICIO.');
+//     //     }
+//     //   })
+//     //   .catch(err => {
+//     //     console.error('Error en redirect login:', err);
+//     //     alert('Error en el inicio de sesión con Google.');
+//     //   });
+//   }
+//   ngOnInit(): void {
+//     getRedirectResult(this.auth)
+//       .then((result) => {
+//         if (result?.user) {
+//           console.log('Usuario autenticado por redirect:', result.user);
+//           this.router.navigate(['/menu']);
+//           alert('INICIO.');
+//         }
+//       })
+//       .catch(err => {
+//         console.error('Error en redirect login:', err);
+//         alert('Error en el inicio de sesión con Google.');
+//       });
+//   }
+
+//   login() {
+//     const { email, password } = this.IngresarSesion.value;
+
+//     if (!email || !password) {
+//       alert('Por favor llena todos los campos');
+//       return;
+//     }
+//     this.authService.logIn(email.trim(), password)
+//       .then(() => {
+//         this.router.navigate(['/menu']);
+//       })
+//       .catch((error) => {
+//         if (error.code === 'auth/account-exists-with-different-credential' || error.code === 'auth/wrong-password') {
+//           alert('Este correo está vinculado a otra forma de inicio de sesión (como Google). Por favor, inicia sesión con Google.');
+//         } else if (error.code === 'auth/user-not-found') {
+//           alert('No existe una cuenta con este correo.');
+//         } else {
+//           //alert(Error al iniciar sesión: ${error.message});
+//         }
+//         console.error(error);
+//       });
+//   }
+
+
+//   googleAuth() {
+//     if (this.isLoggingIn) return;
+//     this.isLoggingIn = true;
+
+//     this.authService.logInGoogle()
+//       .catch((error) => {
+//         //alert(Error al iniciar sesión con Google: ${error.message});
+//         console.error(error);
+//       })
+//       .finally(() => {
+//         this.isLoggingIn = false;
+//       });
+//   }
+
+//   clickEvent(event: MouseEvent) {
+//     this.hide.set(!this.hide());
+//     event.stopPropagation();
+//   }
+//   /* */
+
+
+
+// } 
 
