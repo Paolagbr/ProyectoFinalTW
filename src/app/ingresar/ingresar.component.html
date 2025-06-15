@@ -36,7 +36,7 @@
             </div>
 
             <!-- Formulario Angular -->
-            <form [formGroup]="IngresarSesion" (ngSubmit)="login()" class="mt-3">
+            <form [formGroup]="IngresarSesion" (ngSubmit)="onSubmit()" class="mt-3">
 
               <!-- Email -->
               <mat-form-field appearance="outline" class="w-100 mb-3">
@@ -72,16 +72,19 @@
                 </div>
               </div>
 
-<!--             
+              <!--             
               @if (credencialesIncorrectas()) {
               <mat-error class="text-danger mb-2 d-block text-center">
                 Correo o contraseña incorrecta.
               </mat-error>
               } -->
+             
+              
+              <re-captcha [siteKey]="siteKey" (resolved)="onCaptchaResolved($event)" formControlName="recaptcha">
+              </re-captcha><br />
 
               <!-- Botón -->
-              <button mat-raised-button color="primary" type="submit" 
-                class="w-100 rounded-pill" (click)="login()"   >
+              <button mat-raised-button color="primary" type="submit" class="w-100 rounded-pill" [disabled]="IngresarSesion.invalid">
                 Ingresar
               </button>
 
