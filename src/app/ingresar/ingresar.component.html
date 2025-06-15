@@ -78,13 +78,17 @@
                 Correo o contraseña incorrecta.
               </mat-error>
               } -->
-             
-              
+
+<!-- 
               <re-captcha [siteKey]="siteKey" (resolved)="onCaptchaResolved($event)" formControlName="recaptcha">
-              </re-captcha><br />
+              </re-captcha><br /> -->
+              <div class="g-recaptcha" [attr.data-sitekey]="siteKey" data-callback="onCaptchaSuccess"
+                data-expired-callback="onCaptchaExpired">
+              </div>
 
               <!-- Botón -->
-              <button mat-raised-button color="primary" type="submit" class="w-100 rounded-pill" [disabled]="IngresarSesion.invalid">
+              <button mat-raised-button color="primary" type="submit" class="w-100 rounded-pill"
+                [disabled]="IngresarSesion.invalid">
                 Ingresar
               </button>
 

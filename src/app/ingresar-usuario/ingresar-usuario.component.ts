@@ -11,21 +11,25 @@ import {
 import Swal from 'sweetalert2';
 import { IngresarUsuarioService } from '../servicios/ingresar-usuario.service';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 export interface UsuarioIngresar {
   nombre: string;
-  username: string; 
+  username: string;
   email: string;
   password: string;
   userType?: 'usuario' | 'administrador';
   adminKey?: string;
-  lowercaseUsername?: string; 
+  lowercaseUsername?: string;
 }
 
 @Component({
   selector: 'app-ingresar-usuario',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule,
+    CommonModule, BrowserAnimationsModule,
+    NgxSpinnerModule],
   templateUrl: './ingresar-usuario.component.html',
   styleUrls: ['./ingresar-usuario.component.css']
 })
@@ -53,8 +57,9 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
     adminKey: new FormControl('')
   }, { validators: [IngresarUsuarioComponent.passwordsMatchValidator] });
 
+  constructor(private usuariosService: IngresarUsuarioService, public loading: NgxSpinnerService
 
-  constructor(private usuariosService: IngresarUsuarioService) { }
+  ) { }
 
   static passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
@@ -70,7 +75,7 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
       if (userType === 'administrador') {
         adminKeyControl?.setValidators([
           Validators.required,
-          
+
         ]);
       } else {
         adminKeyControl?.clearValidators();
@@ -86,35 +91,35 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
 
   async onSubmit() {
     this.form.markAllAsTouched();
+    this.loading.show();//Activar
 
     if (this.form.valid) {
       try {
         const username = this.form.get('username')?.value;
 
-        if (!username) { 
+        if (!username) {
           Swal.fire('Error', 'El nombre de usuario es requerido.', 'error');
+          this.loading.hide();//detener
           return;
         }
 
-        
+
         const usernameTomado = await this.usuariosService.isUsernameTaken(username);
         if (usernameTomado) {
           Swal.fire('Error', `El nombre de usuario '${username}' ya está en uso. Por favor, elige otro.`, 'error');
-          return; 
+          this.loading.hide();
+          return;
         }
-       
+
         const usuario: UsuarioIngresar = {
           nombre: this.form.get('nombre')?.value ?? '',
-          username: username, // Usamos el username ya verificado
+          username: username,
           email: this.form.get('email')?.value ?? '',
           password: this.form.get('password')?.value ?? '',
           userType: this.form.get('userType')?.value as 'usuario' | 'administrador',
           adminKey: this.form.get('adminKey')?.value ?? '',
           lowercaseUsername: username.toLowerCase()
         };
-
-
-
         await this.usuariosService.registrarUsuario(usuario);
 
         this.form.reset();
@@ -122,13 +127,16 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
       } catch (error: any) {
         console.error(error);
         Swal.fire('Error', error.message || 'Error al registrar usuario.', 'error');
+      } finally {
+        this.loading.hide();
+        
       }
     } else {
       Swal.fire('Formulario inválido', 'Revisa los datos del formulario.', 'warning');
     }
   }
 
-  
+
   get nombre() { return this.form.get('nombre'); }
   get username() { return this.form.get('username'); }
   get email() { return this.form.get('email'); }

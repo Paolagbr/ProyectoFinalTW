@@ -59,7 +59,7 @@ export class IngresarUsuarioService {
         userType: userType,
         fechaCreacion: new Date()
       });
-      console.log('Usuario registrado exitosamente en Firestore y Authentication.');
+      
 
     } catch (error) {
       console.error('Error al registrar usuario en el servicio:', error);
@@ -67,40 +67,4 @@ export class IngresarUsuarioService {
     }
   }
 }
-
-// import { Injectable } from '@angular/core';
-// import { Firestore, collection, addDoc } from '@angular/fire/firestore';
-// import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
-// import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class IngresarUsuarioService {
-//   constructor(private firestore: Firestore, private auth: Auth) {}
-
-//   async registrarUsuario(usuario: UsuarioIngresar) {
-//     const userCredential = await createUserWithEmailAndPassword(
-//       this.auth,
-//       usuario.email,
-//       usuario.password
-//     );
-
-//     const uid = userCredential.user.uid;
-
- 
-//     const usuariosRef = collection(this.firestore, 'usuarios');
-//     await addDoc(usuariosRef, {
-//       uid,
-//       nombre: usuario.nombre,
-//       email: usuario.email,
-//       username: usuario.username,
-//       fechaCreacion: new Date()
-//     });
-//   }
-// }
-
-
-
-
 

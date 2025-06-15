@@ -1,5 +1,8 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate
-  class="p-4 bg-purple-100 rounded shadow-lg mx-auto mt-5 formulario formulario"   style="max-width: 500px;">
+  class="p-4 bg-purple-100 rounded shadow-lg mx-auto mt-5 formulario formulario" style="max-width: 500px;">
+
+ 
+
 
   <h2 class="text-center text-purple-800 mb-4 letra">CREAR CUENTA</h2>
   <!--Parte del administrador-->
@@ -138,7 +141,12 @@
       Enviar
     </button>
   </div>
+
+
 </form>
+ <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="true"   text="cargando">
+  </ngx-spinner>
+  
 
 <!-- 
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate
