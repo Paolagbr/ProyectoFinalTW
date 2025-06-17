@@ -1,18 +1,10 @@
-
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  ValidationErrors,
-  ReactiveFormsModule
-} from '@angular/forms';
-import Swal from 'sweetalert2';
-import { IngresarUsuarioService } from '../servicios/ingresar-usuario.service';
 import { CommonModule } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { IngresarUsuarioService } from '../servicios/ingresar-usuario.service';
+import Swal from 'sweetalert2';
 
 export interface UsuarioIngresar {
   nombre: string;
@@ -25,15 +17,14 @@ export interface UsuarioIngresar {
 }
 
 @Component({
-  selector: 'app-ingresar-usuario',
-  standalone: true,
+  selector: 'app-usurio-nuevo',
+  standalone:true,
   imports: [ReactiveFormsModule,
-    CommonModule, BrowserAnimationsModule,
-    NgxSpinnerModule],
-  templateUrl: './ingresar-usuario.component.html',
-  styleUrls: ['./ingresar-usuario.component.css']
+    CommonModule, RouterModule, NgxSpinnerModule,RouterModule],
+  templateUrl: './usurio-nuevo.component.html',
+  styleUrl: './usurio-nuevo.component.css'
 })
-export class IngresarUsuarioComponent implements OnInit, OnDestroy {
+export class UsurioNuevoComponent implements OnInit, OnDestroy {
   form = new FormGroup({
     nombre: new FormControl('', [
       Validators.required,
@@ -45,28 +36,28 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
       Validators.required,
       Validators.minLength(6),
       Validators.maxLength(12),
-      Validators.pattern('^(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d_]+$')
+      Validators.pattern('^(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9_]+$')
     ]),
     passwordRepeted: new FormControl('', [
       Validators.required,
       Validators.minLength(6),
       Validators.maxLength(12),
-      Validators.pattern('^(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d_]+$')
+      Validators.pattern('^(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9_]+$')
     ]),
     userType: new FormControl('usuario', [Validators.required]),
     adminKey: new FormControl('')
-  }, { validators: [IngresarUsuarioComponent.passwordsMatchValidator] });
+  }, 
+  { validators: [UsurioNuevoComponent.passwordsMatchValidator] });
 
-  constructor(private usuariosService: IngresarUsuarioService, public loading: NgxSpinnerService
+  constructor(private usuariosService: IngresarUsuarioService, public loading: NgxSpinnerService,  private router: Router
 
   ) { }
-
+  
   static passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
     const repeated = group.get('passwordRepeted')?.value;
     return password === repeated ? null : { passwordsMismatch: true };
   }
-
   ngOnInit() {
     document.body.classList.add('usuarios-background');
 
@@ -84,11 +75,9 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
       adminKeyControl?.updateValueAndValidity();
     });
   }
-
-  ngOnDestroy() {
+   ngOnDestroy() {
     document.body.classList.remove('usuarios-background');
   }
-
   async onSubmit() {
     this.form.markAllAsTouched();
     this.loading.show();//Activar
@@ -106,7 +95,7 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
 
         const usernameTomado = await this.usuariosService.isUsernameTaken(username);
         if (usernameTomado) {
-          Swal.fire('Error', `El nombre de usuario '${username}' ya está en uso. Por favor, elige otro.`, 'error');
+          Swal.fire('Error',' El nombre de usuario seleccionado ya está en uso. Por favor, elige otro.', 'error');
           this.loading.hide();
           return;
         }
@@ -124,6 +113,7 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
 
         this.form.reset();
         Swal.fire('¡Registro exitoso!', 'Usuario registrado correctamente.', 'success');
+        this.router.navigate(['/menu']);
       } catch (error: any) {
         console.error(error);
         Swal.fire('Error', error.message || 'Error al registrar usuario.', 'error');
@@ -135,14 +125,13 @@ export class IngresarUsuarioComponent implements OnInit, OnDestroy {
       Swal.fire('Formulario inválido', 'Revisa los datos del formulario.', 'warning');
     }
   }
-
-
+  
   get nombre() { return this.form.get('nombre'); }
   get username() { return this.form.get('username'); }
   get email() { return this.form.get('email'); }
   get password() { return this.form.get('password'); }
   get passwordRepeted() { return this.form.get('passwordRepeted'); }
   get userType() { return this.form.get('userType'); }
-  get adminKey() { return this.form.get('adminKey'); }
-}
+  get adminKey() { return this.form.get('adminKey'); }
 
+}

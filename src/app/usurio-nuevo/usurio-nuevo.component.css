@@ -1,9 +1,3 @@
-/*Titulo*/
-@font-face{
-    font-family: 'Letra';
-    src: url('/letraC.ttf');
-  }
-
 .formulario {
   background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
   border: 1px solid #d8b4fe;
@@ -63,4 +57,3 @@ select.form-control:focus {
 .letra{
   font-family:fantasy;
 }
-

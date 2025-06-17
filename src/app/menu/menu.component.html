@@ -1,4 +1,4 @@
-<!-- File: src/app/menu/menu.component.html -->
+
 
 <mat-radio-group [(ngModel)]="selectedOption" aria-label="Selecciona una opción"
   class="menu-radio flex flex-col gap-2 mb-6">
@@ -287,48 +287,7 @@
       }
     </tbody>
   </table>
-  <!-- <h2 class="titulo">Comentarios</h2>
 
-  <div class="contenedor-comentarios">
-    @for (com of comentarios; track com.id) {
-    <div class="comentario-card">
-      <p><strong>Nombre:</strong> {{ com.nombre }}</p>
-      <p><strong>Email:</strong> {{ com.email }}</p>
-
-      <p class="seccion">Te gustó de la página:</p>
-      <ul>
-        @if (com.feedback?.facilidadNavegar) {
-        <li>Facilidad de navegar</li>
-        }
-        @if (com.feedback?.buenaPresentacion) {
-        <li>Buena presentación</li>
-        }
-        @if (com.feedback?.facilEntender) {
-        <li>Fácil de entender los servicios</li>
-        }
-        @if (com.feedback?.estructuraUtilizada) {
-        <li>La estructura que se utilizó</li>
-        }
-      </ul>
-
-      <p><strong>Servicio que más te gustó:</strong> {{ com.servicio }}</p>
-      <p><strong>Mensaje:</strong> {{ com.mensaje }}</p>
-      <p><strong>Fecha:</strong> {{ com.fechaCita | date }}</p>
-
-      <div class="botones-comentario">
-        <button mat-raised-button color="primary" class="boton-chido editar" (click)="editarComentario(com)">
-          Editar
-        </button>
-        <button mat-raised-button color="warn" class="boton-chido eliminar" (click)="eliminarComentario(com)">
-          Eliminar
-        </button>
-      </div>
-
-    </div>
-    } @empty {
-    <div class="sin-comentarios">No hay comentarios disponibles</div>
-    }
-  </div> -->
   <button mat-raised-button color="primary" (click)="linkGoogleAccount()">
     Agendar
   </button>

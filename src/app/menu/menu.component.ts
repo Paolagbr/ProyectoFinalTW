@@ -364,17 +364,15 @@ export class MenuComponent implements OnInit {
       }
       const provider = new GoogleAuthProvider();
       await linkWithPopup(this.auth.currentUser, provider);
-      console.log("Cuenta de Google vinculada exitosamente!");
-      // Podrías mostrar un snackBar de éxito aquí
+       Swal.fire('Error', 'Cuenta correctamente vinculada con Google', 'error');
+     
     } catch (error: any) {
-      console.error("Error al vincular cuenta de Google:", error);
-      // Manejar errores específicos, por ejemplo:
+       Swal.fire('Error', 'Error al vincular cuenta con Google', 'error');
+      
       if (error.code === 'auth/credential-already-in-use') {
-        // Esto ocurre si la cuenta de Google que intentas vincular ya está vinculada a OTRA cuenta de Firebase.
-        // Es un escenario importante a manejar.
-        console.warn("La cuenta de Google ya está vinculada a otra cuenta de usuario.");
+        
       }
-      // Mostrar un snackBar con el error
+     
     }
   }
 

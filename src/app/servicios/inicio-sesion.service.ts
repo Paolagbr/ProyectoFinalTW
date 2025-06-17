@@ -20,7 +20,8 @@ import {
   where,
   getDocs
 } from '@angular/fire/firestore';
-import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
+import { UsuarioIngresar } from '../datos';
+//import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
 
 @Injectable({
   providedIn: 'root'
@@ -73,20 +74,6 @@ export class InicioSesionService {
       }
     });
   }
-
-  // async logIn(email: string, password: string) {
-  //   const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-  //   const user = userCredential.user;
-
-  //   const isRegistered = await this.isUserRegistered(user.email || '');
-
-  //   if (!isRegistered) {
-  //     await this.logOut();
-  //     throw new Error('Usuario no registrado en la base de datos');
-  //   }
-
-  //   return userCredential;
-  // }
   async logIn(email: string, password: string) {
   const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
   const user = userCredential.user;
@@ -123,8 +110,6 @@ export class InicioSesionService {
 
   try {
     const result = await signInWithPopup(this.auth, provider);
-  
-
     const user = result.user;
     const email = user.email;
 
@@ -197,91 +182,4 @@ export class InicioSesionService {
 }
 
 
-
-// import { Injectable } from '@angular/core';
-// import { BehaviorSubject, Observable } from 'rxjs';
-// import { Auth, signInWithEmailAndPassword, signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, User, signInWithRedirect } from '@angular/fire/auth';
-// import { doc, getDoc, getFirestore, setDoc } from '@angular/fire/firestore'; // Importa setDoc
-// import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class InicioSesionService {
-
-//   private _isAuthenticated = new BehaviorSubject<boolean>(false);
-//   isAuthenticated$: Observable<boolean> = this._isAuthenticated.asObservable();
-
-//   private _currentUser = new BehaviorSubject<User | null>(null);
-//   currentUser$: Observable<User | null> = this._currentUser.asObservable();
-
-//   private _appUsername = new BehaviorSubject<string | null>(null);
-//   appUsername$: Observable<string | null> = this._appUsername.asObservable();
-
-//   constructor(private auth: Auth) {
-//     onAuthStateChanged(this.auth, async (user) => {
-//       if (user) {
-//         this._isAuthenticated.next(true);
-//         this._currentUser.next(user);
-//         try {
-//           const db = getFirestore();
-//           const userDocRef = doc(db, 'usuarios', user.uid);
-//           const userDocSnap = await getDoc(userDocRef);
-//           const userData = userDocSnap.data() as UsuarioIngresar;
-
-//           if (userDocSnap.exists() && userData.username) {
-//             this._appUsername.next(userData.username);
-//           } else {
-//             // Si no hay username en Firestore, usa el displayName de Google o el email
-//             this._appUsername.next(user.displayName || user.email);
-//           }
-//         } catch {
-//           this._appUsername.next(user.email);
-//         }
-//       } else {
-//         this._isAuthenticated.next(false);
-//         this._currentUser.next(null);
-//         this._appUsername.next(null);
-//       }
-//     });
-//   }
-
-//   logIn(email: string, password: string) {
-//     return signInWithEmailAndPassword(this.auth, email, password);
-//   }
-
-//   async logInGoogle() {
-//     const provider = new GoogleAuthProvider();
-//     try {
-//       const result = await signInWithPopup(this.auth, provider);
-//       const user = result.user;
-//       const db = getFirestore();
-//       const userDocRef = doc(db, 'usuarios', user.uid);
-//       const userDocSnap = await getDoc(userDocRef);
-
-//       // Si el documento no existe o no tiene username, créalo/actualízalo
-//       if (!userDocSnap.exists() || !userDocSnap.data()?.['username']) {
-//         await setDoc(userDocRef, {
-//           username: user.displayName, // Usa el displayName de Google como username
-//           email: user.email
-//         }, { merge: true }); // 'merge: true' para no sobrescribir otros campos si ya existen
-//       }
-//       return result;
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
-
-//   async logOut() {
-//     try {
-//       await signOut(this.auth);
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
-
-//   isAuthenticated(): boolean {
-//     return this.auth.currentUser !== null;
-//   }
-// }
 

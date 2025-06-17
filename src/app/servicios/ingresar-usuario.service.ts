@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, setDoc, query, where, getDocs } from '@angular/fire/firestore';
 import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
-import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
+import { UsuarioIngresar } from '../datos';
+
 
 @Injectable({
   providedIn: 'root'

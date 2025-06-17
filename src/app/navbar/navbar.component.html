@@ -11,19 +11,17 @@
                 <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/servicio']">SERVICIOS</a></li>
                 <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/Tienda']">TIENDA</a></li>
                 <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/Contacto']">CONTACTO</a></li>
-                <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/Nosotros']">NOSOTROS</a></li>
+                <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/usuario']">NOSOTROS</a></li>
                 <li class="nav-item mx-2"><a class="nav-link" [routerLink]="['/Cuestionario']">Q & A</a></li>
             </ul>
         </div>
         <!-- Parte de iniciar sesión -->
         <div class="collapse navbar-collapse justify-content-end letra" id="navbarNav" style="margin-right: 10px;">
             <ul class="navbar-nav">
-                <!--Se checa que este en funcion la cuenta en caso de ser asi se redirecciona a sesion donde esta le menu para poder editar el 
-                localStorage y se integra el nombre del Admin -->
-
+                
                 @if (!isAuthenticated) {
                 <li class="nav-item mx-2">
-                    <a class="nav-link" [routerLink]="['/ingresarUsuario']">Registrarte</a>
+                    <a class="nav-link" [routerLink]="['/usuario']">Registrarte</a>
                 </li>
                 <li class="nav-item mx-2">
                     <a class="nav-link" [routerLink]="['/sesion']">
@@ -40,28 +38,7 @@
                         Sesión</button>
                 </li>
                 }
-                <!-- @if (!isAuthenticated) {
-
-                <a class="nav-link" [routerLink]="['/ingresarUsuario']">
-                    Registrarte</a>
-                <li class="nav-item mx-2">
-
-                    <a class="nav-link" [routerLink]="['/sesion']">
-                        <i class="fas fa-user"></i> Iniciar Sesión </a>
-
-                </li>
-                } @else {
-                <li class="nav-item mx-2">
-                    <a class="nav-link" [routerLink]="['/menu']" style="cursor: pointer;">{{ adminName }}
-                    </a>
-                </li>
-                <li class="nav-item mx-2">
-                   
-                    <button class="nav-link btn btn-link" (click)="logout()" style="cursor: pointer;">Cerrar
-                        Sesión</button>
-                </li>
-                } -->
-                <!-- <li class="nav-item mx-2"><a class="nav-link active" [routerLink]="['/sesion']">Iniciar Sesión</a></li> -->
+               
             </ul>
         </div>
     </nav>
