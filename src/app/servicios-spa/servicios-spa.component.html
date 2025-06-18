@@ -30,15 +30,15 @@
 <input
   type="text"
   placeholder="Buscar servicio..."
-  [(ngModel)]="terminoBusqueda"
-  (input)="filtrarServicios()"
+  [ngModel]="terminoBusqueda()"
+  (ngModelChange)="actualizarBusqueda($event)"
   class="barra-busqueda"
 />
 
 @if (!cargando && !error) {
   <div class="contenedor-grid">
-    @if (serviciosFiltrados.length > 0) {
-      @for (dato of serviciosFiltrados; track dato.id) {
+    @if (serviciosFiltrados().length > 0) {
+      @for (dato of serviciosFiltrados(); track dato.id) {
         <div class="tarjeta">
           <div class="imagen-contenedor">
             <img [src]="dato.image" alt="{{ dato.name }}" />
