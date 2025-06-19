@@ -59,6 +59,7 @@
                   <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
                 </button>
 
+
                 @if (IngresarSesion.get('password')?.invalid && (IngresarSesion.get('password')?.dirty ||
                 IngresarSesion.get('password')?.touched)) {
                 <mat-error>La contraseña es requerida.</mat-error>
@@ -72,13 +73,6 @@
                 </div>
               </div>
 
-              <!--             
-              @if (credencialesIncorrectas()) {
-              <mat-error class="text-danger mb-2 d-block text-center">
-                Correo o contraseña incorrecta.
-              </mat-error>
-              } -->
-
 
               <re-captcha [siteKey]="siteKey" (resolved)="onCaptchaResolved($event)" formControlName="recaptcha">
               </re-captcha><br />
@@ -88,7 +82,7 @@
 
               <!-- Botón -->
               <button mat-raised-button color="primary" type="submit" class="w-100 rounded-pill"
-                [disabled]="IngresarSesion.invalid">
+                [disabled]="IngresarSesion.invalid" >
                 Ingresar
               </button>
 

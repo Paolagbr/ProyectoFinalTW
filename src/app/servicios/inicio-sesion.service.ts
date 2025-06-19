@@ -18,7 +18,8 @@ import {
   getFirestore,
   query,
   where,
-  getDocs
+  getDocs,
+  Firestore
 } from '@angular/fire/firestore';
 import { UsuarioIngresar } from '../datos';
 //import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
@@ -38,7 +39,7 @@ export class InicioSesionService {
   private _appUsername = new BehaviorSubject<string | null>(null);
   appUsername$: Observable<string | null> = this._appUsername.asObservable();
 
-  constructor(private auth: Auth) {
+  constructor(private auth: Auth, private firestore: Firestore) {
     onAuthStateChanged(this.auth, async (user) => {
       if (user && user.email) {
         this._isAuthenticated.next(true);
@@ -105,7 +106,7 @@ export class InicioSesionService {
 }
 
 
- async logInGoogle() {
+ async logInGoogle() {//Iniciar con google
   const provider = new GoogleAuthProvider();
 
   try {
@@ -134,7 +135,6 @@ export class InicioSesionService {
       if (!email || !pendingCred) {
         throw new Error('No se pudo obtener el correo o credenciales para vincular cuentas');
       }
-
       const methods = await fetchSignInMethodsForEmail(this.auth, email);
 
       if (methods.includes('password')) {
@@ -172,13 +172,26 @@ export class InicioSesionService {
     return !querySnap.empty;
   }
 
-  async logOut() {
+  async logOut() {//Cierre de sesion
     try {
       await signOut(this.auth);
     } catch (error) {
       throw error;
     }
   }
+  async verificarRol(email: string): Promise<'usuario' | 'administrador' | null> {
+    const usuariosRef = collection(this.firestore, 'usuarios');
+    const usuarioQuery = query(usuariosRef, where('email', '==', email));
+    const snapshot = await getDocs(usuarioQuery);
+
+    if (!snapshot.empty) {
+      const data = snapshot.docs[0].data() as UsuarioIngresar;
+      return data.userType ?? null;
+    }
+
+    return null;
+  }
+
 }
 
 

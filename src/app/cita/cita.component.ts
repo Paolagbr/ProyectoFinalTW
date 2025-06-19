@@ -14,6 +14,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { HORA } from '../grupo';
 import { MatCardModule } from '@angular/material/card';
 import { UsuariosService } from '../servicios/usuarios.service';
+import { Auth } from '@angular/fire/auth';
+import { RegistrarCitaUsuarioComponent } from '../registrar-cita-usuario/registrar-cita-usuario.component';
 
 export interface Place {
   name: string;
@@ -29,128 +31,29 @@ export interface Place {
   imports: [FormsModule, JsonPipe,
     MatFormFieldModule, MatInputModule,
     MatDatepickerModule, MatRadioModule, MatTimepickerModule,
-     MatSelectModule, MatInputModule, MatOptionModule, CommonModule, MatCardModule],
+     MatSelectModule, MatInputModule, MatOptionModule, CommonModule, MatCardModule, RegistrarCitaUsuarioComponent],
   providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './cita.component.html',
   styleUrl: './cita.component.css'
 })
 export class CitaComponent {
-  /*Cargamos con la informacion de  la interfaz*/
-  userINFO!: userInfo;
-  grupos!: lista[];
-  genero!: sexo[];
-  horas!:hora[];
- 
-  horasOcupadas: string[] = [];
+  mostrarFormulario = false;
+  usuarioAutenticado = false;
 
-  constructor(private usuariosService: UsuariosService) { }
+  constructor(private auth: Auth) {}
 
-  ngOnInit() {
-     this.userINFO = this.usuariosService.nuevoUsuario();
-    //this.cargarDatosGuardados();
-    this.grupos = this.usuariosService.getlista();
-    this.horas = HORA; 
-  }
-
-  cargarDatosGuardados(): void {
-    const datosGuardados = localStorage.getItem('formularioUsuario');
-    if (datosGuardados) {
-      this.userINFO = JSON.parse(datosGuardados);
-    } else {
-      this.userINFO = this.usuariosService.nuevoUsuario();
-    }
-  }
-
-  guardarFormulario(): void {
-    //localStorage.setItem('formularioUsuario', JSON.stringify(this.userINFO));
-  }
-
-  actualizarSexo(event: any): void {
-    this.guardarFormulario();
-  }
-
-  //Fecha seleccionada por el usuario
-  guardarFecha(event: MatDatepickerInputEvent<Date>): void {
-    if (event.value) {
-      const fecha = event.value;
-      const fechaFormateada = fecha.toISOString().split('T')[0]; // Solo el YYYY-MM-DD
-      this.userINFO.fechaCita = fechaFormateada;
-      this.cargarHorasOcupadas(fechaFormateada); 
-    } else {
-      this.userINFO.fechaCita = '';
-    }
-    this.guardarFormulario();
-  }
-  //Hora seleccionada
-  guardarHora(event: any): void {
-    this.userINFO.hora = event.value;
-    this.guardarFormulario();
-  }
-  //Tipo de Servicio que se almacena
-  guardarServicio(event: any): void {
-    this.userINFO.grupo = event.value;
-    this.guardarFormulario();
-  }
-
-  //Nombre del usuario
-  actualizarNombre(): void {
-    this.guardarFormulario();
-  }
-
-  nuevoUsuario(): void {
-    this.usuariosService.agregarUsuario(this.userINFO);
-    const citas = JSON.parse(localStorage.getItem('citas') || '[]');
-  citas.push({
-    fecha: this.userINFO.fechaCita,
-    hora: this.userINFO.hora
-  });
-  //localStorage.setItem('citas', JSON.stringify(citas));
-
-  //Guardar en la base de datos 
-    const nuevaCitaEnFirebase: Place = {
-      name: this.userINFO.name,
-      //name: this.userINFO.name, 
-      grupo: this.userINFO.grupo,
-      sexo:this.userINFO.sexo,
-      fechaCita: this.userINFO.fechaCita,
-      hora: this.userINFO.hora,
-      
-  };
-    this.usuariosService.addPlace(nuevaCitaEnFirebase);//Se integra en la firestore
-
-
-    //localStorage.removeItem('formularioUsuario');
-    this.userINFO = this.usuariosService.nuevoUsuario();
-    this.horasOcupadas = [];
-    
-    //Confirmacion de la cita
-    Swal.fire({
-      title: '¡Reservación Exitosa!',
-      text: 'Tu reserva ha sido realizada con éxito.',
-      icon: 'success',
-      confirmButtonText: 'Aceptar'
+  ngOnInit(): void {
+    this.auth.onAuthStateChanged(user => {
+      this.usuarioAutenticado = !!user;
     });
   }
 
-  /*Validacion del calendario*/
-  myFilter = (d: Date | null): boolean => {
-    const date = d || new Date();
-    const day = date.getDay();
-    const today = new Date();
-
-    today.setHours(0, 0, 0, 0);
-    date.setHours(0, 0, 0, 0);
-  
-    return day !== 0  && date >= today;
-  };
-  /*Validacion de horas*/
-  cargarHorasOcupadas(fecha: string): void {
-    const citas = JSON.parse(localStorage.getItem('citas') || '[]');
-    this.horasOcupadas = citas
-      .filter((cita: any) => cita.fecha === fecha)
-      .map((cita: any) => cita.hora);
+  mostrarCitaForm() {
+    if (this.usuarioAutenticado) {
+      this.mostrarFormulario = true;
+    } else {
+       Swal.fire('Se requiere iniciar sesión');
+    }
   }
-  
-
 }

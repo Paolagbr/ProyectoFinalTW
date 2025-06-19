@@ -1,8 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate
   class="p-4 bg-purple-100 rounded shadow-lg mx-auto mt-5 formulario formulario" style="max-width: 500px;">
 
- 
-
 
   <h2 class="text-center text-purple-800 mb-4 letra">CREAR CUENTA</h2>
   <!--Parte del administrador-->
@@ -21,25 +19,6 @@
     </div>
     }
   </div>
-
-  <!-- @if (userType?.value === 'administrador') {
-  <div class="mb-3">
-    <label for="adminKey" class="form-label text-purple-700" style="font-weight: bold;">Clave de Administrador</label>
-    <input id="adminKey" type="password" formControlName="adminKey"
-      class="form-control border-purple-300 focus-border-purple-500"
-      [ngClass]="{'is-invalid': adminKey?.touched && adminKey?.invalid}" />
-    @if (adminKey?.touched && adminKey?.invalid) {
-    <div class="invalid-feedback">
-      @if (adminKey?.errors?.['required']) {
-      <div>La clave de administrador es obligatoria.</div>
-      }
-      @if (adminKey?.errors?.['pattern']) {
-      <div>Clave de administrador incorrecta.</div>
-      }
-    </div>
-    }
-  </div>
-  } -->
 
 
   <div class="mb-3">
@@ -145,4 +124,4 @@
 
 </form>
  <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="true"   text="cargando">
-  </ngx-spinner>
+ </ngx-spinner>

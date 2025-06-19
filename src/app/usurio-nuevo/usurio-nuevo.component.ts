@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { IngresarUsuarioService } from '../servicios/ingresar-usuario.service';
 import Swal from 'sweetalert2';
+import { Auth, signOut } from '@angular/fire/auth';
 
 export interface UsuarioIngresar {
   nombre: string;
@@ -12,7 +13,6 @@ export interface UsuarioIngresar {
   email: string;
   password: string;
   userType?: 'usuario' | 'administrador';
-  adminKey?: string;
   lowercaseUsername?: string;
 }
 
@@ -45,11 +45,10 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
       Validators.pattern('^(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9_]+$')
     ]),
     userType: new FormControl('usuario', [Validators.required]),
-    adminKey: new FormControl('')
   }, 
   { validators: [UsurioNuevoComponent.passwordsMatchValidator] });
 
-  constructor(private usuariosService: IngresarUsuarioService, public loading: NgxSpinnerService,  private router: Router
+  constructor(private usuariosService: IngresarUsuarioService, public loading: NgxSpinnerService,  private router: Router,  private auth: Auth
 
   ) { }
   
@@ -60,20 +59,6 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     document.body.classList.add('usuarios-background');
-
-    this.form.get('userType')?.valueChanges.subscribe(userType => {
-      const adminKeyControl = this.form.get('adminKey');
-      if (userType === 'administrador') {
-        adminKeyControl?.setValidators([
-          Validators.required,
-
-        ]);
-      } else {
-        adminKeyControl?.clearValidators();
-        adminKeyControl?.setValue('');
-      }
-      adminKeyControl?.updateValueAndValidity();
-    });
   }
    ngOnDestroy() {
     document.body.classList.remove('usuarios-background');
@@ -92,7 +77,6 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
           return;
         }
 
-
         const usernameTomado = await this.usuariosService.isUsernameTaken(username);
         if (usernameTomado) {
           Swal.fire('Error',' El nombre de usuario seleccionado ya está en uso. Por favor, elige otro.', 'error');
@@ -106,17 +90,18 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
           email: this.form.get('email')?.value ?? '',
           password: this.form.get('password')?.value ?? '',
           userType: this.form.get('userType')?.value as 'usuario' | 'administrador',
-          adminKey: this.form.get('adminKey')?.value ?? '',
           lowercaseUsername: username.toLowerCase()
         };
+        console.log('Tipo de usuario:', this.userType); 
         await this.usuariosService.registrarUsuario(usuario);
-
+        await signOut(this.auth);
         this.form.reset();
         Swal.fire('¡Registro exitoso!', 'Usuario registrado correctamente.', 'success');
-        this.router.navigate(['/menu']);
+        this.loading.hide();
       } catch (error: any) {
         console.error(error);
         Swal.fire('Error', error.message || 'Error al registrar usuario.', 'error');
+        this.loading.hide();
       } finally {
         this.loading.hide();
         
@@ -132,6 +117,5 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
   get password() { return this.form.get('password'); }
   get passwordRepeted() { return this.form.get('passwordRepeted'); }
   get userType() { return this.form.get('userType'); }
-  get adminKey() { return this.form.get('adminKey'); }
 
 }
