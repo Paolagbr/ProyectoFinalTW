@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { InicioSesionService } from '../servicios/inicio-sesion.service';
 import { Auth, getRedirectResult } from '@angular/fire/auth';
 import { Component, OnInit, signal } from '@angular/core';
@@ -19,7 +19,7 @@ import { collection, Firestore, getDocs, query, where } from '@angular/fire/fire
 @Component({
   selector: 'app-ingresar',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, 
+  imports: [MatFormFieldModule, MatInputModule, RouterModule,
     MatButtonModule, MatIconModule, ReactiveFormsModule, ReactiveFormsModule,
     RecaptchaModule,
     RecaptchaFormsModule,CommonModule],
@@ -103,25 +103,32 @@ export class IngresarComponent implements OnInit {
       }
     }
   }
-
   googleAuth() {
     if (this.isLoggingIn) return;
     this.isLoggingIn = true;
 
     this.authService.logInGoogle()
+      .then((cred) => {
+        if (cred?.user) {
+          this.router.navigate(['/inicio']);
+        } else {
+          Swal.fire('Error', 'No se pudo iniciar sesión con Google', 'error');
+        }
+      })
       .catch((error) => {
         console.error(error);
+        Swal.fire('Error', error.message || 'Error al iniciar sesión con Google', 'error');
       })
       .finally(() => {
         this.isLoggingIn = false;
       });
   }
-
   clickEvent(event: MouseEvent) {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
-  /* */
+
+
 
 }
 

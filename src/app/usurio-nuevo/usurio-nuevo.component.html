@@ -9,7 +9,6 @@
     <select id="userType" formControlName="userType" class="form-control border-purple-300 focus-border-purple-500"
       [ngClass]="{'is-invalid': userType?.touched && userType?.invalid}">
       <option value="usuario">Usuario</option>
-      <option value="administrador">Administrador</option>
     </select>
     @if (userType?.touched && userType?.invalid) {
     <div class="invalid-feedback">

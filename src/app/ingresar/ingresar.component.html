@@ -54,10 +54,15 @@
               <mat-form-field appearance="outline" class="w-100 mb-3">
                 <mat-label>Contraseña</mat-label>
                 <input matInput [type]="hide() ? 'password' : 'text'" formControlName="password" required>
-                <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Ocultar contraseña'"
+                <!-- <button   type="button" mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Ocultar contraseña'"
                   [attr.aria-pressed]="hide()">
                   <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button> -->
+                <button type="button" mat-icon-button matSuffix (click)="clickEvent($event)"
+                  [attr.aria-label]="'Ocultar contraseña'" [attr.aria-pressed]="hide()">
+                  <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
                 </button>
+
 
 
                 @if (IngresarSesion.get('password')?.invalid && (IngresarSesion.get('password')?.dirty ||
@@ -82,14 +87,15 @@
 
               <!-- Botón -->
               <button mat-raised-button color="primary" type="submit" class="w-100 rounded-pill"
-                [disabled]="IngresarSesion.invalid" >
+                [disabled]="IngresarSesion.invalid">
                 Ingresar
               </button>
+
 
               <!-- Crear cuenta -->
               <div class="text-center mt-3">
                 <span class="text-muted">¿No tienes cuenta?</span>
-                <a href="#" class="text-primary text-decoration-none ms-1">Crear cuenta</a>
+                <a   routerLink="/usuario" class="text-primary text-decoration-none ms-1">Crear cuenta</a>
               </div>
 
             </form>
