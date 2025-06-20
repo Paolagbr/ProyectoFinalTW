@@ -10,10 +10,10 @@ import { Router, RouterModule } from '@angular/router';
 import { InicioSesionService } from '../servicios/inicio-sesion.service';
 import { Auth, getRedirectResult } from '@angular/fire/auth';
 import { Component, OnInit, signal } from '@angular/core';
-import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { collection, Firestore, getDocs, query, where } from '@angular/fire/firestore';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha-angular19';
 
 
 @Component({
