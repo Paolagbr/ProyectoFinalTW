@@ -16,6 +16,7 @@ import { MatCardModule } from '@angular/material/card';
 import { UsuariosService } from '../servicios/usuarios.service';
 import { Auth } from '@angular/fire/auth';
 import { RegistrarCitaUsuarioComponent } from '../registrar-cita-usuario/registrar-cita-usuario.component';
+import { HttpClient } from '@angular/common/http';
 
 export interface Place {
   name: string;
@@ -41,7 +42,14 @@ export class CitaComponent {
   mostrarFormulario = false;
   usuarioAutenticado = false;
 
-  constructor(private auth: Auth) {}
+  constructor(private auth: Auth, private http: HttpClient) {}
+  private apiUrl = 'http://localhost:3000/enviar-cita'; //Conectar con node, para que permita el envio de información 
+
+
+
+  enviarCita(cita: any) {
+    return this.http.post(this.apiUrl, cita);
+  }
 
   ngOnInit(): void {
     this.auth.onAuthStateChanged(user => {
