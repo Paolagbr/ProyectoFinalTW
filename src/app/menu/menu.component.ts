@@ -1,380 +1,180 @@
-
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { MatRadioModule } from '@angular/material/radio';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule, MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTimepickerModule } from '@angular/material/timepicker';
-import { MatNativeDateModule, MatOptionModule, provideNativeDateAdapter } from '@angular/material/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button'; // Importar MatButtonModule
-import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
-
-import { userInfo } from '../datos';
-import { GRUPOS, Genero, HORA as HORAS } from '../grupo';
-import { ComentarioService } from '../servicios/comentario.service';
-import { CuestionarioComponent } from '../components/cuestionario/cuestionario.component';
-import { UsuariosService } from '../servicios/usuarios.service';
-import { Auth, GoogleAuthProvider, linkWithPopup } from '@angular/fire/auth';
+import { Component, type OnInit } from "@angular/core"
+import { CommonModule } from "@angular/common"
+import { FormsModule, ReactiveFormsModule, FormBuilder, type FormGroup, Validators } from "@angular/forms"
+import { MatRadioModule } from "@angular/material/radio"
+import { MatFormFieldModule } from "@angular/material/form-field"
+import { MatInputModule } from "@angular/material/input"
+import { MatSelectModule } from "@angular/material/select"
+import { MatDatepickerModule } from "@angular/material/datepicker"
+import { MatNativeDateModule } from "@angular/material/core"
+import { MatButtonModule } from "@angular/material/button"
+import { QrGeneratorComponent } from "../components/qr-generator/qr-generator.component"
 
 @Component({
   selector: 'app-menu',
   standalone: true,
   imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatRadioModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDatepickerModule,
-    MatTimepickerModule,
     MatSelectModule,
-    MatOptionModule,
-    CommonModule,
-    MatCardModule,
-    ReactiveFormsModule,
+    MatDatepickerModule,
     MatNativeDateModule,
-    CuestionarioComponent,
-    MatButtonModule
+    MatButtonModule,
+    QrGeneratorComponent,
   ],
-  providers: [provideNativeDateAdapter()],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './menu.component.html',
-  styleUrl: './menu.component.css'
+  templateUrl: "./menu.component.html",
+  styleUrls: ["./menu.component.css"],
 })
 export class MenuComponent implements OnInit {
-  userINFO: userInfo = { name: '', grupo: 0, sexo: '', fechaCita: '', hora: '' };
-  grupos = GRUPOS;
-  genero = Genero;
-  horas = HORAS;
-  listaCitas: userInfo[] = [];
-  comentarios: any[] = [];
-  horasOcupadas: string[] = [];
+  selectedOption = "1"
 
-  comentarioSeleccionado: any = null;
-  formulario: FormGroup;
-  modoEdicion = false;
-  indiceEdicion: number | null = null;
-
-  selectedOption = '1';
   options = [
-    { value: '1', label: 'Agendar cita' },
-    { value: '2', label: 'Ver comentarios' }
-  ];
+    { value: "1", label: "Agendar Cita" },
+    { value: "2", label: "Quejas y Sugerencias" },
+    { value: "3", label: "Mi Código QR" },
+  ]
 
-  editingCitaId: string | undefined;
+  userINFO = {
+    name: "",
+    grupo: 0,
+    sexo: "",
+    fechaCita: null,
+    hora: "",
+  }
 
-  constructor(
-    private router: Router,
-    private cdr: ChangeDetectorRef,
-    private comentarioService: ComentarioService,
-    private usuariosService: UsuariosService,
-    private fb: FormBuilder,
-    private auth: Auth
-  ) {
+  grupos = [
+    { id: 1, nomServicio: "Masaje Corporal" },
+    { id: 2, nomServicio: "Facial" },
+    { id: 3, nomServicio: "Sauna" },
+    { id: 4, nomServicio: "Aromaterapia" },
+    { id: 5, nomServicio: "Masaje para Pies y Manos" },
+    { id: 6, nomServicio: "Sala de Relajación" },
+  ]
+
+  genero = [
+    { id: 1, genero: "Masculino" },
+    { id: 2, genero: "Femenino" },
+    { id: 3, genero: "Otro" },
+  ]
+
+  horas = [
+    { id: 1, horaC: "09:00" },
+    { id: 2, horaC: "10:00" },
+    { id: 3, horaC: "11:00" },
+    { id: 4, horaC: "12:00" },
+    { id: 5, horaC: "13:00" },
+    { id: 6, horaC: "14:00" },
+    { id: 7, horaC: "15:00" },
+    { id: 8, horaC: "16:00" },
+    { id: 9, horaC: "17:00" },
+  ]
+
+  horasOcupadas: string[] = []
+  listaCitas: any[] = []
+
+  formulario: FormGroup
+  comentarios: any[] = []
+  modoEdicion = false
+
+  constructor(private fb: FormBuilder) {
     this.formulario = this.fb.group({
-      nombre: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      mensaje: ['', [Validators.required, Validators.minLength(10)]],
-      servicio: ['', Validators.required],
-      fechaCita: [null, Validators.required],
+      nombre: ["", Validators.required],
+      email: ["", [Validators.required, Validators.email]],
       feedback: this.fb.group({
         facilidadNavegar: [false],
         buenaPresentacion: [false],
         facilEntender: [false],
-        estructuraUtilizada: [false]
+        estructuraUtilizada: [false],
       }),
-      id: ['']
-    });
+      servicio: ["", Validators.required],
+      mensaje: ["", [Validators.required, Validators.minLength(10)]],
+      fechaCita: ["", Validators.required],
+    })
   }
 
-  ngOnInit(): void {
-    this.cargarCitas();
-    this.cargarComentarios();
-
-    const comentarioEditar = this.comentarioService.getComentarioEditar();
-    if (comentarioEditar) {
-
-      const fechaParaFormulario = comentarioEditar.fechaCita ? new Date(comentarioEditar.fechaCita + 'T00:00:00') : null;
-
-      this.formulario.patchValue({
-        ...comentarioEditar,
-        fechaCita: fechaParaFormulario
-      });
-
-      this.formulario.get('feedback')?.patchValue(comentarioEditar.feedback || {});
-      this.indiceEdicion = this.comentarios.findIndex(c => c.id === comentarioEditar.id);
-      this.modoEdicion = true;
-      this.comentarioService.limpiarComentarioEditar();
-    }
+  ngOnInit() {
+    // Inicialización
   }
 
-  cargarCitas() {
-    this.usuariosService.getPlaces().subscribe(places => {
-      this.listaCitas = places;
-      if (this.editingCitaId && !this.listaCitas.some(c => c.id === this.editingCitaId)) {
-        this.limpiarFormulario();
-        Swal.fire('Información', 'La cita que intentabas editar ya no existe.', 'info');
-      }
-      this.cdr.detectChanges();
-    }, error => {
-      console.error("Error al cargar las citas:", error);
-      Swal.fire('Error', 'No se pudieron cargar las citas.', 'error');
-    });
+  guardarServicio(event: any) {
+    console.log("Servicio guardado:", event)
   }
 
-  cargarComentarios() {
-    this.comentarioService.getPlaces().subscribe(data => {
-      this.comentarios = data;
-      this.cdr.detectChanges();
-    });
+  guardarFecha(event: any) {
+    console.log("Fecha guardada:", event)
+  }
+
+  guardarHora(event: any) {
+    console.log("Hora guardada:", event)
   }
 
   guardarCita() {
-    if (this.editingCitaId) {
-      this.usuariosService.updatePlace(this.editingCitaId, this.userINFO)
-        .then(() => {
-          Swal.fire('Cita Actualizada', '', 'success');
-          this.limpiarFormulario();
-          this.cargarCitas();
-        })
-        .catch(error => {
-          console.error("Error al actualizar la cita:", error);
-          Swal.fire('Error', 'No se pudo actualizar la cita.', 'error');
-        });
-    } else {
-      this.usuariosService.addPlace(this.userINFO)
-        .then(() => {
-          Swal.fire('Cita Agendada', '', 'success');
-          this.limpiarFormulario();
-          this.cargarCitas();
-        })
-        .catch(error => {
-          console.error("Error al agendar la cita:", error);
-          Swal.fire('Error', 'No se pudo agendar la cita.', 'error');
-        });
-    }
-  }
-
-  eliminarUsuario(place: userInfo) {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: "¡Esta acción no se puede deshacer!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar'
-    }).then(result => {
-      if (result.isConfirmed) {
-        this.usuariosService.deletePlace(place)
-          .then(() => {
-            Swal.fire('Eliminado', 'La cita ha sido eliminada.', 'success');
-            this.cargarCitas();
-            if (this.editingCitaId === place.id) this.limpiarFormulario();
-          })
-          .catch(error => {
-            console.error("Error al eliminar la cita:", error);
-            Swal.fire('Error', 'No se pudo eliminar la cita.', 'error');
-          });
+    if (
+      this.userINFO.name &&
+      this.userINFO.grupo &&
+      this.userINFO.sexo &&
+      this.userINFO.fechaCita &&
+      this.userINFO.hora
+    ) {
+      this.listaCitas.push({ ...this.userINFO })
+      console.log("Cita guardada:", this.userINFO)
+      // Limpiar formulario
+      this.userINFO = {
+        name: "",
+        grupo: 0,
+        sexo: "",
+        fechaCita: null,
+        hora: "",
       }
-    });
-  }
-
-  eliminarComentario(c: any) {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: "¡Esta acción no se puede deshacer!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar'
-    }).then(result => {
-      if (result.isConfirmed) {
-        this.comentarioService.deletePlace(c)
-          .then(() => {
-            Swal.fire('Eliminado', 'El comentario ha sido eliminado.', 'success');
-            this.cargarComentarios();
-
-            if (this.modoEdicion && this.formulario.get('id')?.value === c.id) {
-              this.limpiarFormularioComentario();
-            }
-          })
-          .catch(error => {
-            console.error("Error al eliminar comentario:", error);
-            Swal.fire('Error', 'No se pudo eliminar el comentario.', 'error');
-          });
-      }
-    });
-  }
-
-  editarUsuario(u: userInfo) {
-    this.userINFO = { ...u };
-    if (this.userINFO.fechaCita) {
-
-      const originalDate = new Date(this.userINFO.fechaCita + 'T00:00:00');
-      originalDate.setDate(originalDate.getDate() + 1);
-      this.userINFO.fechaCita = originalDate.toISOString().split('T')[0];
-    }
-
-    this.editingCitaId = u.id;
-    this.selectedOption = '1';
-    if (this.userINFO.fechaCita) this.cargarHorasOcupadas(this.userINFO.fechaCita);
-    this.cdr.detectChanges();
-  }
-
-
-  editarComentario(c: any) {
-
-    const fechaParaFormulario = c.fechaCita ? new Date(c.fechaCita + 'T00:00:00') : null;
-
-    this.formulario.patchValue({
-      ...c,
-      fechaCita: fechaParaFormulario
-    });
-    this.formulario.get('feedback')?.patchValue(c.feedback || {});
-    this.indiceEdicion = this.comentarios.findIndex(com => com.id === c.id);
-    this.modoEdicion = true;
-    this.selectedOption = '2';
-    this.cdr.detectChanges();
-  }
-
-  enviarComentario(): void {
-    if (this.formulario.invalid) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Formulario incompleto',
-        text: 'Por favor llena todos los campos requeridos.'
-      });
-      return;
-    }
-
-    const rawComentario = this.formulario.value;
-    const comentarioAEnviar = {
-      ...rawComentario,
-
-      fechaCita: rawComentario.fechaCita
-        ? new Date(rawComentario.fechaCita).toISOString().split('T')[0]
-        : null,
-    };
-
-    if (this.modoEdicion && comentarioAEnviar.id) {
-
-      this.comentarioService.updatePlace(comentarioAEnviar.id, comentarioAEnviar)
-        .then(() => {
-          Swal.fire('¡Actualizado!', 'Tu comentario ha sido actualizado.', 'success');
-          this.cargarComentarios();
-          this.limpiarFormularioComentario();
-        })
-        .catch(error => {
-          console.error("Error al actualizar comentario:", error);
-          Swal.fire('Error', 'No se pudo actualizar el comentario.', 'error');
-        });
-    } else {
-
-      const nuevoComentario = { ...comentarioAEnviar, id: comentarioAEnviar.id || Date.now().toString() };
-      this.comentarioService.addPlace(nuevoComentario)
-        .then(() => {
-          Swal.fire('¡Guardado!', 'Tu comentario ha sido registrado.', 'success');
-          this.cargarComentarios();
-          this.limpiarFormularioComentario();
-        })
-        .catch(error => {
-          console.error("Error al guardar comentario:", error);
-          Swal.fire('Error', 'No se pudo registrar el comentario.', 'error');
-        });
     }
   }
 
-
-  limpiarFormularioComentario() {
-    this.formulario.reset();
-    this.modoEdicion = false;
-    this.indiceEdicion = null;
-
-    this.formulario.get('feedback')?.patchValue({
-      facilidadNavegar: false,
-      buenaPresentacion: false,
-      facilEntender: false,
-      estructuraUtilizada: false
-    });
-    this.cdr.detectChanges();
+  editarUsuario(usuario: any) {
+    console.log("Editando usuario:", usuario)
   }
 
-
-  guardarFecha(e: MatDatepickerInputEvent<Date>) {
-    if (e.value) {
-      const f = e.value.toISOString().split('T')[0];
-      this.userINFO.fechaCita = f;
-      this.cargarHorasOcupadas(f);
+  eliminarUsuario(usuario: any) {
+    const index = this.listaCitas.indexOf(usuario)
+    if (index > -1) {
+      this.listaCitas.splice(index, 1)
     }
   }
 
-  guardarHora(e: any) {
-    this.userINFO.hora = e.value;
+  getNomServicio(grupoId: number): string {
+    const grupo = this.grupos.find((g) => g.id === grupoId)
+    return grupo ? grupo.nomServicio : "Servicio no encontrado"
   }
 
-  guardarServicio(e: any) {
-    this.userINFO.grupo = e.value;
+  myFilter = (d: Date | null): boolean => {
+    const day = (d || new Date()).getDay()
+    return day !== 0 && day !== 6
   }
 
-  cargarHorasOcupadas(fecha: string) {
-    this.horasOcupadas = this.listaCitas
-      .filter(x => x.fechaCita === fecha && x.id !== this.editingCitaId)
-      .map(x => x.hora);
-    this.cdr.detectChanges();
-  }
-
-  limpiarFormulario() {
-    this.userINFO = { name: '', grupo: 0, sexo: '', fechaCita: '', hora: '' };
-    this.editingCitaId = undefined;
-    this.horasOcupadas = [];
-    this.cdr.detectChanges();
-  }
-
-  trackOption(_: number, o: any) { return o.value; }
-  trackGrupo(_: number, g: any) { return g.id; }
-  trackGenero(_: number, g: any) { return g.id; }
-  trackHora(_: number, h: any) { return h.id; }
-  trackCita(_: number, u: userInfo) { return u.id; }
-  trackComentario(_: number, c: any) { return c.id; }
-
-  myFilter = (d: Date | null) => {
-    const dt = d || new Date();
-    dt.setHours(0, 0, 0, 0);
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    return dt >= today && dt.getDay() !== 0;
-  };
-  getNomServicio(id: any): string {
-    const idAsNumber = typeof id === 'string' ? parseInt(id, 10) : id;
-
-    if (isNaN(idAsNumber)) {
-      console.warn('getNomServicio: ID de grupo no válido (NaN):', id);
-      return '';
-    }
-    const g = this.grupos.find(x => x.id === idAsNumber);
-    return g ? g.nomServicio : '';
-  }
-
-  async linkGoogleAccount() {
-    try {
-      if (!this.auth.currentUser) {
-        console.warn("No hay un usuario autenticado para vincular.");
-        return;
-      }
-      const provider = new GoogleAuthProvider();
-      await linkWithPopup(this.auth.currentUser, provider);
-       Swal.fire('Error', 'Cuenta correctamente vinculada con Google', 'error');
-     
-    } catch (error: any) {
-       Swal.fire('Error', 'Error al vincular cuenta con Google', 'error');
-      
-      if (error.code === 'auth/credential-already-in-use') {
-        
-      }
-     
+  enviarComentario() {
+    if (this.formulario.valid) {
+      this.comentarios.push({ ...this.formulario.value, i: Date.now() })
+      this.formulario.reset()
+      console.log("Comentario enviado")
     }
   }
 
+  editarComentario(comentario: any) {
+    console.log("Editando comentario:", comentario)
+  }
+
+  eliminarComentario(comentario: any) {
+    const index = this.comentarios.indexOf(comentario)
+    if (index > -1) {
+      this.comentarios.splice(index, 1)
+    }
+  }
+
+  linkGoogleAccount() {
+    console.log("Vinculando cuenta de Google")
+  }
 }
-

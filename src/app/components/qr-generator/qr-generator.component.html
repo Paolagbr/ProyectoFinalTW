@@ -1,0 +1,83 @@
+<div class="qr-container">
+  <div class="card">
+    <div class="card-header">
+      <h2>Código QR de tu Cita</h2>
+      <p class="subtitle">Presenta este código en tu cita del SPA</p>
+    </div>
+
+    <div class="card-body">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Generando código QR...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="error-state">
+        <div class="error-icon">⚠️</div>
+        <p>{{ error }}</p>
+        <button (click)="generarQR()" class="btn-retry">Reintentar</button>
+      </div>
+
+      <!-- Success State -->
+      <div *ngIf="qrCodeDataURL && !loading && !error" class="qr-content">
+        <!-- QR Code -->
+        <div class="qr-code-container">
+          <img [src]="qrCodeDataURL" alt="Código QR de la cita" class="qr-image">
+        </div>
+
+        <!-- Cita Information -->
+        <div *ngIf="citaData" class="cita-info">
+          <h3>Información de tu Cita</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Cliente:</span>
+              <span class="value">{{ citaData.cliente }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Servicio:</span>
+              <span class="value">{{ citaData.servicio }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Fecha:</span>
+              <span class="value">{{ citaData.fecha }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Hora:</span>
+              <span class="value">{{ citaData.hora }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Código:</span>
+              <span class="value code">{{ citaData.codigoConfirmacion }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Válido hasta:</span>
+              <span class="value">{{ citaData.validoHasta | date:'short' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+          <button (click)="regenerarQR()" class="btn-secondary">
+            🔄 Regenerar QR
+          </button>
+          <button (click)="descargarQR()" class="btn-primary">
+            📱 Descargar QR
+          </button>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+          <h4>Instrucciones:</h4>
+          <ul>
+            <li>Presenta este código QR al llegar a tu cita</li>
+            <li>El código es válido por 24 horas</li>
+            <li>Puedes regenerar el código si es necesario</li>
+            <li>Guarda una captura de pantalla como respaldo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
