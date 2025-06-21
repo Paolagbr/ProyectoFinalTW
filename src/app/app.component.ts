@@ -14,7 +14,6 @@ import { CarruselComponent } from './components/carrusel/carrusel.component';
     RouterOutlet,
     NavbarComponent,
     FooterComponent,
-    CarruselComponent,
     // NgChartsModule
   ],
   templateUrl: './app.component.html',
