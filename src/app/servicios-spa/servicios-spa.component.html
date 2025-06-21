@@ -1,20 +1,13 @@
-
-
 <div class="contenedor-video-texto">
   <div class="video-box">
-    <iframe
-      width="460"
-      height="515"
-      [src]="video | domseguro:'https://www.youtube.com/embed/'"
-      frameborder="0"
-      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
+    <iframe width="460" height="515" [src]="video | domseguro:'https://www.youtube.com/embed/'" frameborder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
   </div>
   <div class="texto-box">
     <h2>Relájate con Nuestros Servicios</h2>
     <p>
-      Disfruta de una experiencia única en nuestro spa, donde combinamos 
+      Disfruta de una experiencia única en nuestro spa, donde combinamos
       técnicas tradicionales y modernas para brindarte el máximo bienestar.
     </p>
     <!-- <ul>
@@ -27,50 +20,52 @@
 </div>
 <!--Tarjetas de servicio-->
 <h1>Busca tus servicios</h1>
-<input
-  type="text"
-  placeholder="Buscar servicio..."
-  [ngModel]="terminoBusqueda()"
-  (ngModelChange)="actualizarBusqueda($event)"
-  class="barra-busqueda"
-/>
+<input type="text" placeholder="Buscar servicio..." [ngModel]="terminoBusqueda()"
+  (ngModelChange)="actualizarBusqueda($event)" class="barra-busqueda" />
 
 @if (!cargando && !error) {
-  <div class="contenedor-grid">
-    @if (serviciosFiltrados().length > 0) {
-      @for (dato of serviciosFiltrados(); track dato.id) {
-        <div class="tarjeta">
-          <div class="imagen-contenedor">
-            <img [src]="dato.image" alt="{{ dato.name }}" />
-          </div>
-          <div class="info-producto">
-            <h2>{{ dato.name }}</h2>
-            <br>
-            <p class="descripcion">{{ dato.description }}</p>
+<div class="contenedor-grid">
+  @if (serviciosFiltrados().length > 0) {
+  @for (dato of serviciosFiltrados(); track dato.id) {
+  <div class="tarjeta">
+    <div class="imagen-contenedor">
+      <img [src]="dato.image" alt="{{ dato.name }}" />
+    </div>
+    <div class="info-producto">
+      <!-- Pipe predeterminado 'uppercase': convierte el nombre del servicio a mayúsculas -->
+      <h2> {{ dato.name | uppercase }}</h2>
 
-            @if (dato.expandido) {
-              <div class="contenido-extra">
-                <p class="descripcion"><strong>Beneficios:</strong> {{dato.beneficio}}</p>
-                <p class="descripcion"><strong>Duración:</strong> {{dato.duracion}}</p>
-              </div>
-            }
+      <!-- <h2>{{ dato.name }}</h2> -->
+      <br>
+      
+      <p class="descripcion">{{ dato.description }}</p>
 
-            <div class="detalles">
-              <p class="precio">Precio: ${{ dato.price }}</p>
-              <div class="paypal-button" [id]="'paypal-button-' + dato.id"></div>
-              <button class="boton-ver-mas" (click)="toggleDetalles(dato)">
-                {{ dato.expandido ? 'Ver menos' : 'Ver detalles' }}
-              </button>
-            </div>
-          </div>
-        </div>
+      @if (dato.expandido) {
+      <div class="contenido-extra">
+        <p class="descripcion"><strong>Beneficios:</strong> {{dato.beneficio}}</p>
+        <p class="descripcion"><strong>Duración:</strong> {{dato.duracion}}</p>
+      </div>
       }
-    } @else {
-      <div class="mensajeError">No hay servicios disponibles que coincidan con tu búsqueda.</div>
-    }
+
+      <div class="detalles">
+        
+        <p class="precio">Precio: {{ dato.price | currency:'MXN':'symbol':'1.2-2' }}</p>
+
+        <!-- <p class="precio">Precio: {{ dato.price }}</p> -->
+        <div class="paypal-button" [id]="'paypal-button-' + dato.id"></div>
+        <button class="boton-ver-mas" (click)="toggleDetalles(dato)">
+          {{ dato.expandido ? 'Ver menos' : 'Ver detalles' }}
+        </button>
+      </div>
+    </div>
   </div>
+  }
+  } @else {
+  <div class="mensajeError">No hay servicios disponibles que coincidan con tu búsqueda.</div>
+  }
+</div>
 } @else if (cargando) {
-  <div>Cargando servicios...</div>
+<div>Cargando servicios...</div>
 } @else if (error) {
-  <div>Ocurrió un error al cargar los servicios. Por favor, inténtalo de nuevo más tarde.</div>
+<div>Ocurrió un error al cargar los servicios. Por favor, inténtalo de nuevo más tarde.</div>
 }
