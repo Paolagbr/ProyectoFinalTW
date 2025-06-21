@@ -37,7 +37,9 @@ export class IngresarUsuarioService {
         username: usuario.username,
         email: usuario.email,
         userType: usuario.userType, // todavía puedes usar esto para saber si es admin
-        fechaCreacion: new Date()
+        fechaCreacion: new Date(),
+         intentosFallidos: usuario.intentosFallidos ?? 0,
+        bloqueado: usuario.bloqueado ?? false 
       });
 
     } catch (error) {
