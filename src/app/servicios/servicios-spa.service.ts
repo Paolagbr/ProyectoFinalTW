@@ -21,7 +21,7 @@ export interface Informacion {
 })
 export class ServiciosSPAService {
 
- private apiUrl='https://spapag.free.beeceptor.com ';
+ private apiUrl='https://spapag.free.beeceptor.com/';
 
   constructor(private http: HttpClient) { }
   obtenerDatos(): Observable<Informacion[]> {

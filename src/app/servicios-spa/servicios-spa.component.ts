@@ -18,11 +18,10 @@ declare var paypal: any;
 })
 export class ServiciosSPAComponent implements OnInit {
   title = 'SPA_services';
-  inf: Informacion[] = []; // Lista de servicios desde API
+  inf: Informacion[] = []; 
   cargando = true;
   error: any = null;
 
-  // --- Solo búsqueda usa signals ---
   terminoBusqueda = signal<string>(''); 
   serviciosFiltrados = computed(() => {
     const termino = this.terminoBusqueda().toLowerCase();
