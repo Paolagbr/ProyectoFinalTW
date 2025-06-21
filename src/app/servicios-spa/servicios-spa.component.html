@@ -25,16 +25,15 @@
   type="text"
   aria-label="Buscar servicio"
   placeholder="Buscar servicio..."
-  [(ngModel)]="terminoBusqueda"
-  (input)="filtrarServicios()"
+  (input)="actualizarBusqueda($event)"
   class="barra-busqueda"
 />
 
 <!-- Estado del sistema -->
 @if (!cargando && !error) {
-  @if (serviciosFiltrados.length > 0) {
+  @if (serviciosFiltrados().length > 0) {
     <div class="contenedor-grid">
-      @for (dato of serviciosFiltrados; track trackById) {
+      @for (dato of serviciosFiltrados(); track trackById) {
         <div class="tarjeta">
           <div class="imagen-contenedor">
             <img [src]="dato.image" alt="{{ dato.name }}" />

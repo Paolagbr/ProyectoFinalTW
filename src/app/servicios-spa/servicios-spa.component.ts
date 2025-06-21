@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'; // Añadido OnInit
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { Informacion, ServiciosSPAService } from '../servicios/servicios-spa.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule, JsonPipe } from '@angular/common';
@@ -7,7 +7,7 @@ import { RouterOutlet } from '@angular/router';
 import { DomseguroPipe } from '../domseguro.pipe';
 import { PaypalService } from '../servicios/paypal.service';
 
-declare var paypal: any; // Asegúrate que el SDK de PayPal se carga en index.html
+declare var paypal: any;
 
 @Component({
   selector: 'app-servicios-spa',
@@ -16,51 +16,43 @@ declare var paypal: any; // Asegúrate que el SDK de PayPal se carga en index.ht
   templateUrl: './servicios-spa.component.html',
   styleUrls: ['./servicios-spa.component.css']
 })
-export class ServiciosSPAComponent implements OnInit { // Implementa OnInit
+export class ServiciosSPAComponent implements OnInit {
   title = 'SPA_services';
-  inf: Informacion[] = [];
-  serviciosFiltrados: Informacion[] = [];
+  inf: Informacion[] = []; // Lista de servicios desde API
   cargando = true;
   error: any = null;
-  terminoBusqueda: string = '';
-  video: string = "DjCFi8NRWvs";
+
+  // --- Solo búsqueda usa signals ---
+  terminoBusqueda = signal<string>(''); 
+  serviciosFiltrados = computed(() => {
+    const termino = this.terminoBusqueda().toLowerCase();
+    return this.inf.filter(servicio =>
+      servicio.name.toLowerCase().includes(termino) ||
+      servicio.description.toLowerCase().includes(termino)
+    );
+  });
+
+  video: string = 'DjCFi8NRWvs';
 
   constructor(
     private tuApiService: ServiciosSPAService,
     private paypalService: PaypalService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    console.log('--- Iniciando carga de servicios ---');
     this.tuApiService.obtenerDatos().subscribe({
       next: (data) => {
-        console.log('Datos brutos recibidos de la API:', data); // Ver datos crudos
-
         this.inf = data.map(d => {
-          const originalPrice = d.price;
-          let convertedPrice = Number(originalPrice);
-
-          // Manejo de posibles valores no numéricos
-          if (isNaN(convertedPrice) || convertedPrice === null || convertedPrice === undefined) {
-            console.warn(`Advertencia: El precio original '${originalPrice}' para el servicio '${d.name}' no es un número válido. Se establecerá en 0.`);
-            convertedPrice = 0; // O un valor por defecto si lo prefieres
-          }
-
-          console.log(`Servicio: ${d.name}, Precio original: ${originalPrice}, Precio convertido: ${convertedPrice}`);
-
+          const precio = Number(d.price);
           return {
             ...d,
-            price: convertedPrice,
+            price: isNaN(precio) ? 0 : precio,
             expandido: false,
             paypalRendered: false,
             pagoCompletado: false
           };
         });
-
-        this.serviciosFiltrados = [...this.inf];
         this.cargando = false;
-        console.log('Servicios cargados y procesados:', this.inf); // Ver datos después de procesamiento
-        console.log('--- Carga de servicios finalizada ---');
       },
       error: (error) => {
         this.error = error;
@@ -70,12 +62,9 @@ export class ServiciosSPAComponent implements OnInit { // Implementa OnInit
     });
   }
 
-  filtrarServicios(): void {
-    const termino = this.terminoBusqueda.toLowerCase();
-    this.serviciosFiltrados = this.inf.filter(servicio =>
-      servicio.name.toLowerCase().includes(termino) ||
-      servicio.description.toLowerCase().includes(termino)
-    );
+  actualizarBusqueda(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.terminoBusqueda.set(input.value);
   }
 
   toggleDetalles(dato: Informacion): void {
@@ -83,37 +72,31 @@ export class ServiciosSPAComponent implements OnInit { // Implementa OnInit
 
     if (dato.expandido && !dato.paypalRendered && !dato.pagoCompletado) {
       setTimeout(() => {
-        const paypalContainer = document.getElementById('paypal-button-' + dato.id);
+        const containerId = 'paypal-button-' + dato.id;
+        const paypalContainer = document.getElementById(containerId);
+
         if (!paypalContainer) {
-          console.error(`Contenedor de PayPal no encontrado para el ID: paypal-button-${dato.id}`);
+          console.error('Contenedor PayPal no encontrado:', containerId);
           return;
         }
 
-        // Limpiar el contenedor antes de renderizar si ya hay contenido
         paypalContainer.innerHTML = '';
 
-        // Asegúrate de que PayPal esté disponible
         if (typeof paypal === 'undefined') {
-          console.error('El SDK de PayPal no se ha cargado. Verifica tu index.html.');
-          alert('El sistema de pago no está disponible. Intenta de nuevo más tarde.');
+          alert('❌ PayPal SDK no está cargado.');
           return;
         }
 
         paypal.Buttons({
-          createOrder: (data: any, actions: any) => {
-            console.log('Intentando crear orden para el servicio:', dato.name);
-            console.log('Precio del servicio en createOrder:', dato.price, typeof dato.price);
-
-            if (dato.price <= 0) {
-              alert('Precio inválido para realizar el pago');
-              console.error('Error: Precio inválido para PayPal:', dato.price);
+          createOrder: (_data: any, actions: any) => {
+            if (dato.price <= 0 || isNaN(dato.price)) {
+              alert('Precio inválido.');
               return Promise.reject('Precio inválido');
             }
-
             return actions.order.create({
               purchase_units: [{
                 amount: {
-                  value: dato.price.toFixed(2) // Asegura 2 decimales
+                  value: dato.price.toFixed(2)
                 }
               }]
             });
@@ -121,7 +104,6 @@ export class ServiciosSPAComponent implements OnInit { // Implementa OnInit
           onApprove: (data: any, actions: any) => {
             return actions.order.capture().then(async (details: any) => {
               alert('✅ Pago completado por: ' + details.payer.name.given_name);
-
               try {
                 await this.paypalService.agregarDato('pagos', {
                   nombre: details.payer.name.given_name,
@@ -130,28 +112,21 @@ export class ServiciosSPAComponent implements OnInit { // Implementa OnInit
                   fecha: new Date().toISOString(),
                   paypalOrderId: data.orderID
                 });
-                alert('Pago registrado en Firebase correctamente.');
+                alert('Pago registrado correctamente.');
               } catch (error) {
-                console.error('Error guardando pago en Firebase:', error);
-                alert('Error guardando pago en base de datos.');
+                console.error('Error guardando pago:', error);
               }
-
               dato.pagoCompletado = true;
-              console.log('Pago completado y registrado para:', dato.name);
             });
           },
           onError: (err: any) => {
-            console.error('❌ Error al procesar el pago:', err);
-            alert('Error al procesar el pago, intenta de nuevo. Revisa la consola para más detalles.');
-          },
-          onCancel: (data: any) => {
-            console.log('Transacción de PayPal cancelada:', data);
-            alert('Pago cancelado.');
+            console.error('❌ Error en el pago:', err);
+            alert('Ocurrió un error al procesar el pago.');
           }
-        }).render('#paypal-button-' + dato.id);
+        }).render('#' + containerId);
 
         dato.paypalRendered = true;
-      }, 0); 
+      }, 0);
     }
   }
 
