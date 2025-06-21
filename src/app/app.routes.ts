@@ -10,6 +10,7 @@ import { CuestionarioComponent } from './components/cuestionario/cuestionario.co
 import { ServiciosSPAComponent } from './servicios-spa/servicios-spa.component';
 import { UsurioNuevoComponent } from './usurio-nuevo/usurio-nuevo.component';
 import { RegistrarCitaUsuarioComponent } from './registrar-cita-usuario/registrar-cita-usuario.component';
+import { PasswordComponent } from './password/password.component';
 
 
 
@@ -28,6 +29,7 @@ export const routes: Routes = [
     {path: 'servicio', component: ServiciosSPAComponent},
     {path: 'usuario', component: UsurioNuevoComponent},
     {path: 'agendar', component: RegistrarCitaUsuarioComponent},
+    {path: 'recuperar', component: PasswordComponent},
 
     
 ];
