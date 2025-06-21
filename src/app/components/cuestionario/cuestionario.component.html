@@ -1,11 +1,9 @@
 <div class="container">
-  <!-- Formulario de Quejas y Sugerencias -->
   <div class="card">
     <h1 class="title">Quejas y Sugerencias</h1>
     <div class="card-body">
       <form (ngSubmit)="enviarComentario()" [formGroup]="formulario">
 
-        <!-- Nombre -->
         <div class="mb-2">
           <label class="form-label">Nombre</label>
           <input type="text" formControlName="nombre" class="form-control" placeholder="Ingresa tu nombre" />
@@ -15,7 +13,6 @@
           </div>
         </div>
 
-        <!-- Email -->
         <div class="mb-2">
           <label class="form-label">Email</label>
           <input type="email" formControlName="email" class="form-control" placeholder="Ingresa tu email" />
@@ -26,7 +23,6 @@
           </div>
         </div>
 
-        <!-- Feedback -->
         <label class="form-label">¿Qué fue lo que más te gustó de la página?</label>
         <div formGroupName="feedback" class="mb-3">
           <label><input type="checkbox" formControlName="facilidadNavegar" /> Facilidad de navegar</label><br />
@@ -35,7 +31,6 @@
           <label><input type="checkbox" formControlName="estructuraUtilizada" /> La estructura que se utilizó</label>
         </div>
 
-        <!-- Servicio -->
         <label for="servicio">Servicio que más te gustó</label><br />
         <select formControlName="servicio" id="servicio" class="form-select mb-3">
           <option value="" disabled selected>Selecciona una opción</option>
@@ -48,7 +43,6 @@
           <option value="Atencion al cliente">Atención al cliente</option>
         </select>
 
-        <!-- Mensaje -->
         <div class="mb-2">
           <label class="form-label">Mensaje de queja o sugerencia</label>
           <textarea formControlName="mensaje" class="form-control"
@@ -59,7 +53,6 @@
           </div>
         </div>
 
-        <!-- Fecha -->
         <div class="campo mb-3">
           <label class="label-genero">¿En qué fecha volverías a venir?</label><br />
           <mat-form-field appearance="fill">
@@ -81,7 +74,6 @@
     </div>
   </div>
 
-  <!-- Sección del Código QR -->
   <div *ngIf="showQRSection" class="qr-container mt-4">
     <div class="card">
       <div class="card-header">
@@ -90,27 +82,22 @@
       </div>
 
       <div class="card-body">
-        <!-- Loading State -->
         <div *ngIf="loading" class="loading-state">
           <div class="spinner"></div>
           <p>Generando código QR...</p>
         </div>
 
-        <!-- Error State -->
         <div *ngIf="error && !loading" class="error-state">
           <div class="error-icon">⚠️</div>
           <p>{{ error }}</p>
-<button (click)="generarQR(formulario.value)" class="btn-retry">Reintentar</button>
+          <button (click)="generarQR(formulario.value)" class="btn-retry">Reintentar</button>
         </div>
 
-        <!-- Success State -->
         <div *ngIf="qrCodeDataURL && !loading && !error" class="qr-content">
-          <!-- QR Code -->
           <div class="qr-code-container">
             <img [src]="qrCodeDataURL" alt="Código QR de la cita" class="qr-image">
           </div>
 
-          <!-- Cita Information -->
           <div *ngIf="citaData" class="cita-info">
             <h3>Información de tu Cita</h3>
             <div class="info-grid">
@@ -141,17 +128,16 @@
             </div>
           </div>
 
-          <!-- Actions -->
           <div class="actions">
-            <button (click)="regenerarQR()" class="btn-secondary">
-              🔄 Regenerar QR
-            </button>
+            
             <button (click)="descargarQR()" class="btn-primary">
               📱 Descargar QR
             </button>
+            <button (click)="regenerarQR()" class="btn-secondary">
+              🔄 Regenerar QR
+            </button>
           </div>
 
-          <!-- Instructions -->
           <div class="instructions">
             <h4>Instrucciones:</h4>
             <ul>
@@ -166,7 +152,6 @@
     </div>
   </div>
 
-  <!-- Lista de comentarios guardados -->
   <div *ngIf="comentarios.length > 0" class="mt-4">
     <h3>Comentarios guardados</h3>
     <div *ngFor="let comentario of comentarios; let i = index" class="card mt-3 p-3 shadow-sm border rounded">
