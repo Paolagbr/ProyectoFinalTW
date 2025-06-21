@@ -1,5 +1,4 @@
-
-
+<!-- Video + Texto Promocional -->
 <div class="contenedor-video-texto">
   <div class="video-box">
     <iframe
@@ -17,41 +16,38 @@
       Disfruta de una experiencia única en nuestro spa, donde combinamos 
       técnicas tradicionales y modernas para brindarte el máximo bienestar.
     </p>
-    <!-- <ul>
-      <li>Masajes terapéuticos</li>
-      <li>Tratamientos faciales</li>
-      <li>Aromaterapia</li>
-      <li>Rituales de relajación</li>
-    </ul> -->
   </div>
 </div>
-<!--Tarjetas de servicio-->
+
+<!-- Buscador -->
 <h1>Busca tus servicios</h1>
 <input
   type="text"
+  aria-label="Buscar servicio"
   placeholder="Buscar servicio..."
   [(ngModel)]="terminoBusqueda"
   (input)="filtrarServicios()"
   class="barra-busqueda"
 />
 
+<!-- Estado del sistema -->
 @if (!cargando && !error) {
-  <div class="contenedor-grid">
-    @if (serviciosFiltrados.length > 0) {
-      @for (dato of serviciosFiltrados; track dato.id) {
+  @if (serviciosFiltrados.length > 0) {
+    <div class="contenedor-grid">
+      @for (dato of serviciosFiltrados; track trackById) {
         <div class="tarjeta">
           <div class="imagen-contenedor">
             <img [src]="dato.image" alt="{{ dato.name }}" />
           </div>
+
           <div class="info-producto">
             <h2>{{ dato.name }}</h2>
-            <br>
             <p class="descripcion">{{ dato.description }}</p>
 
             @if (dato.expandido) {
               <div class="contenido-extra">
-                <p class="descripcion"><strong>Beneficios:</strong> {{dato.beneficio}}</p>
-                <p class="descripcion"><strong>Duración:</strong> {{dato.duracion}}</p>
+                <p><strong>Beneficios:</strong> {{ dato.beneficio }}</p>
+                <p><strong>Duración:</strong> {{ dato.duracion }}</p>
               </div>
             }
 
@@ -65,12 +61,12 @@
           </div>
         </div>
       }
-    } @else {
-      <div class="mensajeError">No hay servicios disponibles que coincidan con tu búsqueda.</div>
-    }
-  </div>
+    </div>
+  } @else {
+    <div class="mensajeError">No hay servicios disponibles que coincidan con tu búsqueda.</div>
+  }
 } @else if (cargando) {
-  <div>Cargando servicios...</div>
+  <div class="spinner">Cargando servicios...</div>
 } @else if (error) {
-  <div>Ocurrió un error al cargar los servicios. Por favor, inténtalo de nuevo más tarde.</div>
+  <div class="mensajeError">Ocurrió un error al cargar los servicios. Por favor, inténtalo de nuevo más tarde.</div>
 }
