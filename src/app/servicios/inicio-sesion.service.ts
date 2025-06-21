@@ -19,7 +19,8 @@ import {
   query,
   where,
   getDocs,
-  Firestore
+  Firestore,
+  updateDoc
 } from '@angular/fire/firestore';
 import { UsuarioIngresar } from '../datos';
 //import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
@@ -75,89 +76,156 @@ export class InicioSesionService {
       }
     });
   }
+  // async logIn(email: string, password: string) {
+  //   const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+  //   const user = userCredential.user;
+
+  //   const isRegistered = await this.isUserRegistered(user.email || '');
+  //   if (!isRegistered) {
+  //     await this.logOut();
+  //     throw new Error('Usuario no registrado en la base de datos');
+  //   }
+
+
+  //   const alreadyLinked = user.providerData.some(p => p.providerId === 'google.com');
+  //   if (!alreadyLinked) {
+  //     try {
+  //       const provider = new GoogleAuthProvider();
+  //       await linkWithPopup(user, provider);
+  //       console.log('Cuenta de Google vinculada automáticamente.');
+  //     } catch (error: any) {
+  //       if (error.code === 'auth/credential-already-in-use') {
+  //         console.warn('Esta cuenta de Google ya está vinculada a otro usuario.');
+
+  //       } else {
+  //         console.error('Error al vincular automáticamente con Google:', error);
+  //       }
+  //     }
+  //   }
+
+  //   return userCredential;
+  // }
   async logIn(email: string, password: string) {
-  const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-  const user = userCredential.user;
+    const db = getFirestore();
+    const usuariosRef = collection(db, 'usuarios');
+    const q = query(usuariosRef, where('email', '==', email));
+    const snapshot = await getDocs(q);
 
-  const isRegistered = await this.isUserRegistered(user.email || '');
-  if (!isRegistered) {
-    await this.logOut();
-    throw new Error('Usuario no registrado en la base de datos');
-  }
+    if (snapshot.empty) {
+      throw new Error('Usuario no registrado en la base de datos');
+    }
 
+    const userDoc = snapshot.docs[0];
+    const userData = userDoc.data() as UsuarioIngresar;
 
-  const alreadyLinked = user.providerData.some(p => p.providerId === 'google.com');
-  if (!alreadyLinked) {
+    if (userData.bloqueado) {
+      throw new Error('Cuenta bloqueada por múltiples intentos fallidos. Restablece tu contraseña.');
+    }
+
     try {
-      const provider = new GoogleAuthProvider();
-      await linkWithPopup(user, provider);
-      console.log('Cuenta de Google vinculada automáticamente.');
-    } catch (error: any) {
-      if (error.code === 'auth/credential-already-in-use') {
-        console.warn('Esta cuenta de Google ya está vinculada a otro usuario.');
-       
-      } else {
-        console.error('Error al vincular automáticamente con Google:', error);
-      }
-    }
-  }
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      const user = userCredential.user;
 
-  return userCredential;
-}
-
-
- async logInGoogle() {//Iniciar con google
-  const provider = new GoogleAuthProvider();
-
-  try {
-    const result = await signInWithPopup(this.auth, provider);
-    const user = result.user;
-    const email = user.email;
-
-    if (!email) {
-      throw new Error('No se pudo obtener el correo del usuario');
-    }
-
-    const isRegistered = await this.isUserRegistered(email);
-
-    if (!isRegistered) {
-      await this.logOut();
-      throw new Error('El correo no está registrado en la base de datos');
-    }
-
-    return result;
-
-  } catch (error: any) {
-    if (error.code === 'auth/account-exists-with-different-credential') {
-      const email = error.customData?.email;
-      const pendingCred = GoogleAuthProvider.credentialFromError(error);
-
-      if (!email || !pendingCred) {
-        throw new Error('No se pudo obtener el correo o credenciales para vincular cuentas');
-      }
-      const methods = await fetchSignInMethodsForEmail(this.auth, email);
-
-      if (methods.includes('password')) {
-        
-        const password = prompt('Ya existe una cuenta con este correo. Ingresa tu contraseña para vincularla con Google:');
-
-        if (!password) {
-          throw new Error('Contraseña necesaria para vincular cuentas');
+      // Vincular con Google si no está vinculado aún
+      const alreadyLinked = user.providerData.some(p => p.providerId === 'google.com');
+      if (!alreadyLinked) {
+        try {
+          const provider = new GoogleAuthProvider();
+          await linkWithPopup(user, provider);
+          console.log('Cuenta de Google vinculada automáticamente.');
+        } catch (error: any) {
+          if (error.code === 'auth/credential-already-in-use') {
+            console.warn('Esta cuenta de Google ya está vinculada a otro usuario.');
+          } else {
+            console.error('Error al vincular automáticamente con Google:', error);
+          }
         }
-
-        const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-        await linkWithCredential(userCredential.user, pendingCred);
-        alert('Cuentas vinculadas correctamente');
-        return userCredential;
-
-      } else {
-        throw new Error(`Por favor inicia sesión usando el proveedor: ${methods[0]}`);
       }
-    } else {
+
+      // Login exitoso → resetear intentos
+      await updateDoc(userDoc.ref, {
+        intentosFallidos: 0,
+        bloqueado: false
+      });
+
+      return userCredential;
+
+    } catch (error: any) {
+      console.error('Error en inicio de sesión:', error);
+
+      // Incrementar contador si el usuario existe en Firestore
+      const nuevosIntentos = (userData.intentosFallidos ?? 0) + 1;
+      const bloqueado = nuevosIntentos >= 3;
+
+      await updateDoc(userDoc.ref, {
+        intentosFallidos: nuevosIntentos,
+        bloqueado: bloqueado
+      });
+
+      console.warn(`Intento fallido #${nuevosIntentos} para ${email}. Bloqueado: ${bloqueado}`);
+
+      if (bloqueado) {
+        throw new Error('Cuenta bloqueada por múltiples intentos fallidos.');
+      }
+
       throw error;
     }
   }
-}
+
+
+
+  async logInGoogle() {//Iniciar con google
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const result = await signInWithPopup(this.auth, provider);
+      const user = result.user;
+      const email = user.email;
+
+      if (!email) {
+        throw new Error('No se pudo obtener el correo del usuario');
+      }
+
+      const isRegistered = await this.isUserRegistered(email);
+
+      if (!isRegistered) {
+        await this.logOut();
+        throw new Error('El correo no está registrado en la base de datos');
+      }
+
+      return result;
+
+    } catch (error: any) {
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        const email = error.customData?.email;
+        const pendingCred = GoogleAuthProvider.credentialFromError(error);
+
+        if (!email || !pendingCred) {
+          throw new Error('No se pudo obtener el correo o credenciales para vincular cuentas');
+        }
+        const methods = await fetchSignInMethodsForEmail(this.auth, email);
+
+        if (methods.includes('password')) {
+
+          const password = prompt('Ya existe una cuenta con este correo. Ingresa tu contraseña para vincularla con Google:');
+
+          if (!password) {
+            throw new Error('Contraseña necesaria para vincular cuentas');
+          }
+
+          const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+          await linkWithCredential(userCredential.user, pendingCred);
+          alert('Cuentas vinculadas correctamente');
+          return userCredential;
+
+        } else {
+          throw new Error(`Por favor inicia sesión usando el proveedor: ${methods[0]}`);
+        }
+      } else {
+        throw error;
+      }
+    }
+  }
 
 
   isAuthenticated(): boolean {
