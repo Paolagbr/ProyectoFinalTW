@@ -1,74 +1,48 @@
-@font-face{
+@font-face {
   font-family: 'Letra';
-  src: url('/letraC.ttf');
+  src: url('/src/assets/letraC.ttf'); /* Asegúrate que esté en la carpeta /src/assets */
 }
-/* .carousel-item img {
-    max-height: 500px;
-    object-fit: cover;
-  } */
 
-/* .carousel-inner {
-    height: 400px; /* ajusta a lo que necesites 
-  }
+body {
+  font-family: inherit !important;
+  font-size: inherit !important;
+}
 
-  .carousel-item img {
-    object-fit: cover;
-    height: 100%;
-  } */
+/* Aplicar tamaño de fuente heredado a todos los elementos */
+#mainContent,
+#mainContent h1, 
+#mainContent h2, 
+#mainContent h3, 
+#mainContent h4, 
+#mainContent h5, 
+#mainContent h6, 
+#mainContent p, 
+#mainContent li, 
+#mainContent a, 
+#mainContent span, 
+#mainContent div,
+#mainContent .card-title,
+#mainContent .card-text,
+#mainContent .lema,
+#mainContent .custom-caption h5,
+#mainContent .custom-caption p {
+  font-size: inherit !important;
+}
 
-
+/* -------------------- Carousel -------------------- */
 .carousel-item img {
   max-height: 500px;
-  /* Ajusta la altura máxima según sea necesario */
   object-fit: cover;
-  /* Asegura que la imagen cubra el área del carrusel */
 }
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   background-color: rgba(0, 0, 0, 0.5);
-  /* Fondo semi-transparente para las flechas */
   border-radius: 50%;
-  /* Hace que las flechas sean redondeadas */
 }
 
 .carousel-inner {
   background-color: rgba(255, 255, 255, 0.5);
-  /* Fondo blanco semi-transparente */
-}
-
-
-/*Mensaje*/
-.contenedorM {
-  max-width: 100%;
-  max-height: 530px;
-  margin-bottom: 50px;
-}
-
-.contenedorM img{
-  border-radius: 10px;
-  margin-left: 23%;
-  margin-bottom: 0px;
-}
-.card-title{
-  text-align: center;
-  font-size: 1.5rem;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: bold;
-
-}
-.carta{
-  border: 6px solid black;
-  border-radius: 10px;
-  background-color: rgb(240, 233, 228);
-  
-}
-.card-text{
-  font-size: 1.4rem;
-  font-family: 'Times New Roman', Times, serif;
-}
-.btn{
-  margin-left: 42%;
 }
 
 .carousel-item {
@@ -80,7 +54,6 @@
   top: 50%;
   left: 80%;
   transform: translate(-50%, -50%);
-  /*background: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
   color: white;
   padding: 20px;
   border-radius: 12px;
@@ -89,18 +62,207 @@
   font-weight: bold;
 }
 
-.custom-caption h5 {
-  font-size: 1.8rem;
-  margin-bottom: 8px;
-}
-
-.custom-caption p {
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.lema{
+/* -------------------- Lema -------------------- */
+.lema {
   font-family: cursive;
-  font-size: 30px;
   border-color: black;
+}
+
+/* -------------------- Mensaje principal -------------------- */
+.contenedorM {
+  max-width: 100%;
+  max-height: 530px;
+  margin-bottom: 50px;
+}
+
+.contenedorM img {
+  border-radius: 10px;
+  margin-left: 23%;
+  margin-bottom: 0px;
+}
+
+/* -------------------- Tarjetas -------------------- */
+.card-title {
+  text-align: center;
+  font-weight: bold;
+}
+
+.carta {
+  border: 6px solid black;
+  border-radius: 10px;
+  background-color: rgb(240, 233, 228);
+}
+
+.btn {
+  margin-left: 42%;
+}
+
+/* -------------------- Accesibilidad -------------------- */
+.high-contrast {
+  background-color: black !important;
+  color: yellow !important;
+  font-family: 'Letra', cursive, sans-serif !important;
+}
+
+.high-contrast .carousel-item img {
+  filter: grayscale(1) brightness(1.2) contrast(1.5) !important;
+  border: 2px solid yellow !important;
+}
+
+.high-contrast .carousel-control-prev-icon,
+.high-contrast .carousel-control-next-icon {
+  background-color: yellow !important;
+  border-radius: 50% !important;
+}
+
+.high-contrast .carousel-inner {
+  background-color: #111 !important;
+}
+
+.high-contrast .custom-caption,
+.high-contrast .text-muted {
+  background-color: black !important;
+  color: yellow !important;
+  border: 2px solid yellow !important;
+}
+
+.high-contrast .lema {
+  color: yellow !important;
+  border-color: yellow !important;
+}
+
+.high-contrast .contenedorM img {
+  border: 3px solid yellow !important;
+  filter: grayscale(1) brightness(1.2) contrast(1.5) !important;
+}
+
+.high-contrast .card-body {
+  background-color: black !important;
+}
+
+.high-contrast .card-img-top {
+  filter: grayscale(1) brightness(1.2) contrast(1.5) !important;
+}
+
+.high-contrast .card-title {
+  color: yellow !important;
+  font-family: 'Letra', cursive, sans-serif !important;
+}
+
+.high-contrast .card-text {
+  color: yellow !important;
+}
+
+.high-contrast .carta {
+  background-color: #222 !important;
+  border-color: yellow !important;
+  color: yellow !important;
+}
+
+.high-contrast .btn,
+.high-contrast button {
+  background-color: black !important;
+  color: yellow !important;
+  border: 2px solid yellow !important;
+}
+
+.high-contrast a,
+.high-contrast a:visited {
+  color: yellow !important;
+  text-decoration: underline;
+}
+
+.high-contrast .accessibility-fab {
+  background-color: yellow !important;
+  border: 2px solid black !important;
+}
+
+.high-contrast .accessibility-icon {
+  fill: black !important;
+}
+
+.high-contrast .navbar,
+.high-contrast .footer,
+.high-contrast nav {
+  background-color: black !important;
+  color: yellow !important;
+  border-top: 2px solid yellow !important;
+  border-bottom: 2px solid yellow !important;
+}
+
+.high-contrast .navbar a,
+.high-contrast .footer a {
+  color: yellow !important;
+}
+
+/* -------------------- Menú de Accesibilidad -------------------- */
+.accessibility-menu,
+.accessibility-menu * {
+  font-family: Arial, sans-serif !important;
+  font-size:1rem !important;
+  font-weight: bold !important;
+  color: black !important;
+  background-color: #386fe4 !important;
+  box-sizing: border-box;
+}
+
+.accessibility-fab {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  z-index: 50;
+  background-color: rgb(14, 61, 171);
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.accessibility-icon {
+  width: 100%;
+  height: 100%;
+  fill: #ffffff;
+}
+
+.accessibility-menu {
+  position: fixed;
+  top: 20%;
+  right: 20px;
+  padding: 16px;
+  width: 250px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.accessibility-menu h3 {
+  font-size: 20px !important;
+  margin-top: 0 !important;
+  margin-bottom: 10px !important;
+  font-weight: bold !important;
+  color: black !important;
+}
+
+.accessibility-menu select,
+.accessibility-menu button {
+  width: 100% !important;
+  margin-bottom: 10px !important;
+  padding: 8px !important;
+  border-radius: 4px !important;
+  border: 1px solid #ccc !important;
+  font-size: 14px !important;
+  background-color: rgb(217, 217, 217) !important;
+  color: black !important;
+  cursor: pointer;
+}
+
+button {
+  margin: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
 }
