@@ -20,6 +20,7 @@ import { ComentarioService } from '../servicios/comentario.service';
 import { CuestionarioComponent } from '../components/cuestionario/cuestionario.component';
 import { UsuariosService } from '../servicios/usuarios.service';
 import { Auth, GoogleAuthProvider, linkWithPopup } from '@angular/fire/auth';
+import { QrGeneratorComponent } from '../components/qr-generator/qr-generator.component';
 
 @Component({
   selector: 'app-menu',
