@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Component, type OnInit } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { FormsModule, ReactiveFormsModule, FormBuilder, type FormGroup, Validators } from "@angular/forms"
@@ -9,6 +10,30 @@ import { MatDatepickerModule } from "@angular/material/datepicker"
 import { MatNativeDateModule } from "@angular/material/core"
 import { MatButtonModule } from "@angular/material/button"
 import { QrGeneratorComponent } from "../components/qr-generator/qr-generator.component"
+=======
+/*MENU*/
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { MatRadioModule } from '@angular/material/radio';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule, MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import { MatNativeDateModule, MatOptionModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button'; // Importar MatButtonModule
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+
+import { userInfo } from '../datos';
+import { GRUPOS, Genero, HORA as HORAS } from '../grupo';
+import { ComentarioService } from '../servicios/comentario.service';
+import { CuestionarioComponent } from '../components/cuestionario/cuestionario.component';
+import { UsuariosService } from '../servicios/usuarios.service';
+import { Auth, GoogleAuthProvider, linkWithPopup } from '@angular/fire/auth';
+>>>>>>> 8b734f5c2ad888f75ba20aa6df80aa53d3baea6d
 
 @Component({
   selector: 'app-menu',
