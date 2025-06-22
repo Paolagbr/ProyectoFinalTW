@@ -1,76 +1,73 @@
-import { Injectable } from "@angular/core"
-import { AngularFirestore } from "@angular/fire/compat/firestore"
-import { Observable, firstValueFrom } from "rxjs"
+import { inject, Injectable } from '@angular/core';
+import { Firestore, collection, addDoc, getDocs, query, where, orderBy } from '@angular/fire/firestore';
+import { collectionData } from '@angular/fire/firestore';
+import { firstValueFrom, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root'
 })
 export class PaypalService {
-  constructor(private firestore: AngularFirestore) {}
+  private firestore = inject(Firestore);
 
-  // Método existente para agregar datos
   async agregarDato(coleccion: string, dato: any): Promise<void> {
     try {
-      await this.firestore.collection(coleccion).add({
+      const colRef = collection(this.firestore, coleccion);
+      await addDoc(colRef, {
         ...dato,
-        timestamp: new Date(),
-      })
+        timestamp: new Date()
+      });
     } catch (error) {
-      console.error("Error agregando dato:", error)
-      throw error
+      console.error('Error agregando dato:', error);
+      throw error;
     }
   }
 
-  // Método para obtener datos (para el dashboard)
   async obtenerDatos(coleccion: string): Promise<any[]> {
     try {
-      const snapshot = await firstValueFrom(this.firestore.collection(coleccion).get())
-      return snapshot.docs.map((doc) => ({
+      const colRef = collection(this.firestore, coleccion);
+      const snapshot = await getDocs(colRef);
+      return snapshot.docs.map(doc => ({
         id: doc.id,
-        ...(doc.data() as object),
-      }))
+        ...doc.data()
+      }));
     } catch (error) {
-      console.error("Error obteniendo datos:", error)
-      throw error
+      console.error('Error obteniendo datos:', error);
+      throw error;
     }
   }
 
-  // Método para obtener datos en tiempo real
   obtenerDatosEnTiempoReal(coleccion: string): Observable<any[]> {
-    return this.firestore.collection(coleccion).valueChanges({ idField: "id" })
+    const colRef = collection(this.firestore, coleccion);
+    return collectionData(colRef, { idField: 'id' });
   }
 
-  // Método para obtener estadísticas específicas por fecha
   async obtenerEstadisticasPorFecha(coleccion: string, fechaInicio: Date, fechaFin: Date): Promise<any[]> {
     try {
-      const snapshot = await firstValueFrom(
-        this.firestore
-          .collection(coleccion, (ref) =>
-            ref
-              .where("fecha", ">=", fechaInicio.toISOString())
-              .where("fecha", "<=", fechaFin.toISOString())
-              .orderBy("fecha", "desc")
-          )
-          .get()
-      )
-
-      return snapshot.docs.map((doc) => ({
+      const colRef = collection(this.firestore, coleccion);
+      const q = query(
+        colRef,
+        where('fecha', '>=', fechaInicio.toISOString()),
+        where('fecha', '<=', fechaFin.toISOString()),
+        orderBy('fecha', 'desc')
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({
         id: doc.id,
-        ...(doc.data() as object),
-      }))
+        ...doc.data()
+      }));
     } catch (error) {
-      console.error("Error obteniendo estadísticas por fecha:", error)
-      throw error
+      console.error('Error obteniendo estadísticas por fecha:', error);
+      throw error;
     }
   }
 
-  // Método para obtener estadísticas por servicio
   async obtenerEstadisticasPorServicio(coleccion: string): Promise<any[]> {
     try {
-      const snapshot = await firstValueFrom(this.firestore.collection(coleccion).get())
-      const datos = snapshot.docs.map((doc) => doc.data())
+      const colRef = collection(this.firestore, coleccion);
+      const snapshot = await getDocs(colRef);
+      const datos = snapshot.docs.map(doc => doc.data());
 
-      const estadisticas: { [key: string]: any } = {}
+      const estadisticas: { [key: string]: any } = {};
 
       datos.forEach((dato: any) => {
         if (!estadisticas[dato.servicio]) {
@@ -78,23 +75,23 @@ export class PaypalService {
             servicio: dato.servicio,
             totalIngresos: 0,
             totalTransacciones: 0,
-            clientes: new Set(),
-          }
+            clientes: new Set()
+          };
         }
 
-        estadisticas[dato.servicio].totalIngresos += dato.monto
-        estadisticas[dato.servicio].totalTransacciones += 1
-        estadisticas[dato.servicio].clientes.add(dato.nombre)
-      })
+        estadisticas[dato.servicio].totalIngresos += dato.monto;
+        estadisticas[dato.servicio].totalTransacciones += 1;
+        estadisticas[dato.servicio].clientes.add(dato.nombre);
+      });
 
       return Object.values(estadisticas).map((stat: any) => ({
         ...stat,
         clientesUnicos: stat.clientes.size,
-        clientes: undefined,
-      }))
+        clientes: undefined
+      }));
     } catch (error) {
-      console.error("Error obteniendo estadísticas por servicio:", error)
-      throw error
+      console.error('Error obteniendo estadísticas por servicio:', error);
+      throw error;
     }
   }
 }
