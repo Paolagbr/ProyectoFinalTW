@@ -3,6 +3,7 @@ import { addDoc, collection, collectionData, deleteDoc, doc, Firestore, updateDo
 import { userInfo } from '../datos';
 import { Observable } from 'rxjs';
 
+
 @Injectable({
   providedIn: 'root'
 })
