@@ -32,5 +32,5 @@ export const routes: Routes = [
     {path: 'agendar', component: RegistrarCitaUsuarioComponent},
     {path: 'recuperar', component: PasswordComponent},
 
-    
+    // Rutas adicionales
 ];
