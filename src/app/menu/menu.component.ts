@@ -1,4 +1,3 @@
-/*MENU*/
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -21,6 +20,7 @@ import { CuestionarioComponent } from '../components/cuestionario/cuestionario.c
 import { UsuariosService } from '../servicios/usuarios.service';
 import { Auth, GoogleAuthProvider, linkWithPopup } from '@angular/fire/auth';
 import { QrGeneratorComponent } from '../components/qr-generator/qr-generator.component';
+
 
 @Component({
   selector: 'app-menu',
