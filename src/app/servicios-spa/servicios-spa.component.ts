@@ -7,6 +7,7 @@ import { RouterOutlet } from '@angular/router';
 import { DomseguroPipe } from '../domseguro.pipe';
 import { MonedaPipe } from '../servicios/pipe';
 import { PaypalService } from '../servicios/paypal.service';
+import Swal from 'sweetalert2';
 
 
 declare var paypal: any;
@@ -14,18 +15,18 @@ declare var paypal: any;
 @Component({
   selector: 'app-servicios-spa',
   standalone: true,
-  imports: [RouterOutlet, HttpClientModule, 
+  imports: [RouterOutlet, HttpClientModule,
     JsonPipe, CommonModule, FormsModule, DomseguroPipe, MonedaPipe],
   templateUrl: './servicios-spa.component.html',
   styleUrl: './servicios-spa.component.css'
 })
-export class ServiciosSPAComponent  implements OnInit{
- title = 'SPA_services';
-  inf: Informacion[] = []; 
+export class ServiciosSPAComponent implements OnInit {
+  title = 'SPA_services';
+  inf: Informacion[] = [];
   cargando = true;
   error: any = null;
 
-  terminoBusqueda = signal<string>(''); 
+  terminoBusqueda = signal<string>('');
   serviciosFiltrados = computed(() => {
     const termino = this.terminoBusqueda().toLowerCase();
     return this.inf.filter(servicio =>
@@ -39,7 +40,7 @@ export class ServiciosSPAComponent  implements OnInit{
   constructor(
     private tuApiService: ServiciosSPAService,
     private paypalService: PaypalService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.tuApiService.obtenerDatos().subscribe({
@@ -85,7 +86,13 @@ export class ServiciosSPAComponent  implements OnInit{
         paypalContainer.innerHTML = '';
 
         if (typeof paypal === 'undefined') {
-          alert('❌ PayPal SDK no está cargado.');
+          Swal.fire({
+            icon: 'error',
+            title: '¡Error!',
+            text: '❌ PayPal SDK no está cargado.',
+            confirmButtonColor: '#d33'
+          });
+
           return;
         }
 
@@ -105,7 +112,14 @@ export class ServiciosSPAComponent  implements OnInit{
           },
           onApprove: (data: any, actions: any) => {
             return actions.order.capture().then(async (details: any) => {
-              alert('✅ Pago completado por: ' + details.payer.name.given_name);
+
+              Swal.fire({
+                icon: 'success',
+                title: '¡Pago Exitoso!',
+                text: `✅ Pago completado por: ${details.payer.name.given_name}`,
+                confirmButtonColor: '#28a745'
+              });
+
               try {
                 await this.paypalService.agregarDato('pagos', {
                   nombre: details.payer.name.given_name,
@@ -114,7 +128,12 @@ export class ServiciosSPAComponent  implements OnInit{
                   fecha: new Date().toISOString(),
                   paypalOrderId: data.orderID
                 });
-                alert('Pago registrado correctamente.');
+                Swal.fire({
+                icon: 'success',
+                title: '¡Pago Registrado correctamente!',
+                confirmButtonColor: '#28a745'
+              });
+                
               } catch (error) {
                 console.error('Error guardando pago:', error);
               }
@@ -122,8 +141,12 @@ export class ServiciosSPAComponent  implements OnInit{
             });
           },
           onError: (err: any) => {
-            console.error('❌ Error en el pago:', err);
-            alert('Ocurrió un error al procesar el pago.');
+            Swal.fire({
+            icon: 'error',
+            title: '¡Error!',
+            text: '❌ Error de procesamiento',
+            confirmButtonColor: '#d33'
+          });
           }
         }).render('#' + containerId);
 
