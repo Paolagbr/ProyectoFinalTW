@@ -4,7 +4,7 @@ import { UnProductoComponent } from './un-producto/un-producto.component';
 import { CarruselComponent } from './components/carrusel/carrusel.component';
 import { NosotrosComponent } from './nosotros/nosotros.component';
 import { AppComponent } from './app.component';
-// import { CitaComponent } from './cita/cita.component';
+import { CitaComponent } from './cita/cita.component';
 import { IngresarComponent } from './ingresar/ingresar.component';
 import { MenuComponent } from './menu/menu.component';
 import { CuestionarioComponent } from './components/cuestionario/cuestionario.component';
