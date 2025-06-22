@@ -12,6 +12,7 @@ import { ServiciosSPAComponent } from './servicios-spa/servicios-spa.component';
 import { UsurioNuevoComponent } from './usurio-nuevo/usurio-nuevo.component';
 import { RegistrarCitaUsuarioComponent } from './registrar-cita-usuario/registrar-cita-usuario.component';
 import { PasswordComponent } from './password/password.component';
+import { AdminDashboardComponent } from './api/admin/dashboard/dashboard.component'; 
 
 
 
@@ -33,4 +34,8 @@ export const routes: Routes = [
     {path: 'recuperar', component: PasswordComponent},
 
     // Rutas adicionales
+    { path: "", component: ServiciosSPAComponent },
+    { path: "servicios", component: ServiciosSPAComponent },
+    { path: "admin/dashboard", component: AdminDashboardComponent },
+    { path: "**", redirectTo: "" },
 ];

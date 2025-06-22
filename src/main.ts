@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 import { routes } from './app/app.routes';
 
@@ -29,7 +31,8 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes),
     provideHttpClient(),
     provideAnimations(),
-    importProvidersFrom(FormsModule, CommonModule), 
+    importProvidersFrom(FormsModule, CommonModule, AngularFireModule.initializeApp(firebaseConfig),
+      AngularFirestoreModule), 
     
     // Firebase providers
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
