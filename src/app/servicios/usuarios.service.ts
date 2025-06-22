@@ -40,6 +40,7 @@ export class UsuariosService {
   }
 
   
+  
   getHora() {
     return this.horas;
   }
