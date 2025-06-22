@@ -67,4 +67,3 @@ export class CitaComponent {
 }
 
 // Aquí se define el componente CitaComponent, que maneja la lógica del formulario de citas
-// Importa los módulos necesarios de Angular y Angular Material, así como servicios y componentes adicionales
