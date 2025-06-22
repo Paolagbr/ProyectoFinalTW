@@ -17,7 +17,8 @@ import { map, Observable } from 'rxjs';
 })
 export class ServiciosSPAService {
 
- private apiUrl='https://spapag.free.beeceptor.com ';
+ //  private apiUrl='https://spapag.free.beeceptor.com/';
+private apiUrl='https://paginaspa.free.beeceptor.com/';
 
   constructor(private http: HttpClient) { }
   obtenerDatos(): Observable<Informacion[]> {
