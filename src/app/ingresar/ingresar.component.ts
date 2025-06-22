@@ -79,30 +79,58 @@ export class IngresarComponent implements OnInit {
       });
   }
 
+  // async login() {
+  //   const { email, password } = this.IngresarSesion.value;
+
+  //   if (!email || !password) {
+  //     Swal.fire('Error', 'Favor de llenar todos los campos', 'error');
+  //     return;
+  //   }
+
+  //   try {
+  //     this.router.navigate(['/inicio']);
+  //     await this.authService.logIn(email.trim(), password);
+
+  //   } catch (error: any) {
+  //     if (error.message === 'Usuario no registrado en la base de datos') {
+  //       Swal.fire('Error', 'El correo no está registrado.', 'error');
+  //     } else if (error.code === 'auth/account-exists-with-different-credential' || error.code === 'auth/wrong-password') {
+  //       Swal.fire('Error', 'Correo no vinculado', 'error');
+  //     } else if (error.code === 'auth/user-not-found') {
+  //       Swal.fire('Error', 'No existe esta cuenta con este correo', 'error');
+  //     } else {
+  //       Swal.fire('Error', 'Error al iniciar sesión. Verifica tu correo y contraseña', 'error');
+  //     }
+  //   }
+  // }
   async login() {
-    const { email, password } = this.IngresarSesion.value;
+  const { email, password } = this.IngresarSesion.value;
 
-    if (!email || !password) {
-      Swal.fire('Error', 'Favor de llenar todos los campos', 'error');
-      return;
-    }
+  if (!email || !password) {
+    Swal.fire('Error', 'Favor de llenar todos los campos', 'error');
+    return;
+  }
 
-    try {
-      this.router.navigate(['/inicio']);
-      await this.authService.logIn(email.trim(), password);
-
-    } catch (error: any) {
-      if (error.message === 'Usuario no registrado en la base de datos') {
-        Swal.fire('Error', 'El correo no está registrado.', 'error');
-      } else if (error.code === 'auth/account-exists-with-different-credential' || error.code === 'auth/wrong-password') {
-        Swal.fire('Error', 'Correo no vinculado', 'error');
-      } else if (error.code === 'auth/user-not-found') {
-        Swal.fire('Error', 'No existe esta cuenta con este correo', 'error');
-      } else {
-        Swal.fire('Error', 'Error al iniciar sesión. Verifica tu correo y contraseña', 'error');
-      }
+  try {
+    await this.authService.logIn(email.trim(), password);
+    this.router.navigate(['/inicio']); 
+  } catch (error: any) {
+    if (error.message === 'Usuario no registrado en la base de datos') {
+      Swal.fire('Error', 'El correo no está registrado.', 'error');
+    } else if (error.message === 'Cuenta bloqueada por múltiples intentos fallidos.' || error.message.includes('bloqueada')) {
+      Swal.fire('Cuenta bloqueada', 'Has excedido los intentos permitidos. Debes restablecer tu contraseña.', 'error');
+    } else if (error.code === 'auth/account-exists-with-different-credential' || error.code === 'auth/wrong-password') {
+      Swal.fire('Error', 'Correo no vinculado o contraseña incorrecta', 'error');
+    } else if (error.code === 'auth/user-not-found') {
+      Swal.fire('Error', 'No existe esta cuenta con este correo', 'error');
+    } else {
+      Swal.fire('Error', 'Error al iniciar sesión. Verifica tu correo y contraseña', 'error');
     }
   }
+  this.IngresarSesion.reset();
+    this.captchaValid.set(false);
+}
+
   googleAuth() {
     if (this.isLoggingIn) return;
     this.isLoggingIn = true;

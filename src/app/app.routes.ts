@@ -11,21 +11,26 @@ import { CuestionarioComponent } from './components/cuestionario/cuestionario.co
 import { ServiciosSPAComponent } from './servicios-spa/servicios-spa.component';
 import { UsurioNuevoComponent } from './usurio-nuevo/usurio-nuevo.component';
 import { RegistrarCitaUsuarioComponent } from './registrar-cita-usuario/registrar-cita-usuario.component';
-import { QrGeneratorComponent } from './components/qr-generator/qr-generator.component'; // ✅ Nuevo import
+import { PasswordComponent } from './password/password.component';
+
+
+
+
 
 export const routes: Routes = [
     { path: '', redirectTo: '/inicio', pathMatch: 'full' },
     { path: 'inicio', component: CarruselComponent },
-    { path: 'Tienda', component: TiendaComponent },
-    { path: 'Tienda/:id', component: UnProductoComponent },
-    { path: 'Nosotros', component: NosotrosComponent },
-    // { path: 'Contacto', component: CitaComponent },
-    { path: '', component: AppComponent },
-    { path: 'sesion', component: IngresarComponent },
-    { path: 'menu', component: MenuComponent },
-    { path: 'Cuestionario', component: CuestionarioComponent },
-    { path: 'servicio', component: ServiciosSPAComponent },
-    { path: 'usuario', component: UsurioNuevoComponent },
-    { path: 'agendar', component: RegistrarCitaUsuarioComponent },
-    { path: 'mi-qr', component: QrGeneratorComponent }, // ✅ Nueva ruta para el QR
+    {path:'Tienda', component: TiendaComponent},
+    {path:'Tienda/:id', component: UnProductoComponent},
+    {path: 'Nosotros', component: NosotrosComponent },
+    {path: 'Contacto', component: CitaComponent},
+    {path: 'sesion', component: IngresarComponent},
+    {path: 'menu', component: MenuComponent},
+    {path: 'Cuestionario', component: CuestionarioComponent},
+    {path: 'servicio', component: ServiciosSPAComponent},
+    {path: 'usuario', component: UsurioNuevoComponent},
+    {path: 'agendar', component: RegistrarCitaUsuarioComponent},
+    {path: 'recuperar', component: PasswordComponent},
+
+    
 ];

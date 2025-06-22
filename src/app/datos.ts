@@ -27,4 +27,6 @@ export interface UsuarioIngresar {
   userType?: 'usuario' | 'administrador';
   adminKey?: string;
   lowercaseUsername?: string;
+  intentosFallidos?: number;
+  bloqueado?: boolean;
 }

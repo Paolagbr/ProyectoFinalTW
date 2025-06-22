@@ -14,13 +14,15 @@ export interface UsuarioIngresar {
   password: string;
   userType?: 'usuario' | 'administrador';
   lowercaseUsername?: string;
+  intentosFallidos?: number;
+  bloqueado?: boolean;
 }
 
 @Component({
   selector: 'app-usurio-nuevo',
-  standalone:true,
+  standalone: true,
   imports: [ReactiveFormsModule,
-    CommonModule, RouterModule, NgxSpinnerModule,RouterModule],
+    CommonModule, RouterModule, NgxSpinnerModule, RouterModule],
   templateUrl: './usurio-nuevo.component.html',
   styleUrl: './usurio-nuevo.component.css'
 })
@@ -45,13 +47,13 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
       Validators.pattern('^(?=.*[A-Z])(?=.*\\d)[a-zA-Z0-9_]+$')
     ]),
     userType: new FormControl('usuario', [Validators.required]),
-  }, 
-  { validators: [UsurioNuevoComponent.passwordsMatchValidator] });
+  },
+    { validators: [UsurioNuevoComponent.passwordsMatchValidator] });
 
-  constructor(private usuariosService: IngresarUsuarioService, public loading: NgxSpinnerService,  private router: Router,  private auth: Auth
+  constructor(private usuariosService: IngresarUsuarioService, public loading: NgxSpinnerService, private router: Router, private auth: Auth
 
   ) { }
-  
+
   static passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
     const repeated = group.get('passwordRepeted')?.value;
@@ -60,7 +62,7 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
   ngOnInit() {
     document.body.classList.add('usuarios-background');
   }
-   ngOnDestroy() {
+  ngOnDestroy() {
     document.body.classList.remove('usuarios-background');
   }
   async onSubmit() {
@@ -79,7 +81,7 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
 
         const usernameTomado = await this.usuariosService.isUsernameTaken(username);
         if (usernameTomado) {
-          Swal.fire('Error',' El nombre de usuario seleccionado ya está en uso. Por favor, elige otro.', 'error');
+          Swal.fire('Error', ' El nombre de usuario seleccionado ya está en uso. Por favor, elige otro.', 'error');
           this.loading.hide();
           return;
         }
@@ -90,9 +92,10 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
           email: this.form.get('email')?.value ?? '',
           password: this.form.get('password')?.value ?? '',
           userType: this.form.get('userType')?.value as 'usuario' | 'administrador',
-          lowercaseUsername: username.toLowerCase()
+          lowercaseUsername: username.toLowerCase(),
+          intentosFallidos: 0,
+          bloqueado: false
         };
-        console.log('Tipo de usuario:', this.userType); 
         await this.usuariosService.registrarUsuario(usuario);
         await signOut(this.auth);
         this.form.reset();
@@ -104,18 +107,19 @@ export class UsurioNuevoComponent implements OnInit, OnDestroy {
         this.loading.hide();
       } finally {
         this.loading.hide();
-        
+
       }
     } else {
       Swal.fire('Formulario inválido', 'Revisa los datos del formulario.', 'warning');
     }
   }
-  
+
   get nombre() { return this.form.get('nombre'); }
   get username() { return this.form.get('username'); }
   get email() { return this.form.get('email'); }
   get password() { return this.form.get('password'); }
   get passwordRepeted() { return this.form.get('passwordRepeted'); }
   get userType() { return this.form.get('userType'); }
+
 
 }
