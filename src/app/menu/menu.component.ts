@@ -30,7 +30,6 @@ import { QrGeneratorComponent } from '../components/qr-generator/qr-generator.co
     FormsModule,
     ReactiveFormsModule,
     MatRadioModule,
-    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
