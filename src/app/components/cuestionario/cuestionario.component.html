@@ -1,115 +1,177 @@
-<div class="card">
-  <h1 class="title">Quejas y Sugerencias</h1>
-  <div class="card-body">
-    <form (ngSubmit)="enviarComentario()" [formGroup]="formulario">
+<div class="container">
+  <div class="card">
+    <h1 class="title">Quejas y Sugerencias</h1>
+    <div class="card-body">
+      <form (ngSubmit)="enviarComentario()" [formGroup]="formulario">
 
-      <!-- Nombre -->
-      <div class="mb-2">
-        <label class="form-label">Nombre</label>
-        <input type="text" formControlName="nombre" class="form-control" placeholder="Ingresa tu nombre" />
-        @if (!formulario.get('nombre')?.valid && !formulario.get('nombre')?.pristine) {
-          <div class="alert alert-danger mt-2">El nombre es obligatorio</div>
-        }
-      </div>
-
-      <!-- Email -->
-      <div class="mb-2">
-        <label class="form-label">Email</label>
-        <input type="email" formControlName="email" class="form-control" placeholder="Ingresa tu email" />
-        @if (!formulario.get('email')?.valid && !formulario.get('email')?.pristine) {
-          <div class="alert alert-danger mt-2">
-            @if (formulario.get('email')?.errors?.['required']) {
-              <span>El email es obligatorio</span>
-            }
-            @if (formulario.get('email')?.errors?.['email']) {
-              <span>El email debe ser válido</span>
-            }
+        <div class="mb-2">
+          <label class="form-label">Nombre</label>
+          <input type="text" formControlName="nombre" class="form-control" placeholder="Ingresa tu nombre" />
+          <div *ngIf="!formulario.get('nombre')?.valid && !formulario.get('nombre')?.pristine" 
+               class="alert alert-danger mt-2">
+            El nombre es obligatorio
           </div>
-        }
-      </div>
+        </div>
 
-      <!-- Feedback -->
-      <label class="form-label">¿Qué fue lo que más te gustó de la página?</label>
-      <div formGroupName="feedback" class="mb-3">
-        <label><input type="checkbox" formControlName="facilidadNavegar" /> Facilidad de navegar</label><br />
-        <label><input type="checkbox" formControlName="buenaPresentacion" /> Buena presentación</label><br />
-        <label><input type="checkbox" formControlName="facilEntender" /> Fácil de entender los servicios</label><br />
-        <label><input type="checkbox" formControlName="estructuraUtilizada" /> La estructura que se utilizó</label>
-      </div>
+        <div class="mb-2">
+          <label class="form-label">Email</label>
+          <input type="email" formControlName="email" class="form-control" placeholder="Ingresa tu email" />
+          <div *ngIf="!formulario.get('email')?.valid && !formulario.get('email')?.pristine" 
+               class="alert alert-danger mt-2">
+            <span *ngIf="formulario.get('email')?.errors?.['required']">El email es obligatorio</span>
+            <span *ngIf="formulario.get('email')?.errors?.['email']">El email debe ser válido</span>
+          </div>
+        </div>
 
-      <!-- Servicio -->
-      <label for="servicio">Servicio que más te gustó</label><br />
-      <select formControlName="servicio" id="servicio" class="form-select mb-3">
-        <option value="" disabled selected>Selecciona una opción</option>
-        <option value="Masaje Corporal">Masaje corporal</option>
-        <option value="Facial">Facial</option>
-        <option value="Sauna">Sauna</option>
-        <option value="Aromaterapia">Aromaterapia</option>
-        <option value="Masaje para Pies y Manos">Masaje en pies y manos</option>
-        <option value="Sala de Relajación">Sala de relajación</option>
-        <option value="Atencion al cliente">Atención al cliente</option>
-      </select>
+        <label class="form-label">¿Qué fue lo que más te gustó de la página?</label>
+        <div formGroupName="feedback" class="mb-3">
+          <label><input type="checkbox" formControlName="facilidadNavegar" /> Facilidad de navegar</label><br />
+          <label><input type="checkbox" formControlName="buenaPresentacion" /> Buena presentación</label><br />
+          <label><input type="checkbox" formControlName="facilEntender" /> Fácil de entender los servicios</label><br />
+          <label><input type="checkbox" formControlName="estructuraUtilizada" /> La estructura que se utilizó</label>
+        </div>
 
-      <!-- Mensaje -->
-      <div class="mb-2">
-        <label class="form-label">Mensaje de queja o sugerencia</label>
-        <textarea formControlName="mensaje" class="form-control"
-                  placeholder="Escribe tu queja o sugerencia aquí" rows="5"></textarea>
-        @if (!formulario.get('mensaje')?.valid && !formulario.get('mensaje')?.pristine) {
-          <div class="alert alert-danger mt-2">
+        <label for="servicio">Servicio que más te gustó</label><br />
+        <select formControlName="servicio" id="servicio" class="form-select mb-3">
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option value="Masaje Corporal">Masaje corporal</option>
+          <option value="Facial">Facial</option>
+          <option value="Sauna">Sauna</option>
+          <option value="Aromaterapia">Aromaterapia</option>
+          <option value="Masaje para Pies y Manos">Masaje en pies y manos</option>
+          <option value="Sala de Relajación">Sala de relajación</option>
+          <option value="Atencion al cliente">Atención al cliente</option>
+        </select>
+
+        <div class="mb-2">
+          <label class="form-label">Mensaje de queja o sugerencia</label>
+          <textarea formControlName="mensaje" class="form-control"
+                    placeholder="Escribe tu queja o sugerencia aquí" rows="5"></textarea>
+          <div *ngIf="!formulario.get('mensaje')?.valid && !formulario.get('mensaje')?.pristine" 
+               class="alert alert-danger mt-2">
             El mensaje es obligatorio y debe tener al menos 10 caracteres
           </div>
-        }
+        </div>
+
+        <div class="campo mb-3">
+          <label class="label-genero">¿En qué fecha volverías a venir?</label><br />
+          <mat-form-field appearance="fill">
+            <mat-label>Fecha de la cita</mat-label>
+            <input matInput [matDatepicker]="picker"
+                   formControlName="fechaCita" required
+                   [matDatepickerFilter]="myFilter" />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <div *ngIf="formulario.get('fechaCita')?.touched && formulario.get('fechaCita')?.hasError('required')" 
+               class="text-error">
+            El campo es requerido
+          </div>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Enviar comentario y generar QR</button>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="showQRSection" class="qr-container mt-4">
+    <div class="card">
+      <div class="card-header">
+        <h2>Código QR de tu Cita</h2>
+        <p class="subtitle">Presenta este código en tu cita del SPA</p>
       </div>
 
-      <!-- Fecha -->
-      <div class="campo mb-3">
-        <label class="label-genero">¿En qué fecha volverías a venir?</label><br />
-        <mat-form-field appearance="fill">
-          <mat-label>Fecha de la cita</mat-label>
-          <input matInput [matDatepicker]="picker"
-                 formControlName="fechaCita" required
-                 [matDatepickerFilter]="myFilter" />
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        @if (formulario.get('fechaCita')?.touched && formulario.get('fechaCita')?.hasError('required')) {
-          <div class="text-error">El campo es requerido</div>
-        }
+      <div class="card-body">
+        <div *ngIf="loading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Generando código QR...</p>
+        </div>
+
+        <div *ngIf="error && !loading" class="error-state">
+          <div class="error-icon">⚠️</div>
+          <p>{{ error }}</p>
+          <button (click)="generarQR(formulario.value)" class="btn-retry">Reintentar</button>
+        </div>
+
+        <div *ngIf="qrCodeDataURL && !loading && !error" class="qr-content">
+          <div class="qr-code-container">
+            <img [src]="qrCodeDataURL" alt="Código QR de la cita" class="qr-image">
+          </div>
+
+          <div *ngIf="citaData" class="cita-info">
+            <h3>Información de tu Cita</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="label">Cliente:</span>
+                <span class="value">{{ citaData.cliente }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Servicio:</span>
+                <span class="value">{{ citaData.servicio }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Fecha:</span>
+                <span class="value">{{ citaData.fecha }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Hora:</span>
+                <span class="value">{{ citaData.hora }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Código:</span>
+                <span class="value code">{{ citaData.codigoConfirmacion }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Válido hasta:</span>
+                <span class="value">{{ citaData.validoHasta | date:'short' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            
+            <button (click)="descargarQR()" class="btn-primary">
+              📱 Descargar QR
+            </button>
+            <button (click)="regenerarQR()" class="btn-secondary">
+              🔄 Regenerar QR
+            </button>
+          </div>
+
+          <div class="instructions">
+            <h4>Instrucciones:</h4>
+            <ul>
+              <li>Presenta este código QR al llegar a tu cita</li>
+              <li>El código es válido por 24 horas</li>
+              <li>Puedes regenerar el código si es necesario</li>
+              <li>Guarda una captura de pantalla como respaldo</li>
+            </ul>
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
 
-      <button class="btn btn-primary" type="submit">Enviar comentario</button>
-    </form>
-
-    <!-- Lista de comentarios guardados -->
-    <!-- @for  (comentario of comentarios; track comentario.nombre) {
-      <div class="card mt-3 p-3 shadow-sm border rounded">
-        <p><strong>Nombre:</strong> {{ comentario.nombre }}</p>
-        <p><strong>Email:</strong> {{ comentario.email }}</p>
-        <p><strong>Te gustó de la página:</strong></p>
-        <ul>
-          @if (comentario.feedback?.facilidadNavegar) {
-            <li>Facilidad de navegar</li>
-          }
-          @if (comentario.feedback?.buenaPresentacion) {
-            <li>Buena presentación</li>
-          }
-          @if (comentario.feedback?.facilEntender) {
-            <li>Fácil de entender los servicios</li>
-          }
-          @if (comentario.feedback?.estructuraUtilizada) {
-            <li>La estructura que se utilizó</li>
-          }
-        </ul>
-        <p><strong>Servicio que más te gustó:</strong> {{ comentario.servicio }}</p>
-        <p><strong>Mensaje:</strong> {{ comentario.mensaje }}</p>
-        <p><strong>Fecha:</strong> {{ comentario.fechaCita | date:'shortDate' }}</p>
-        <button class="btn btn-outline-primary me-2" (click)="editarComentario($index)">Editar</button>
-        <button class="btn btn-outline-danger" (click)="eliminarComentario($index)">Eliminar</button>
-
-      </div>
-    } @empty {
-       No hay comentarios guardados
-    } -->
+  <div *ngIf="comentarios.length > 0" class="mt-4">
+    <h3>Comentarios guardados</h3>
+    <div *ngFor="let comentario of comentarios; let i = index" class="card mt-3 p-3 shadow-sm border rounded">
+      <p><strong>Nombre:</strong> {{ comentario.nombre }}</p>
+      <p><strong>Email:</strong> {{ comentario.email }}</p>
+      <p><strong>Te gustó de la página:</strong></p>
+      <ul>
+        <li *ngIf="comentario.feedback?.facilidadNavegar">Facilidad de navegar</li>
+        <li *ngIf="comentario.feedback?.buenaPresentacion">Buena presentación</li>
+        <li *ngIf="comentario.feedback?.facilEntender">Fácil de entender los servicios</li>
+        <li *ngIf="comentario.feedback?.estructuraUtilizada">La estructura que se utilizó</li>
+      </ul>
+      <p><strong>Servicio que más te gustó:</strong> {{ comentario.servicio }}</p>
+      <p><strong>Mensaje:</strong> {{ comentario.mensaje }}</p>
+      <p><strong>Fecha:</strong> {{ comentario.fechaCita | date:'shortDate' }}</p>
+      <button class="btn btn-outline-primary me-2" (click)="editarComentario(i)">Editar</button>
+      <button class="btn btn-outline-danger" (click)="eliminarComentario(i)">Eliminar</button>
+    </div>
+  </div>
+  <div *ngIf="comentarios.length === 0" class="mt-4 text-center text-muted">
+    No hay comentarios guardados
   </div>
 </div>

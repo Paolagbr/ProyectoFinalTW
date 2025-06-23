@@ -2,15 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
- export interface Informacion{
-  id:number,
-  name: string,
-  description:string,
-  image:string,
-  price:string,
+export interface Informacion {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  price: number ;
   beneficio: string;
   duracion: string;
   expandido?: boolean;
+  paypalRendered?: boolean;
+  pagoCompletado?: boolean;
 }
 @Injectable({
   providedIn: 'root'

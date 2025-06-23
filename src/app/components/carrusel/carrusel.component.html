@@ -1,179 +1,228 @@
-<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
-      aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
-      aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
-      aria-label="Slide 3"></button>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<div #mainContent [ngClass]="{ 'high-contrast': highContrast }" [style.fontSize.px]="fontSize" [style.fontFamily]="selectedFont">
+
+  <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+        aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+        aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+        aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active position-relative">
+        <img src="/img/spa1.png" class="d-block w-100" alt="Primera imagen" style="height: 400px; object-fit: cover;">
+        <div class="custom-caption">
+          <p class="lema">Donde tu escencia florece como una magnolia.</p>
+        </div>
+      </div>
+      <div class="carousel-item position-relative">
+        <img src="/img/spa2.png" class="d-block w-100" alt="Segunda imagen" style="height: 400px; object-fit: cover;">
+        <div class="custom-caption">
+          <p class="lema">Donde tu escencia florece como una magnolia.</p>
+        </div>
+      </div>
+      <div class="carousel-item position-relative">
+        <img src="/img/spa3.png" class="d-block w-100" alt="Tercera imagen" style="height: 400px; object-fit: cover;">
+        <div class="custom-caption">
+          <p class="lema">Donde tu escencia florece como una magnolia.</p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Siguiente</span>
+    </button>
   </div>
-  <div class="carousel-inner">
-    <!-- Carrusel -->
-   <div class="carousel-inner">
-    <div class="carousel-item active position-relative">
-      <img src="/img/spa1.png" class="d-block w-100" alt="Primera imagen" style="height: 400px; object-fit: cover;">
-      <div class="custom-caption">
-        <h5 class="lema">Donde tu escencia florece como una magnolia.</h5>
-      </div>
-    </div>
-  <div class="carousel-item active position-relative">
-      <img src="/img/spa2.png" class="d-block w-100" alt="Primera imagen" style="height: 400px; object-fit: cover;">
-      <div class="custom-caption">
-        <h5 class="lema">Donde tu escencia florece como una magnolia.</h5>
-      </div>
-    </div>
-    <div class="carousel-item active position-relative">
-      <img src="/img/spa3.png" class="d-block w-100" alt="Primera imagen" style="height: 400px; object-fit: cover;">
-      <div class="custom-caption">
-        <h5 class="lema">Donde tu escencia florece como una magnolia.</h5>
-      </div>
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Anterior</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Siguiente</span>
-  </button>
-</div>
-<!--Mensaje-->
-<div class="contenedorM " style="margin-bottom: 250px; margin-top: 50px;">
-  <h1 style="text-align: center; font-family: 'Letra'; text-shadow:  2px 2px 4px black; font-size: 2.8rem;">SPA MAGNOLIA</h1>
-  <p style="text-align: center; font-family:'Times New Roman', Times, serif; margin-top: 25px;
-    font-size: 1.8rem; padding: 35px; ">Te extendemos una cordial invitación a sumergirte en una experiencia trascendental de paz interior,
-     profunda tranquilidad y absoluta relajación.
-  Imagina un lugar donde el estrés y las preocupaciones se disipan en el instante en que cruzas la puerta. 
-  En nuestro spa, te espera una atmósfera cuidadosamente creada para envolverte en un manto de equilibrio y serenidad desde
-   el primer momento. Permítete desconectar del ajetreo diario y reconectar contigo mismo en un santuario dedicado a tu bienestar. </p>
-    <p style="text-align: center; font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
-    font-size: 1.8rem; font-weight:bold;">¡Ven y conocenos!</p>
+
+  <!--Mensaje-->
+  <div class="contenedorM" style="margin-bottom: 250px; margin-top: 50px;">
+    <p style="text-align: center; font-size: 2.5rem; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">SPA MAGNOLIA</p>
+    <p style="text-align: center; padding: 35px;">
+      Te extendemos una cordial invitación a sumergirte en una experiencia trascendental de paz interior,
+      profunda tranquilidad y absoluta relajación.
+      Imagina un lugar donde el estrés y las preocupaciones se disipan en el instante en que cruzas la puerta.
+      En nuestro spa, te espera una atmósfera cuidadosamente creada para envolverte en un manto de equilibrio y serenidad desde
+      el primer momento. Permítete desconectar del ajetreo diario y reconectar contigo mismo en un santuario dedicado a tu bienestar.
+    </p>
+    <p style="text-align: center; font-size: 1.8rem; font-weight: bold; margin: 30px 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+      ¡Ven y conocenos!
+    </p>
     <img src="/mensaje.png" style="max-width:1050px; max-height:500px;">
-</div>
-<!-- -----------------------TARJETAS-------------------------- -->
-<br><br><br>
-<div class="container" style="margin-top: 65px; ">
-  <div class="row">
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <img src="/img/spa4.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
-        <div class="card-body">
-          <h5 class="card-title">Faciales</h5>
-          <p class="card-text">Contamos con faciales, para concentir tambien tu cara.</p>
-        </div>
-        <div class="card-footer">
-          <small class="text-muted">Contactanos para una cita</small>
+  </div>
+
+  <!-- -----------------------TARJETAS-------------------------- -->
+  <br><br><br>
+  <div class="container" style="margin-top: 65px;">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <img src="/img/spa4.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
+          <div class="card-body">
+            <p class="card-title">Faciales</p>
+            <p class="card-text">Contamos con faciales, para que puedas consentir a tu cara.</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Contactanos para una cita</small>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <img src="/img/spa5.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
-        <div class="card-body">
-          <h5 class="card-title">Comodidad</h5>
-          <p class="card-text">Tenemos diferentes lugares para recibir masajes, elige tu favorito.</p>
-        </div>
-        <div class="card-footer">
-          <small class="text-muted">Contactanos para una cita</small>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <img src="/img/spa5.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
+          <div class="card-body">
+            <p class="card-title">Comodidad</p>
+            <p class="card-text">Tenemos diferentes lugares en los cuales disfrutaras de un espectaculo masaje, elige tu favorito.</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Contactanos para una cita</small>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <img src="/img/spa6.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
-        <div class="card-body">
-          <h5 class="card-title">Picina</h5>
-          <p class="card-text">Contamos con una picina para que puedas pasar un momento muy relajante.</p>
-        </div>
-        <div class="card-footer">
-          <small class="text-muted">Contactanos para una cita</small>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <img src="/img/spa6.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
+          <div class="card-body">
+            <p class="card-title">Piscina</p>
+            <p class="card-text">Contamos con una piscina para poder disfrutar un momento espectacular.</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Contactanos para una cita.</small>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-</div>
-
-<div class="container" style="margin-top: 45px; ">
-  <div class="row">
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <img src="/img/spa9.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
-        <div class="card-body">
-          <h5 class="card-title">Masajes Terapéuticos</h5>
-          <p class="card-text">Masajes que tiene como objetivo aliviar los dolores musculares.</p>
+  <div class="container" style="margin-top: 45px;">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <img src="/img/spa9.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
+          <div class="card-body">
+            <p class="card-title">Masajes Terapéuticos</p>
+            <p class="card-text">Masajes que tiene como objetivo aliviar los dolores musculares.</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Contactanos para una cita</small>
+          </div>
         </div>
-        <div class="card-footer">
-          <small class="text-muted">Contactanos para una cita</small>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <img src="/img/spa8.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
+          <div class="card-body">
+            <p class="card-title">Tratamientos Corporales</p>
+            <p class="card-text">Contamos con procedimientos estéticos y/o terapéuticos que ayudan a mejorar
+              el bienestar del cuerpo.</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Contactanos para una cita</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <img src="/img/spa7.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
+          <div class="card-body">
+            <p class="card-title">Aromaterapia</p>
+            <p class="card-text">Contamos con aromaterapias que ayudan a mejorar el bienestar fisico y emocional.</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Contactanos para una cita</small>
+          </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <img src="/img/spa8.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
-        <div class="card-body">
-          <h5 class="card-title">Tratamientos Corporales</h5>
-          <p class="card-text">Contamos con procedimientos estéticos y/o terapéuticos que ayudan a mejorar 
-          el bienestar del cuerpo.</p>
-        </div>
-        <div class="card-footer">
-          <small class="text-muted">Contactanos para una cita</small>
+  <!--PAQUETES-->
+  <div class="container" style="margin-bottom: 60px;">
+    <p style="text-align: center; margin-top: 50px; margin-bottom: 15px; font-size: 2.2rem; font-weight: bold;  text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">PAQUETES</p>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card" style="border: none;">
+          <div class="card-body carta">
+            <p class="card-title">Paquete Relajación Express</p>
+            <p class="card-text">Un respiro de tranquilidad en tu día.</p>
+            <ul class="list-unstyled">
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Masaje de espalda (30 min)</li>
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Aromaterapia básica</li>
+            </ul>
+            <h6 class="card-subtitle mb-2 text-muted">$499 MXN</h6>
+            <a href="#" class="btn btn-success btn-sm">Ver detalles</a>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <img src="/img/spa7.png" class="card-img-top" alt="..." style="object-fit: cover; height: 200px;">
-        <div class="card-body">
-          <h5 class="card-title">Aromaterapia</h5>
-          <p class="card-text">Contamos con aromaterapias que ayudan a mejorar el bienestar fisico y emocional.</p>
-        </div>
-        <div class="card-footer">
-          <small class="text-muted">Contactanos para una cita</small>
+      <div class="col-md-6 ">
+        <div class="card" style="border: none;">
+          <div class="card-body carta">
+            <p class="card-title">Paquete Relajación Profunda</p>
+            <p class="card-text">Sumérgete en un estado de calma total.</p>
+            <ul class="list-unstyled">
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Masaje cuerpo completo (60 min)</li>
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Infusión relajante</li>
+            </ul>
+            <h6 class="card-subtitle mb-2 text-muted">$899 MXN</h6>
+            <a href="#" class="btn btn-success btn-sm">Ver detalles</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-</div>
-<!--PAQUETES-->
-<div class="container" style="margin-bottom: 60px;">
-  <h1 style="text-align: center; margin-top: 50px; font-family:Letra; margin-bottom: 15px; text-shadow:  1px 1px 3px black; ">PAQUETES</h1>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card"  style="border: none;">
 
-        <div class="card-body carta">
-          <h5 class="card-title">Paquete Relajación Express</h5>
-          <p class="card-text">Un respiro de tranquilidad en tu día.</p>
-          <ul class="list-unstyled">
-            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Masaje de espalda (30 min)</li>
-            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Aromaterapia básica</li>
-          </ul>
-          <h6 class="card-subtitle mb-2 text-muted">$499 MXN</h6>
-          <a href="#" class="btn btn-success btn-sm">Ver detalles</a>
-        </div>
-        
-      </div>
+  <div>
+  <!-- Botón flotante de accesibilidad -->
+<button class="accessibility-fab" (click)="toggleAccessibilityPanel()" aria-label="Opciones de accesibilidad">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="accessibility-icon" role="img" aria-hidden="true" focusable="false">
+    <path d="M192 96a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM120.5 247.2c12.4-4.7 18.7-18.5 14-30.9s-18.5-18.7-30.9-14C43.1 225.1 0 283.5 0 352c0 88.4 71.6 160 160 160c61.2 0 114.3-34.3 141.2-84.7c6.2-11.7 1.8-26.2-9.9-32.5s-26.2-1.8-32.5 9.9C240 440 202.8 464 160 464C98.1 464 48 413.9 48 352c0-47.9 30.1-88.8 72.5-104.8zM259.8 176l-1.9-9.7c-4.5-22.3-24-38.3-46.8-38.3c-30.1 0-52.7 27.5-46.8 57l23.1 115.5c6 29.9 32.2 51.4 62.8 51.4l5.1 0c.4 0 .8 0 1.3 0l94.1 0c6.7 0 12.6 4.1 15 10.4L402 459.2c6 16.1 23.8 24.6 40.1 19.1l48-16c16.8-5.6 25.8-23.7 20.2-40.5s-23.7-25.8-40.5-20.2l-18.7 6.2-25.5-68c-11.7-31.2-41.6-51.9-74.9-51.9l-68.5 0-9.6-48 63.4 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-76.2 0z"/>
+  </svg>
+</button>
+
+
+  <!-- Menú lateral de accesibilidad -->
+  <div class="accessibility-menu" *ngIf="showAccessibilityPanel">
+    <p>Panel de Accesibilidad</p>
+
+    <div>
+      <label>Lector de pantalla:</label><br>
+      <button (click)="startReading()">⏭️ Iniciar</button>
+      <button (click)="pauseReading()">⏯️ Pausar</button>
+      <button (click)="stopReading()"> ⏹️ Detener</button>
     </div>
-    <div class="col-md-6 ">
-      <div class="card"  style="border: none;">
-        <div class="card-body carta">
-          <h5 class="card-title">Paquete Relajación Profunda</h5>
-          <p class="card-text">Sumérgete en un estado de calma total.</p>
-          <ul class="list-unstyled">
-            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Masaje cuerpo completo (60 min)</li>
-            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Infusión relajante</li>
-          </ul>
-          <h6 class="card-subtitle mb-2 text-muted">$899 MXN</h6>
-          <a href="#" class="btn btn-success btn-sm">Ver detalles</a>
-        </div>
-      </div>
+
+    <div>
+      <label>Contraste:</label><br>
+      <button (click)="toggleContrast()"> Alternar Contraste</button>
+    </div>
+
+    <div>
+      <label>Tamaño de texto:</label><br>
+      <button (click)="increaseFont()">🔍 Aumentar texto</button>
+      <button (click)="decreaseFont()">🔍 Disminuir texto</button>
+    </div>
+
+    <div>
+      <label>Fuente:</label><br>
+      <select [(ngModel)]="selectedFont">
+        <option value="Arial">Arial</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Georgia">Georgia</option>
+      </select>
     </div>
   </div>
+</div>
 </div>

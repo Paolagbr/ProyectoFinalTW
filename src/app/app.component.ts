@@ -1,15 +1,24 @@
+// app.component.ts
 import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
-import { CarruselComponent } from "./components/carrusel/carrusel.component";
+import { CarruselComponent } from './components/carrusel/carrusel.component';
+import { MenuComponent } from "./menu/menu.component";
+// import {NgchartsModule } from 'ng2-charts';
 
 @Component({
   selector: 'app-root',
-  standalone:true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, CarruselComponent, RouterModule],
+  standalone: true,
+  imports: [
+    RouterModule,
+    RouterOutlet,
+    NavbarComponent,
+    FooterComponent,
+    MenuComponent
+],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'MiniProyectoANGULAR';

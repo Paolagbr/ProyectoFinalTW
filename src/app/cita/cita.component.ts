@@ -1,6 +1,9 @@
-import { CommonModule, JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
+import { HttpClientModule, HttpClient } from "@angular/common/http";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+
+
 import { hora, lista, sexo, userInfo } from '../datos';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,36 +19,47 @@ import { MatCardModule } from '@angular/material/card';
 import { UsuariosService } from '../servicios/usuarios.service';
 import { Auth } from '@angular/fire/auth';
 import { RegistrarCitaUsuarioComponent } from '../registrar-cita-usuario/registrar-cita-usuario.component';
-import { HttpClient } from '@angular/common/http';
+import { JsonPipe } from '@angular/common';
 
 export interface Place {
   name: string;
   grupo: number;
   sexo: string;
-  fechaCita: string ;
+  fechaCita: string;
   hora: string;
 }
 
 @Component({
-  selector: 'app-formulario',
+  selector: "app-formulario",
   standalone: true,
-  imports: [FormsModule, JsonPipe,
-    MatFormFieldModule, MatInputModule,
-    MatDatepickerModule, MatRadioModule, MatTimepickerModule,
-     MatSelectModule, MatInputModule, MatOptionModule, CommonModule, MatCardModule, RegistrarCitaUsuarioComponent],
+  imports: [
+    FormsModule,
+    JsonPipe,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatRadioModule,
+    MatTimepickerModule,
+    MatSelectModule,
+    MatInputModule,
+    MatOptionModule,
+    CommonModule,
+    MatCardModule,
+    RegistrarCitaUsuarioComponent,
+    HttpClientModule
+  ],
   providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './cita.component.html',
-  styleUrl: './cita.component.css'
+  styleUrls: ['./cita.component.css']
 })
-export class CitaComponent {
+export class CitaComponent implements OnInit {
   mostrarFormulario = false;
   usuarioAutenticado = false;
 
   constructor(private auth: Auth, private http: HttpClient) {}
+
   private apiUrl = 'http://localhost:3000/enviar-cita'; //Conectar con node, para que permita el envio de información 
-
-
 
   enviarCita(cita: any) {
     return this.http.post(this.apiUrl, cita);
@@ -61,7 +75,7 @@ export class CitaComponent {
     if (this.usuarioAutenticado) {
       this.mostrarFormulario = true;
     } else {
-       Swal.fire('Se requiere iniciar sesión');
+      Swal.fire('Se requiere iniciar sesión');
     }
   }
 }

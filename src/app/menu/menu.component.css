@@ -1,5 +1,7 @@
-/*Menu*/
-.mat-mdc-radio-button~.mat-mdc-radio-button {
+/* ==================== ESTILOS DEL MENÚ ==================== */
+
+/* Menu Radio Buttons */
+.mat-mdc-radio-button ~ .mat-mdc-radio-button {
   margin-left: 16px;
 }
 
@@ -35,15 +37,193 @@
   color: #00796b;
 }
 
-/*Lista de requirimientos*/
+/* ==================== FORMULARIO DE CITAS ==================== */
+
+.formulario-cita {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f1eeee;
+  border-radius: 12px;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 35px;
+}
+
+.titulo {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  color: #7e167b;
+  font-family: fantasy;
+  border-bottom: 3px solid #ba68c8;
+  padding-bottom: 0.5rem;
+  width: 100%;
+}
+
+.campo {
+  margin-bottom: 1.5rem;
+  width: 100%;
+  font-size: 1.2rem;
+}
+
+mat-form-field {
+  width: 100%;
+  font-size: 1.2rem;
+}
+
+mat-radio-button mat-radio-label-content {
+  font-size: 1.5em;
+}
+
+.label-genero {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.text-error {
+  padding-left: 8px;
+  color: firebrick;
+  font-size: 14px;
+  animation-name: fadeIn;
+  animation-duration: .3s;
+}
+
+.boton-contenedor {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+button .btn-activo {
+  border: 3px solid #e1dcdc !important;
+  border-radius: 6px !important;
+  background-color: #e67ccf !important;
+  color: white !important;
+  height: 50px !important;
+  width: 150px !important;
+}
+
+button .btn-inactivo {
+  border: 3px solid #e1dcdc !important;
+  border-radius: 6px !important;
+  background-color: #beb3b3 !important;
+  color: #666 !important;
+  height: 50px !important;
+  width: 150px !important;
+}
+
+/* ==================== FORMULARIO REACTIVO (COMENTARIOS) ==================== */
+
+.form-card1 {
+  background-color: #f3e8ff;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 700px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(153, 102, 255, 0.2);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.form-title1 {
+  text-align: center;
+  color: #6a0dad;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.form-body1 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group1 {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label1 {
+  font-weight: bold;
+  color: #6a0dad;
+  margin-bottom: 6px;
+}
+
+.form-control1 {
+  border: 1px solid #d6b3ff;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #fff;
+  color: #4a004d;
+  transition: border-color 0.3s ease;
+}
+
+.form-control1:focus {
+  border-color: #b266ff;
+  outline: none;
+}
+
+.form-select1 {
+  border: 1px solid #d6b3ff;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #fff;
+  color: #4a004d;
+  transition: border-color 0.3s ease;
+}
+
+.form-select1:focus {
+  border-color: #b266ff;
+  outline: none;
+}
+
+.checkbox-group1 label {
+  color: #4a004d;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.mat-form-field1 {
+  width: 100%;
+}
+
+.text-error1 {
+  color: #ff4d94;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.submit-button1 {
+  background-color: #b266ff;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button1:hover {
+  background-color: #9d4edd;
+  color: #f8f8f8;
+}
+
+.submit-button1:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* ==================== LISTAS Y TABLAS ==================== */
+
 #container2 {
   width: 90%;
-  /* Ancho más responsivo */
   margin: 20px auto;
   padding: 20px;
   border-radius: 10px;
   background-color: #f3e5f5;
-  /* Pastel lavanda */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -84,7 +264,8 @@ div {
   padding: 10px;
 }
 
-/*Parte de los botones*/
+/* ==================== BOTONES ==================== */
+
 button {
   border: none;
   background-color: transparent;
@@ -98,89 +279,7 @@ button:hover {
   transform: scale(1.1);
 }
 
-/*Formulario*/
-.formulario-cita {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #f1eeee;
-  border-radius: 12px;
-  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
-  margin-bottom: 35px;
-}
-
-.titulo {
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2.2rem;
-  color: #7e167b;
-  font-family: fantasy;
-}
-
-.campo {
-  margin-bottom: 1.5rem;
-  width: 100%;
-  font-size: 1.2rem;
-}
-
-mat-form-field {
-  width: 100%;
-  font-size: 1.2rem;
-
-}
-
-mat-radio-button mat-radio-label-content {
-  font-size: 1.5em;
-}
-
-.label-genero {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.text-error {
-  padding-left: 8px;
-  color: firebrick;
-  font-size: 14px;
-  animation-name: fadeIn;
-  animation-duration: .3s;
-}
-
-.boton-contenedor {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-button .btn-activo {
-  border: 3px solid #e1dcdc!important;
-  border-radius: 6px!important;
-  background-color: #e67ccf !important;
-  color: white !important;
-  height: 50px !important;
-  width: 150px !important;
-}
-
-button .btn-inactivo {
-  border: 3px solid #e1dcdc !important;
-  border-radius: 6px !important;
-  background-color: #beb3b3 !important;
-  color: #666 !important;
-  height: 50px !important;
-  width: 150px !important;
-}
-
-
-.titulo {
-  font-size: 2.2rem;
-  color: #6a1b9a;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 2rem;
-  border-bottom: 3px solid #ba68c8;
-  padding-bottom: 0.5rem;
-  width: 100%;
-}
+/* ==================== COMENTARIOS ==================== */
 
 .contenedor-comentarios {
   display: flex;
@@ -254,7 +353,6 @@ button .btn-inactivo {
 
 .boton-chido.eliminar {
   background-color: #e53935 !important;
-
   color: white;
 }
 
@@ -265,115 +363,134 @@ button .btn-inactivo {
   text-align: center;
 }
 
+/* ==================== SECCIÓN QR ==================== */
 
-/*FR*/
-
-.form-card1 {
-  background-color: #f3e8ff; 
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 700px;
-  margin: 0 auto;
-  box-shadow: 0 4px 12px rgba(153, 102, 255, 0.2);
-  font-family: 'Segoe UI', sans-serif;
+.qr-section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  margin: 2rem auto;
+  max-width: 800px;
 }
 
-
-.form-title1 {
-  text-align: center;
-  color: #6a0dad;
-  font-size: 28px;
-  margin-bottom: 20px;
+/* Integración con el tema púrpura del menú */
+.qr-section .card {
+  background: linear-gradient(135deg, #f3e5f5, #ede7f6);
+  border: 2px solid #ce93d8;
 }
 
-
-.form-body1 {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.qr-section .card-header {
+  background: linear-gradient(135deg, #7e57c2, #9c27b0);
 }
 
-.form-group1 {
-  display: flex;
-  flex-direction: column;
+.qr-section .btn-primary {
+  background-color: #7e57c2;
+  border-color: #7e57c2;
 }
 
-
-.form-label1 {
-  font-weight: bold;
-  color: #6a0dad;
-  margin-bottom: 6px;
+.qr-section .btn-primary:hover {
+  background-color: #6a1b9a;
+  border-color: #6a1b9a;
 }
 
-
-.form-control1 {
-  border: 1px solid #d6b3ff;
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 16px;
-  background-color: #fff;
-  color: #4a004d;
-  transition: border-color 0.3s ease;
+.qr-section .btn-secondary {
+  background-color: #9c27b0;
+  border-color: #9c27b0;
 }
 
-.form-control1:focus {
-  border-color: #b266ff;
-  outline: none;
+.qr-section .btn-secondary:hover {
+  background-color: #7b1fa2;
+  border-color: #7b1fa2;
 }
 
+/* ==================== RESPONSIVE ==================== */
 
-.form-select1 {
-  border: 1px solid #d6b3ff;
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 16px;
-  background-color: #fff;
-  color: #4a004d;
-  transition: border-color 0.3s ease;
+@media (max-width: 768px) {
+  .menu-radio {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .formulario-cita,
+  .form-card1 {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  #container2 {
+    width: 95%;
+    padding: 15px;
+  }
+
+  table {
+    font-size: 0.875rem;
+  }
+
+  th,
+  td {
+    padding: 8px 10px;
+  }
+
+  .qr-section {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
 }
 
-.form-select1:focus {
-  border-color: #b266ff;
-  outline: none;
+/* ==================== ANIMACIONES ==================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+/* ==================== ALTO CONTRASTE PARA MENÚ ==================== */
 
-.checkbox-group1 label {
-  color: #4a004d;
-  font-weight: 500;
-  margin-bottom: 4px;
+.high-contrast .menu-radio {
+  background: #000000 !important;
+  border: 3px solid #ffff00 !important;
 }
 
-
-.mat-form-field1 {
-  width: 100%;
+.high-contrast .menu-radio mat-radio-button {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
 }
 
-.text-error1 {
-  color: #ff4d94;
-  font-size: 14px;
-  margin-top: 5px;
+.high-contrast .formulario-cita,
+.high-contrast .form-card1,
+.high-contrast #container2 {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+  border: 3px solid #ffff00 !important;
 }
 
-
-.submit-button1 {
-  background-color: #b266ff;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.high-contrast .qr-section {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+  border: 3px solid #ffff00 !important;
 }
 
-.submit-button1:hover {
-  background-color: #9d4edd;
-  color:#f8f8f8;
+.high-contrast .form-control1,
+.high-contrast .form-select1 {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
 }
 
-.submit-button1:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.high-contrast .submit-button1,
+.high-contrast .btn-primary,
+.high-contrast .btn-secondary {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
 }

@@ -21,3 +21,8 @@
     text-align: end;
     margin-right: 50px;
 }
+.navbar-toggler {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

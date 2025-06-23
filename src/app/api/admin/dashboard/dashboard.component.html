@@ -1,0 +1,267 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>Dashboard Administrativo</h1>
+        <p>Panel de control de pagos de servicios</p>
+      </div>
+      <div class="actions-section">
+        <span class="admin-badge">
+          <i class="fas fa-shield-alt"></i>
+          Administrador
+        </span>
+        <button 
+          class="refresh-btn" 
+          (click)="actualizarDatos()" 
+          [disabled]="cargando()">
+          <i class="fas fa-sync-alt" [class.fa-spin]="cargando()"></i>
+          Actualizar
+        </button>
+        <button 
+          class="test-btn" 
+          (click)="generarDatosPrueba()"
+          [disabled]="cargando()">
+          <i class="fas fa-database"></i>
+          Generar Datos Prueba
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="cargando()" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!cargando()" class="dashboard-content">
+    <!-- Métricas principales -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-title">Ingresos Totales</span>
+          <i class="fas fa-dollar-sign metric-icon"></i>
+        </div>
+        <div class="metric-content">
+          <div class="metric-value">{{ metricas().totalIngresos | moneda }}</div>
+          <div class="metric-change positive">Desde el inicio</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-title">Transacciones</span>
+          <i class="fas fa-credit-card metric-icon"></i>
+        </div>
+        <div class="metric-content">
+          <div class="metric-value">{{ metricas().totalTransacciones }}</div>
+          <div class="metric-change positive">Pagos completados</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-title">Usuarios Únicos</span>
+          <i class="fas fa-users metric-icon"></i>
+        </div>
+        <div class="metric-content">
+          <div class="metric-value">{{ metricas().usuariosActivos }}</div>
+          <div class="metric-change positive">Clientes diferentes</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-title">Promedio por Pago</span>
+          <i class="fas fa-chart-line metric-icon"></i>
+        </div>
+        <div class="metric-content">
+          <div class="metric-value">{{ metricas().promedioTransaccion | moneda }}</div>
+          <div class="metric-change positive">Por transacción</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs para las gráficas -->
+    <div class="charts-section">
+      <div class="tabs-container">
+        <div class="tabs-header">
+          <button 
+            class="tab-button" 
+            [class.active]="tabActiva() === 'mensual'"
+            (click)="cambiarTab('mensual')">
+            Tendencia Mensual
+          </button>
+          <button 
+            class="tab-button" 
+            [class.active]="tabActiva() === 'servicios'"
+            (click)="cambiarTab('servicios')">
+            Servicios Populares
+          </button>
+          <button 
+            class="tab-button" 
+            [class.active]="tabActiva() === 'detalles'"
+            (click)="cambiarTab('detalles')">
+            Detalles de Pagos
+          </button>
+        </div>
+
+        <!-- Gráfica de tendencia mensual -->
+        <div class="tab-content" [class.active]="tabActiva() === 'mensual'">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Ingresos por Mes</h3>
+              <p>Últimos 6 meses - Actualizado: {{ ultimaActualizacion() | date:'short' }}</p>
+            </div>
+            <div class="chart-container">
+              <div class="chart-svg-container">
+                <svg width="100%" height="300" viewBox="0 0 800 300">
+                  <!-- Ejes -->
+                  <line x1="60" y1="250" x2="750" y2="250" stroke="#e5e7eb" stroke-width="2"/>
+                  <line x1="60" y1="50" x2="60" y2="250" stroke="#e5e7eb" stroke-width="2"/>
+                  
+                  <!-- Barras -->
+                  <g *ngFor="let dato of estadisticasMensuales(); let i = index">
+                    <rect 
+                      [attr.x]="80 + i * 100" 
+                      [attr.y]="250 - obtenerAlturaBarra(dato.ingresos, metricas().totalIngresos)"
+                      width="60" 
+                      [attr.height]="obtenerAlturaBarra(dato.ingresos, metricas().totalIngresos)"
+                      fill="#3b82f6" 
+                      opacity="0.8">
+                    </rect>
+                    
+                    <!-- Etiquetas -->
+                    <text 
+                      [attr.x]="110 + i * 100" 
+                      y="270" 
+                      text-anchor="middle" 
+                      class="chart-label">
+                      {{ dato.mes }}
+                    </text>
+                    
+                    <!-- Valores -->
+                    <text 
+                      [attr.x]="110 + i * 100" 
+                      [attr.y]="240 - obtenerAlturaBarra(dato.ingresos, metricas().totalIngresos)" 
+                      text-anchor="middle" 
+                      class="chart-value">
+                      {{ dato.ingresos | moneda }}
+                    </text>
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfica de servicios -->
+        <div class="tab-content" [class.active]="tabActiva() === 'servicios'">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Servicios Más Pagados</h3>
+              <p>Distribución de ingresos por tipo de servicio</p>
+            </div>
+            <div class="chart-container">
+              <div class="services-chart">
+                <div class="pie-chart">
+                  <svg width="300" height="300" viewBox="0 0 200 200">
+                    <g *ngFor="let servicio of estadisticasServicios(); let i = index">
+                      <path 
+                        [attr.d]="crearPathSector(servicio.ingresos, metricas().totalIngresos, obtenerAnguloInicio(i))"
+                        [attr.fill]="servicio.color"
+                        [attr.stroke]="'white'"
+                        stroke-width="2">
+                      </path>
+                    </g>
+                  </svg>
+                </div>
+                <div class="legend">
+                  <div *ngFor="let servicio of estadisticasServicios()" class="legend-item">
+                    <div class="legend-color" [style.background-color]="servicio.color"></div>
+                    <span class="legend-text">{{ servicio.servicio }}</span>
+                    <span class="legend-value">{{ servicio.ingresos | moneda }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detalles de pagos -->
+        <div class="tab-content" [class.active]="tabActiva() === 'detalles'">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Últimos Pagos Registrados</h3>
+              <p>Historial detallado de transacciones</p>
+            </div>
+            <div class="table-container">
+              <table class="payments-table">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Servicio</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                    <th>ID PayPal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let pago of pagos().slice(-20).reverse(); trackBy: trackById">
+                    <td class="client-name">{{ pago.nombre }}</td>
+                    <td class="service-name">{{ pago.servicio }}</td>
+                    <td class="amount">{{ pago.monto | moneda }}</td>
+                    <td class="date">{{ pago.fecha | date:'short' }}</td>
+                    <td class="paypal-id">{{ pago.paypalOrderId }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <div *ngIf="pagos().length === 0" class="no-data">
+                <i class="fas fa-inbox"></i>
+                <p>No hay pagos registrados</p>
+                <button class="test-btn" (click)="generarDatosPrueba()">
+                  Generar datos de prueba
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen por servicios -->
+    <div class="summary-section">
+      <div class="summary-card">
+        <div class="summary-header">
+          <h3>Resumen por Servicios</h3>
+          <p>Análisis detallado de cada tipo de servicio</p>
+        </div>
+        <div class="summary-grid">
+          <div *ngFor="let servicio of estadisticasServicios()" class="service-summary">
+            <div class="service-header">
+              <div class="service-color" [style.background-color]="servicio.color"></div>
+              <h4>{{ servicio.servicio }}</h4>
+            </div>
+            <div class="service-stats">
+              <div class="stat">
+                <span class="stat-label">Ingresos:</span>
+                <span class="stat-value">{{ servicio.ingresos | moneda }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Transacciones:</span>
+                <span class="stat-value">{{ servicio.transacciones }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Promedio:</span>
+                <span class="stat-value">{{ (servicio.ingresos / servicio.transacciones) | moneda }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
