@@ -15,7 +15,7 @@ declare var paypal: any;
 @Component({
   selector: 'app-servicios-spa',
   standalone: true,
-  imports: [RouterOutlet, HttpClientModule,
+  imports: [ HttpClientModule,
     JsonPipe, CommonModule, FormsModule, DomseguroPipe, MonedaPipe],
   templateUrl: './servicios-spa.component.html',
   styleUrl: './servicios-spa.component.css'
