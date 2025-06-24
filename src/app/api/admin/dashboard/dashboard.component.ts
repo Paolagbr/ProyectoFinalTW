@@ -12,7 +12,6 @@ import { PaypalService } from "../../../servicios/paypal.service";
 import { MonedaPipe } from "../../../servicios/pipe";
 import Swal from "sweetalert2";
 
-// Interfaces para los datos
 interface PagoData {
   id?: string;
   nombre: string;
@@ -43,13 +42,11 @@ interface EstadisticasServicios {
   styleUrls: ["./dashboard.component.scss"]
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
-  // Signals para el estado
   pagos = signal<PagoData[]>([]);
   cargando = signal<boolean>(false);
   ultimaActualizacion = signal<Date>(new Date());
   tabActiva = signal<string>("mensual");
 
-  // Computed para las estadísticas
   estadisticasMensuales = computed(() => {
     const pagosList = this.pagos();
     const estadisticas: { [key: string]: EstadisticasMensuales } = {};
@@ -81,7 +78,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         const mesB = meses.indexOf(b.mes);
         return mesA - mesB;
       })
-      .slice(-6); // Últimos 6 meses
+      .slice(-6);
   });
 
   estadisticasServicios = computed(() => {
@@ -125,7 +122,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     };
   });
 
-  // Datos para las gráficas
   datosGraficaMensual = computed(() => {
     const datos = this.estadisticasMensuales();
     return {
@@ -201,49 +197,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  async generarDatosPrueba(): Promise<void> {
-    const servicios = ["Electricidad", "Agua", "Gas", "Internet", "Teléfono", "Cable TV"];
-    const nombres = ["Juan Pérez", "María García", "Carlos López", "Ana Martínez", "Luis Rodríguez"];
-
-    const datosPrueba: Omit<PagoData, "id">[] = [];
-
-    for (let i = 0; i < 50; i++) {
-      const fechaAleatoria = new Date();
-      fechaAleatoria.setDate(fechaAleatoria.getDate() - Math.floor(Math.random() * 180));
-
-      datosPrueba.push({
-        nombre: nombres[Math.floor(Math.random() * nombres.length)],
-        servicio: servicios[Math.floor(Math.random() * servicios.length)],
-        monto: Math.floor(Math.random() * 1000) + 100,
-        fecha: fechaAleatoria.toISOString(),
-        paypalOrderId: `TEST_${Date.now()}_${i}`
-      });
-    }
-
-    try {
-      for (const dato of datosPrueba) {
-        await this.paypalService.agregarDato("pagos", dato);
-      }
-
-      Swal.fire({
-        icon: "success",
-        title: "Datos de prueba generados",
-        text: `Se generaron ${datosPrueba.length} pagos de prueba`,
-        confirmButtonColor: "#28a745"
-      });
-
-      await this.cargarDatos();
-    } catch (error) {
-      console.error("Error generando datos de prueba:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudieron generar los datos de prueba",
-        confirmButtonColor: "#d33"
-      });
-    }
-  }
-
   obtenerAlturaBarra(valor: number, maximo: number): number {
     return (valor / maximo) * 200;
   }
@@ -272,12 +225,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     return `M 100 100 L ${inicio.x} ${inicio.y} A 80 80 0 ${banderaArcoGrande} 1 ${fin.x} ${fin.y} Z`;
   }
 
-  // ✅ Agregado: función usada en el template
   obtenerAnguloInicio(index: number): number {
-    return index * 20; // Puedes personalizar este valor según tu lógica de sectores
+    return index * 20;
   }
 
-  // ✅ Agregado: función usada para *ngFor trackBy
   trackById(index: number, item: any): string | number {
     return item?.id || index;
   }
