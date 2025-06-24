@@ -32,6 +32,8 @@ export const routes: Routes = [
     {path: 'usuario', component: UsurioNuevoComponent},
     {path: 'agendar', component: RegistrarCitaUsuarioComponent},
     {path: 'recuperar', component: PasswordComponent},
+    {path: 'grafica', component: AdminDashboardComponent},
+
 
     // Rutas adicionales
     { path: "", component: ServiciosSPAComponent },

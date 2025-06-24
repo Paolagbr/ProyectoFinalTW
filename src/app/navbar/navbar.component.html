@@ -36,6 +36,9 @@
         } @else {
           @if (userType === 'admin') {
             <li class="nav-item mx-2">
+              <a class="nav-link" [routerLink]="['/grafica']">Gráficas</a>
+            </li>
+            <li class="nav-item mx-2">
               <a class="nav-link" [routerLink]="['/Cuestionario']">Q & A</a>
             </li>
             <li class="nav-item mx-2">
