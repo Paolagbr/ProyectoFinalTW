@@ -105,7 +105,7 @@ export class CuestionarioComponent implements OnInit, OnChanges {
 
       Swal.fire('¡Guardado!', 'Tu comentario ha sido registrado.', 'success');
 
-      // Simula generación de QR
+      // Generar QR aquí con el comentario recién enviado
       this.generarQR(comentario);
     } else {
       Swal.fire('Oops...', 'Completa todos los campos correctamente', 'error');

@@ -5,30 +5,35 @@
       <form (ngSubmit)="enviarComentario()" [formGroup]="formulario">
 
         <div class="mb-2">
-          <label class="form-label">Nombre</label>
-          <input type="text" formControlName="nombre" class="form-control" placeholder="Ingresa tu nombre" />
-          <div *ngIf="!formulario.get('nombre')?.valid && !formulario.get('nombre')?.pristine" 
-               class="alert alert-danger mt-2">
-            El nombre es obligatorio
-          </div>
+          <label class="form-label" for="nombre">Nombre</label>
+          <input type="text" id="nombre" formControlName="nombre" class="form-control" placeholder="Ingresa tu nombre" />
+          @if (formulario.get('nombre')?.invalid && (formulario.get('nombre')?.dirty || formulario.get('nombre')?.touched)) {
+            <div class="alert alert-danger mt-2">
+              El nombre es obligatorio
+            </div>
+          }
         </div>
 
         <div class="mb-2">
-          <label class="form-label">Email</label>
-          <input type="email" formControlName="email" class="form-control" placeholder="Ingresa tu email" />
-          <div *ngIf="!formulario.get('email')?.valid && !formulario.get('email')?.pristine" 
-               class="alert alert-danger mt-2">
-            <span *ngIf="formulario.get('email')?.errors?.['required']">El email es obligatorio</span>
-            <span *ngIf="formulario.get('email')?.errors?.['email']">El email debe ser válido</span>
-          </div>
+          <label class="form-label" for="email">Email</label>
+          <input type="email" id="email" formControlName="email" class="form-control" placeholder="Ingresa tu email" />
+          @if (formulario.get('email')?.invalid && (formulario.get('email')?.dirty || formulario.get('email')?.touched)) {
+            <div class="alert alert-danger mt-2">
+              @if (formulario.get('email')?.errors?.['required']) {
+                <span>El email es obligatorio</span>
+              } @else if (formulario.get('email')?.errors?.['email']) {
+                <span>El email debe ser válido</span>
+              }
+            </div>
+          }
         </div>
 
         <label class="form-label">¿Qué fue lo que más te gustó de la página?</label>
         <div formGroupName="feedback" class="mb-3">
-          <label><input type="checkbox" formControlName="facilidadNavegar" /> Facilidad de navegar</label><br />
-          <label><input type="checkbox" formControlName="buenaPresentacion" /> Buena presentación</label><br />
-          <label><input type="checkbox" formControlName="facilEntender" /> Fácil de entender los servicios</label><br />
-          <label><input type="checkbox" formControlName="estructuraUtilizada" /> La estructura que se utilizó</label>
+          <div><label><input type="checkbox" formControlName="facilidadNavegar" /> Facilidad de navegar</label></div>
+          <div><label><input type="checkbox" formControlName="buenaPresentacion" /> Buena presentación</label></div>
+          <div><label><input type="checkbox" formControlName="facilEntender" /> Fácil de entender los servicios</label></div>
+          <div><label><input type="checkbox" formControlName="estructuraUtilizada" /> La estructura que se utilizó</label></div>
         </div>
 
         <label for="servicio">Servicio que más te gustó</label><br />
@@ -44,13 +49,14 @@
         </select>
 
         <div class="mb-2">
-          <label class="form-label">Mensaje de queja o sugerencia</label>
-          <textarea formControlName="mensaje" class="form-control"
+          <label class="form-label" for="mensaje">Mensaje de queja o sugerencia</label>
+          <textarea id="mensaje" formControlName="mensaje" class="form-control"
                     placeholder="Escribe tu queja o sugerencia aquí" rows="5"></textarea>
-          <div *ngIf="!formulario.get('mensaje')?.valid && !formulario.get('mensaje')?.pristine" 
-               class="alert alert-danger mt-2">
-            El mensaje es obligatorio y debe tener al menos 10 caracteres
-          </div>
+          @if (formulario.get('mensaje')?.invalid && (formulario.get('mensaje')?.dirty || formulario.get('mensaje')?.touched)) {
+            <div class="alert alert-danger mt-2">
+              El mensaje es obligatorio y debe tener al menos 10 caracteres
+            </div>
+          }
         </div>
 
         <div class="campo mb-3">
@@ -63,10 +69,11 @@
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
-          <div *ngIf="formulario.get('fechaCita')?.touched && formulario.get('fechaCita')?.hasError('required')" 
-               class="text-error">
-            El campo es requerido
-          </div>
+          @if (formulario.get('fechaCita')?.touched && formulario.get('fechaCita')?.hasError('required')) {
+            <div class="text-error">
+              El campo es requerido
+            </div>
+          }
         </div>
 
         <button class="btn btn-primary" type="submit">Enviar comentario y generar QR</button>
@@ -74,104 +81,121 @@
     </div>
   </div>
 
-  <div *ngIf="showQRSection" class="qr-container mt-4">
-    <div class="card">
-      <div class="card-header">
-        <h2>Código QR de tu Cita</h2>
-        <p class="subtitle">Presenta este código en tu cita del SPA</p>
-      </div>
-
-      <div class="card-body">
-        <div *ngIf="loading" class="loading-state">
-          <div class="spinner"></div>
-          <p>Generando código QR...</p>
+  @if (showQRSection) {
+    <div class="qr-container mt-4">
+      <div class="card">
+        <div class="card-header">
+          <h2>Código QR de tu Cita</h2>
+          <p class="subtitle">Presenta este código en tu cita del SPA</p>
         </div>
 
-        <div *ngIf="error && !loading" class="error-state">
-          <div class="error-icon">⚠️</div>
-          <p>{{ error }}</p>
-          <button (click)="generarQR(formulario.value)" class="btn-retry">Reintentar</button>
-        </div>
+        <div class="card-body">
+          @if (loading) {
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <p>Generando código QR...</p>
+            </div>
+          } @else if (error) {
+            <div class="error-state">
+              <div class="error-icon">⚠️</div>
+              <p>{{ error }}</p>
+              <button (click)="generarQR(formulario.value)" class="btn-retry">Reintentar</button>
+            </div>
+          } @else {
+            <div class="qr-content">
+              <div class="qr-code-container">
+                <img [src]="qrCodeDataURL" alt="Código QR de la cita" class="qr-image" />
+              </div>
 
-        <div *ngIf="qrCodeDataURL && !loading && !error" class="qr-content">
-          <div class="qr-code-container">
-            <img [src]="qrCodeDataURL" alt="Código QR de la cita" class="qr-image">
-          </div>
+              @if (citaData) {
+                <div class="cita-info">
+                  <h3>Información de tu Cita</h3>
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <span class="label">Cliente:</span>
+                      <span class="value">{{ citaData.cliente }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Servicio:</span>
+                      <span class="value">{{ citaData.servicio }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Fecha:</span>
+                      <span class="value">{{ citaData.fecha }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Hora:</span>
+                      <span class="value">{{ citaData.hora }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Código:</span>
+                      <span class="value code">{{ citaData.codigoConfirmacion }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Válido hasta:</span>
+                      <span class="value">{{ citaData.validoHasta | date:'short' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
 
-          <div *ngIf="citaData" class="cita-info">
-            <h3>Información de tu Cita</h3>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="label">Cliente:</span>
-                <span class="value">{{ citaData.cliente }}</span>
+              <div class="actions">
+                <button (click)="descargarQR()" class="btn-primary">
+                  📱 Descargar QR
+                </button>
+                <button (click)="regenerarQR()" class="btn-secondary">
+                  🔄 Regenerar QR
+                </button>
               </div>
-              <div class="info-item">
-                <span class="label">Servicio:</span>
-                <span class="value">{{ citaData.servicio }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Fecha:</span>
-                <span class="value">{{ citaData.fecha }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Hora:</span>
-                <span class="value">{{ citaData.hora }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Código:</span>
-                <span class="value code">{{ citaData.codigoConfirmacion }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Válido hasta:</span>
-                <span class="value">{{ citaData.validoHasta | date:'short' }}</span>
+
+              <div class="instructions">
+                <h4>Instrucciones:</h4>
+                <ul>
+                  <li>Presenta este código QR al llegar a tu cita</li>
+                  <li>El código es válido por 24 horas</li>
+                  <li>Puedes regenerar el código si es necesario</li>
+                  <li>Guarda una captura de pantalla como respaldo</li>
+                </ul>
               </div>
             </div>
-          </div>
-
-          <div class="actions">
-            
-            <button (click)="descargarQR()" class="btn-primary">
-              📱 Descargar QR
-            </button>
-            <button (click)="regenerarQR()" class="btn-secondary">
-              🔄 Regenerar QR
-            </button>
-          </div>
-
-          <div class="instructions">
-            <h4>Instrucciones:</h4>
-            <ul>
-              <li>Presenta este código QR al llegar a tu cita</li>
-              <li>El código es válido por 24 horas</li>
-              <li>Puedes regenerar el código si es necesario</li>
-              <li>Guarda una captura de pantalla como respaldo</li>
-            </ul>
-          </div>
+          }
         </div>
       </div>
     </div>
-  </div>
+  }
 
-  <div *ngIf="comentarios.length > 0" class="mt-4">
-    <h3>Comentarios guardados</h3>
-    <div *ngFor="let comentario of comentarios; let i = index" class="card mt-3 p-3 shadow-sm border rounded">
-      <p><strong>Nombre:</strong> {{ comentario.nombre }}</p>
-      <p><strong>Email:</strong> {{ comentario.email }}</p>
-      <p><strong>Te gustó de la página:</strong></p>
-      <ul>
-        <li *ngIf="comentario.feedback?.facilidadNavegar">Facilidad de navegar</li>
-        <li *ngIf="comentario.feedback?.buenaPresentacion">Buena presentación</li>
-        <li *ngIf="comentario.feedback?.facilEntender">Fácil de entender los servicios</li>
-        <li *ngIf="comentario.feedback?.estructuraUtilizada">La estructura que se utilizó</li>
-      </ul>
-      <p><strong>Servicio que más te gustó:</strong> {{ comentario.servicio }}</p>
-      <p><strong>Mensaje:</strong> {{ comentario.mensaje }}</p>
-      <p><strong>Fecha:</strong> {{ comentario.fechaCita | date:'shortDate' }}</p>
-      <button class="btn btn-outline-primary me-2" (click)="editarComentario(i)">Editar</button>
-      <button class="btn btn-outline-danger" (click)="eliminarComentario(i)">Eliminar</button>
+  @if (comentarios.length > 0) {
+    <div class="mt-4">
+      <h3>Comentarios guardados</h3>
+      @for (comentario of comentarios; track comentario.id || $index) {
+        <div class="card mt-3 p-3 shadow-sm border rounded">
+          <p><strong>Nombre:</strong> {{ comentario.nombre }}</p>
+          <p><strong>Email:</strong> {{ comentario.email }}</p>
+          <p><strong>Te gustó de la página:</strong></p>
+          <ul>
+            @if (comentario.feedback?.facilidadNavegar) {
+              <li>Facilidad de navegar</li>
+            }
+            @if (comentario.feedback?.buenaPresentacion) {
+              <li>Buena presentación</li>
+            }
+            @if (comentario.feedback?.facilEntender) {
+              <li>Fácil de entender los servicios</li>
+            }
+            @if (comentario.feedback?.estructuraUtilizada) {
+              <li>La estructura que se utilizó</li>
+            }
+          </ul>
+          <p><strong>Servicio que más te gustó:</strong> {{ comentario.servicio }}</p>
+          <p><strong>Mensaje:</strong> {{ comentario.mensaje }}</p>
+          <p><strong>Fecha:</strong> {{ comentario.fechaCita | date:'shortDate' }}</p>
+          
+        </div>
+      }
     </div>
-  </div>
-  <div *ngIf="comentarios.length === 0" class="mt-4 text-center text-muted">
-    No hay comentarios guardados
-  </div>
+  } @else {
+    <div class="mt-4 text-center text-muted">
+      No hay comentarios guardados
+    </div>
+  }
 </div>
