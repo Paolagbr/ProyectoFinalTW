@@ -14,6 +14,7 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/proyectofinaltw",
+            "deleteOutputPath": true,
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -43,7 +44,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "3MB",
                   "maximumError": "3MB"
                 },
                 {
@@ -53,7 +54,8 @@
                 }
               ],
               "outputHashing": "all",
-              "baseHref": "/MiniProyecto2/"
+              "baseHref": "/MiniProyecto2/",
+              "serviceWorker": "ngsw-config.json"
 
             },
             "development": {

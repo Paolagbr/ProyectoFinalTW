@@ -2,12 +2,13 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 import { HttpClientModule } from '@angular/common/http';
-import { importProvidersFrom } from '@angular/core';
+import { importProvidersFrom, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import { provideServiceWorker } from '@angular/service-worker';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -19,8 +20,20 @@ bootstrapApplication(AppComponent, {
        apiKey: "AIzaSyBJXHh0cp0E3_9rJOWV1i54gr9DTGmsSw0",
         authDomain: "proyectofinaltw-73dc0.firebaseapp.com", 
         messagingSenderId: "691281619346" })), provideFirestore(() => getFirestore()),
-        provideAuth(() => getAuth()),
+        provideAuth(() => getAuth()), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }),
         
   ]
 })
-  .catch((err) => console.error(err));
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/ngsw-worker.js').then((registration) => {
+      console.log('Service Worker registrado con éxito:', registration);
+    }).catch((error) => {
+      console.error('Error en el registro del Service Worker:', error);
+    });
+  });
+}

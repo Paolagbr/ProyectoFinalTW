@@ -21,6 +21,8 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@angular/service-worker": "^19.2.0",
+    "@popperjs/core": "^2.11.8",
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.5",
     "cors": "^2.8.5",
