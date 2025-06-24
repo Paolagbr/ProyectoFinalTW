@@ -25,7 +25,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import Swal from 'sweetalert2';
-
 import QRCodeStyling from 'qr-code-styling';
 import { QrApiService, CitaQRData } from '../services/qr-api.service';
 import { InicioSesionService } from '../servicios/inicio-sesion.service';
