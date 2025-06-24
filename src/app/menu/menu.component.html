@@ -13,7 +13,7 @@
 
   @if (selectedOption === '1') {
     <div>
-      <form class="formulario-cita" #form="ngForm">
+      <form class="formulario-cita" #form="ngForm" (ngSubmit)="guardarCita(form)">
         <h2 class="titulo">AGENDAR CITA</h2>
 
         <div class="campo mb-3">
@@ -61,7 +61,7 @@
           @if (grupoSelect.touched && grupoSelect.hasError('required')) {
             <div class="text-error">El campo es requerido</div>
           }
-          @if (grupoSelect.touched && (grupoSelect.hasError('required') || userINFO.grupo === 0)) {
+          @if (grupoSelect.touched && grupoSelect.hasError('required')) {
             <div class="text-error">
               El campo es requerido o el servicio seleccionado no es válido.
             </div>
@@ -136,11 +136,11 @@
           <button
             mat-raised-button
             color="primary"
-            (click)="guardarCita()"
+            type="submit"
             [disabled]="!form.valid"
             [ngClass]="form.valid ? 'btn-activo' : 'btn-inactivo'"
           >
-            Agendar
+            {{ modoEdicionCita ? 'Actualizar Cita' : 'Agendar' }}
           </button>
         </div>
       </form>
@@ -159,7 +159,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (u of listaCitas; track u.name) {
+            @for (u of listaCitas; track u.id) {
               <tr>
                 <td>{{ u.name }}</td>
                 <td>{{ getNomServicio(u.grupo) }}</td>
@@ -293,7 +293,7 @@
               [disabled]="formulario.invalid"
               class="submit-button1"
             >
-              {{ modoEdicion ? 'Actualizar Comentario' : 'Enviar Comentario' }}
+              {{ modoEdicionComentario ? 'Actualizar Comentario' : 'Enviar Comentario' }}
             </button>
           </form>
         </div>
@@ -314,7 +314,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (com of comentarios; track com.email) {
+            @for (com of comentarios; track com.id) {
               <tr>
                 <td>{{ com.nombre }}</td>
                 <td>{{ com.email }}</td>
@@ -349,10 +349,20 @@
             }
           </tbody>
         </table>
-
-        <button mat-raised-button color="primary" (click)="linkGoogleAccount()">
-          Agendar
-        </button>
+        <div class="mt-6">
+          <div #qrContainer></div>
+          @if (loading) {
+            <p>Generando QR...</p>
+          } @else if (error) {
+            <p class="text-error">{{ error }}</p>
+          } @else if (citaData) {
+            <p>Código de confirmación: {{ citaData.codigoConfirmacion }}</p>
+            <p>Cita: {{ citaData.fecha }} a las {{ citaData.hora }}</p>
+            <p>Válido hasta: {{ citaData.validoHasta }}</p>
+            <button mat-raised-button color="accent" (click)="regenerarQR()">Regenerar QR</button>
+            <button mat-raised-button color="accent" (click)="descargarQR()">Descargar QR</button>
+          }
+        </div>
       </div>
     </div>
   }
