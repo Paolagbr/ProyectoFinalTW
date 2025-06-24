@@ -11,7 +11,10 @@ import {
   fetchSignInMethodsForEmail,
   linkWithCredential,
   getAdditionalUserInfo,
-  linkWithPopup
+  linkWithPopup,
+  signInWithPhoneNumber, // Añadido para autenticación SMS
+  RecaptchaVerifier, // Añadido para autenticación SMS
+  PhoneAuthProvider // Añadido para autenticación SMS
 } from '@angular/fire/auth';
 import {
   collection,
@@ -23,7 +26,8 @@ import {
   updateDoc
 } from '@angular/fire/firestore';
 import { UsuarioIngresar } from '../datos';
-//import { UsuarioIngresar } from '../ingresar-usuario/ingresar-usuario.component';
+import Swal from 'sweetalert2'; // Asegúrate de que SweetAlert2 esté importado si lo usas en el servicio
+
 
 @Injectable({
   providedIn: 'root'
@@ -76,35 +80,7 @@ export class InicioSesionService {
       }
     });
   }
-  // async logIn(email: string, password: string) {
-  //   const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-  //   const user = userCredential.user;
 
-  //   const isRegistered = await this.isUserRegistered(user.email || '');
-  //   if (!isRegistered) {
-  //     await this.logOut();
-  //     throw new Error('Usuario no registrado en la base de datos');
-  //   }
-
-
-  //   const alreadyLinked = user.providerData.some(p => p.providerId === 'google.com');
-  //   if (!alreadyLinked) {
-  //     try {
-  //       const provider = new GoogleAuthProvider();
-  //       await linkWithPopup(user, provider);
-  //       console.log('Cuenta de Google vinculada automáticamente.');
-  //     } catch (error: any) {
-  //       if (error.code === 'auth/credential-already-in-use') {
-  //         console.warn('Esta cuenta de Google ya está vinculada a otro usuario.');
-
-  //       } else {
-  //         console.error('Error al vincular automáticamente con Google:', error);
-  //       }
-  //     }
-  //   }
-
-  //   return userCredential;
-  // }
   async logIn(email: string, password: string) {
     const db = getFirestore();
     const usuariosRef = collection(db, 'usuarios');
@@ -173,7 +149,6 @@ export class InicioSesionService {
   }
 
 
-
   async logInGoogle() {//Iniciar con google
     const provider = new GoogleAuthProvider();
 
@@ -207,6 +182,8 @@ export class InicioSesionService {
 
         if (methods.includes('password')) {
 
+          // NO USAR prompt() en entornos de producción o en iframes (como Canvas)
+          // Reemplaza con un modal o componente de UI para solicitar la contraseña
           const password = prompt('Ya existe una cuenta con este correo. Ingresa tu contraseña para vincularla con Google:');
 
           if (!password) {
@@ -215,7 +192,9 @@ export class InicioSesionService {
 
           const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
           await linkWithCredential(userCredential.user, pendingCred);
-          alert('Cuentas vinculadas correctamente');
+          // NO USAR alert() en entornos de producción o en iframes (como Canvas)
+          // Reemplaza con un modal o notificación de UI
+          Swal.fire('Cuentas vinculadas', 'Cuentas vinculadas correctamente', 'success');
           return userCredential;
 
         } else {
@@ -227,6 +206,28 @@ export class InicioSesionService {
     }
   }
 
+  // Nuevo: Enviar código de verificación SMS
+  async sendPhoneNumberVerification(phoneNumber: string, recaptchaVerifier: RecaptchaVerifier) {
+    try {
+      // Firebase se encargará de renderizar reCAPTCHA si es necesario
+      const confirmationResult = await signInWithPhoneNumber(this.auth, phoneNumber, recaptchaVerifier);
+      return confirmationResult;
+    } catch (error) {
+      console.error('Error al enviar el código SMS:', error);
+      throw error;
+    }
+  }
+
+  // Nuevo: Confirmar código de verificación SMS
+  async confirmPhoneNumberVerification(confirmationResult: any, code: string) {
+    try {
+      const userCredential = await confirmationResult.confirm(code);
+      return userCredential;
+    } catch (error) {
+      console.error('Error al verificar el código SMS:', error);
+      throw error;
+    }
+  }
 
   isAuthenticated(): boolean {
     return this.auth.currentUser !== null;
@@ -261,6 +262,3 @@ export class InicioSesionService {
   }
 
 }
-
-
-
