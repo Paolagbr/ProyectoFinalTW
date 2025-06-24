@@ -1,4 +1,3 @@
-
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { importProvidersFrom, isDevMode } from '@angular/core';
@@ -20,6 +19,9 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 import { routes } from './app/app.routes';
 
+// Importa el token que definiste
+import { API_URL } from './api.toke';
+
 // Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBJXHh0cp0E3_9rJOWV1i54gr9DTGmsSw0",
@@ -36,6 +38,8 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes),
     provideHttpClient(),
     provideAnimations(),
+  
+    { provide: API_URL, useValue: 'https://nodeproyectofinaltw-1.onrender.com' },
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
@@ -43,16 +47,16 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(
       FormsModule,
       CommonModule,
-      AngularFireModule.initializeApp(firebaseConfig), // Compat
+      AngularFireModule.initializeApp(firebaseConfig), 
       AngularFirestoreModule,
     ),
-    provideFirebaseApp(() => initializeApp(firebaseConfig)), // Modular
+    provideFirebaseApp(() => initializeApp(firebaseConfig)), 
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
   ]
 }).catch(err => console.error(err));
 
-// Registro manual del Service Worker (opcional si ya usas provideServiceWorker)
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/ngsw-worker.js')
@@ -64,6 +68,7 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
+
 
 
 

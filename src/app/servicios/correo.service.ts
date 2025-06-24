@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class CorreoService {
 
-private apiUrl = 'http://localhost:3000/api/enviar-cita';
+private apiUrl = 'https://nodeproyectofinaltw-1.onrender.com/api/enviar-cita';
 
 
   constructor(private http: HttpClient) {}

@@ -35,7 +35,7 @@ export interface VerificarQRResponse {
   providedIn: "root",
 })
 export class QrApiService {
-  private apiUrl = "http://localhost:3000/api"
+  private apiUrl = 'https://nodeproyectofinaltw-1.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 
