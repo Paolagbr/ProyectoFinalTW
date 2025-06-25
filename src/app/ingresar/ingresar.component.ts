@@ -28,19 +28,19 @@ export class IngresarComponent implements OnInit, AfterViewInit {
   hide = signal(true);
   credencialesIncorrectas = signal(false);
   isLoggingIn = false;
-  // auth: Auth; // Eliminado: Ya no es necesaria como propiedad de la clase
+ 
 
   siteKey = '6LeJA2ErAAAAAHg_RsMM_MF-aQt3Nfz97H5p8bfk';
   captchaValid = signal(false);
 
-  // New properties for Phone Auth
+ 
   @ViewChild('recaptchaContainer') recaptchaContainer!: ElementRef;
   recaptchaVerifier: RecaptchaVerifier | undefined;
   confirmationResult: any;
   showCodeInput = signal(false);
   isLoadingSms = signal(false);
   
-  // Use a separate form group for phone authentication to keep concerns separated
+  
   PhoneAuthForm: FormGroup;
 
 
@@ -48,10 +48,10 @@ export class IngresarComponent implements OnInit, AfterViewInit {
     private firestore: Firestore,
     private router: Router,
     private authService: InicioSesionService,
-    // auth: Auth, // Eliminado: Ya no se inyecta directamente aquí
+   
     private ngZone: NgZone
   ) {
-    // this.auth = auth; // Eliminado: Ya no es necesaria esta asignación
+   
     this.IngresarSesion = new FormGroup({
       password: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
